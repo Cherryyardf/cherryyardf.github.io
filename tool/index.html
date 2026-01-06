@@ -1,0 +1,898 @@
+<!-- Chosen Palette: "Bureaucratic Harmony" - Warm neutrals (#f8f9fa background) with distinct semantic coding: Sky Blue (#0ea5e9) for Cooperative paths, Terracotta Red (#ef4444) for Confrontational paths, Emerald Green (#10b981) for success states, and Slate/Indigo for Knowledge Base. -->
+
+<!-- Application Structure Plan:
+    1.  **Process Overview Dashboard (Home):** A high-level visual summary.
+    2.  **Interactive Phase Navigator:**
+        * **Phase A (Analyse):** Funnel simulation.
+        * **Phase B (Weichenstellung):** Decision Simulator.
+        * **Phase C (Kooperativ):** Model Card Deck.
+        * **Phase D (Konfrontativ):** Escalation Ladder.
+        * **[NEW] Akteurs-Profile (Wissen):** A knowledge base tab containing the "Actor Types" analysis, ownership types, and the "Tree Visualization" for private owners.
+    3.  **Synthesis/Footer:** Summary.
+-->
+
+<!-- Visualization & Content Choices:
+    * **Tree Visualization (Actors Tab):** * *Goal:* Visualize the specific hindrances and solutions for private small owners.
+        * *Method:* CSS-based hierarchical tree with trunk (owner) -> branches (problems) -> leaves (solutions).
+        * *Justification:* Provides a structured "Deep Dive" into the most complex target group mentioned in the new content.
+    * **Actor Grid:**
+        * *Goal:* Present the 5 actor types.
+        * *Method:* Interactive cards with hover effects.
+-->
+
+<!-- CONFIRMATION: NO SVG graphics used (except inline icons). NO Mermaid JS used. -->
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Immobilien-Aktivierungs-Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #334155; }
+        
+        /* Custom Chart Container Styles */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        /* Standard Interactive Elements */
+        .phase-card { transition: all 0.3s ease; border-left: 4px solid transparent; }
+        .phase-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .phase-card.active { border-left-color: #3b82f6; background-color: #ffffff; }
+
+        .model-btn { transition: all 0.2s; }
+        .model-btn.active { background-color: #0ea5e9; color: white; border-color: #0ea5e9; }
+
+        .escalation-step { transition: all 0.3s; opacity: 0.5; }
+        .escalation-step.active { opacity: 1; transform: scale(1.02); }
+
+        .funnel-step {
+            clip-path: polygon(0% 0%, 100% 0%, 95% 100%, 5% 100%);
+            transition: all 0.5s ease;
+        }
+
+        /* --- NEW STYLES FROM SNIPPET (Actor Types & Tree) --- */
+        .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+        .card-hover:hover .icon-bg { transform: scale(1.1) rotate(5deg); }
+        .icon-bg { transition: all 0.3s ease; }
+
+        /* Tree Visualization Styles */
+        :root {
+            --trunk-bg: #475569;
+            --branch-border: #f59e0b;
+            --leaf-bg: #10b981;
+            --connector-color: #cbd5e1;
+        }
+
+        .tree-wrapper {
+            display: flex; justify-content: center; align-items: flex-start;
+            padding-top: 40px; overflow-x: auto; width: 100%; padding-bottom: 2rem;
+            -ms-overflow-style: none; scrollbar-width: none;
+        }
+        .tree-wrapper::-webkit-scrollbar { display: none; }
+        .tree { display: flex; flex-direction: column; align-items: center; min-width: 900px; }
+
+        /* Trunk */
+        .trunk-node {
+            background: linear-gradient(145deg, #475569, #334155); color: white;
+            padding: 1.25rem 2.5rem; border-radius: 12px; text-align: center;
+            position: relative; z-index: 10; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            max-width: 320px; margin-bottom: 3rem; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .trunk-node::after {
+            content: ''; position: absolute; bottom: -3rem; left: 50%;
+            width: 2px; height: 3rem; background-color: var(--connector-color);
+        }
+
+        /* Branches */
+        .branches-container { display: flex; justify-content: center; position: relative; gap: 24px; }
+        .branches-container::before {
+            content: ''; position: absolute; top: -20px; left: 90px; right: 90px;
+            height: 2px; background-color: var(--connector-color); z-index: 0;
+        }
+        .branch-column { display: flex; flex-direction: column; align-items: center; width: 180px; position: relative; z-index: 1; }
+        .branch-column::before {
+            content: ''; position: absolute; top: -20px; left: 50%;
+            width: 2px; height: 20px; background-color: var(--connector-color);
+        }
+
+        /* Branch Node (Problem) */
+        .branch-node {
+            background-color: white; border-top: 4px solid var(--branch-border);
+            border-radius: 0 0 8px 8px; padding: 1.25rem 1rem; text-align: center;
+            width: 100%; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); position: relative;
+            margin-bottom: 2.5rem; min-height: 140px; display: flex; flex-direction: column;
+            justify-content: flex-start; border-left: 1px solid #f1f5f9; border-right: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;
+        }
+        .branch-node::after {
+            content: ''; position: absolute; bottom: -2.5rem; left: 50%;
+            width: 2px; height: 2.5rem; background: repeating-linear-gradient(to bottom, var(--connector-color) 0, var(--connector-color) 4px, transparent 4px, transparent 8px);
+        }
+
+        /* Leaf Node (Solution) */
+        .leaf-node {
+            background: linear-gradient(135deg, #10b981, #059669); color: white;
+            padding: 1rem 0.5rem; border-radius: 16px; text-align: center; width: 100%;
+            box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.2); transition: all 0.3s ease;
+            cursor: default; position: relative; overflow: hidden;
+        }
+        .leaf-node:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 15px 20px -3px rgba(16, 185, 129, 0.3); }
+        .leaf-node::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(255,255,255,0.2), transparent); opacity: 0.5;
+        }
+
+        @media (max-width: 1024px) {
+            .tree-wrapper { justify-content: flex-start; padding-left: 20px; padding-right: 20px; }
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">🏙️</span>
+                <div>
+                    <h1 class="text-xl font-bold text-slate-800">Immobilien-Aktivierung</h1>
+                    <p class="text-xs text-slate-500 uppercase tracking-wide">Prozess-Management-Dashboard</p>
+                </div>
+            </div>
+            <div class="hidden md:block">
+                <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-sm font-medium">Ziel: Gemeinwohl & Aktivierung</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+        <!-- Intro Section (Visible only on Landing) -->
+        <section id="intro-text" class="mb-8 text-center max-w-3xl mx-auto">
+            <h2 class="text-3xl font-bold text-slate-800 mb-4">Der Weg zur Wiederbelebung</h2>
+            <p class="text-slate-600 leading-relaxed">
+                Dieses interaktive Tool visualisiert den Prozess der Stadt zur Aktivierung leerstehender Immobilien.
+                Starten Sie mit den <strong>Akteurs-Profilen</strong>, um die Grundlagen zu verstehen, oder steigen Sie direkt in den Prozess (Phase A) ein.
+            </p>
+        </section>
+
+        <!-- Navigation Tabs -->
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-2 mb-8 bg-slate-100 p-2 rounded-xl sticky top-20 z-40 shadow-sm">
+            <button onclick="switchTab('actorsTab')" id="tab-actorsTab" class="nav-tab px-3 py-3 rounded-lg text-sm font-semibold text-slate-500 hover:bg-slate-200 transition-colors border border-transparent">🎓 Akteurs-Profile</button>
+            <button onclick="switchTab('phaseA')" id="tab-phaseA" class="nav-tab px-3 py-3 rounded-lg text-sm font-semibold transition-colors bg-white shadow text-blue-600 border border-slate-200">A. Analyse & Vorlauf</button>
+            <button onclick="switchTab('phaseB')" id="tab-phaseB" class="nav-tab px-3 py-3 rounded-lg text-sm font-semibold text-slate-500 hover:bg-slate-200 transition-colors border border-transparent">B. Kontakt & Weiche</button>
+            <button onclick="switchTab('phaseC')" id="tab-phaseC" class="nav-tab px-3 py-3 rounded-lg text-sm font-semibold text-slate-500 hover:bg-slate-200 transition-colors border border-transparent">C. Kooperation (Soft)</button>
+            <button onclick="switchTab('phaseD')" id="tab-phaseD" class="nav-tab px-3 py-3 rounded-lg text-sm font-semibold text-slate-500 hover:bg-slate-200 transition-colors border border-transparent">D. Konfrontation (Hard)</button>
+        </div>
+
+        <!-- CONTENT AREA -->
+
+        <!-- TAB: AKTEURS-PROFILE (NEW) -->
+        <div id="actorsTab" class="tab-content hidden animate-fade-in">
+            <div class="bg-white rounded-xl p-6 md:p-8 border border-slate-200 shadow-sm">
+                
+                <header class="mb-8 border-b border-slate-100 pb-4">
+                    <div class="inline-block px-3 py-1 mb-2 text-xs font-semibold tracking-wider text-indigo-600 uppercase bg-indigo-50 rounded-full">BBSR-Analyse (22/2017)</div>
+                    <h2 class="text-2xl font-bold text-slate-900">Akteurs-Typen der Stadtentwicklung</h2>
+                    <p class="text-slate-500 mt-2">Grundlagenwissen: Wer besitzt die Stadt und warum?</p>
+                </header>
+
+                <!-- 1. Eigentumsarten -->
+                <section class="mb-12">
+                    <h3 class="text-lg font-bold text-slate-800 mb-6 flex items-center">
+                        <span class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center mr-2 text-sm">1</span>
+                        Drei Arten des Umgangs mit Eigentum
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Gebrauchsgut -->
+                        <div class="card-hover bg-slate-50 p-6 rounded-xl border border-slate-200 relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity"><svg class="w-16 h-16" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg></div>
+                            <span class="bg-indigo-100 text-indigo-700 font-bold px-2 py-0.5 rounded text-xs uppercase mb-3 inline-block">Konsum</span>
+                            <h4 class="font-bold text-lg text-slate-900 mb-2">Als Gebrauchsgut</h4>
+                            <p class="text-sm text-slate-600 mb-4">Dient der eigenen Versorgung (Wohnen). Emotionale Werte & Heimatgefühl stehen vor Rendite.</p>
+                            <div class="text-xs font-semibold text-indigo-600">Typisch für: Private Kleineigentümer</div>
+                        </div>
+                        <!-- Kapitalanlage -->
+                        <div class="card-hover bg-slate-50 p-6 rounded-xl border border-slate-200 relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity"><svg class="w-16 h-16" fill="currentColor" viewBox="0 0 20 20"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg></div>
+                            <span class="bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded text-xs uppercase mb-3 inline-block">Bestand</span>
+                            <h4 class="font-bold text-lg text-slate-900 mb-2">Als Kapitalanlage</h4>
+                            <p class="text-sm text-slate-600 mb-4">Langfristige Haltung für laufende Erträge (Mieten). Fokus auf Stabilität und Werterhalt.</p>
+                            <div class="text-xs font-semibold text-emerald-600">Typisch für: Wohnungsunternehmen</div>
+                        </div>
+                        <!-- Handelsware -->
+                        <div class="card-hover bg-slate-50 p-6 rounded-xl border border-slate-200 relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity"><svg class="w-16 h-16" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/></svg></div>
+                            <span class="bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded text-xs uppercase mb-3 inline-block">Handel</span>
+                            <h4 class="font-bold text-lg text-slate-900 mb-2">Als Handelsware</h4>
+                            <p class="text-sm text-slate-600 mb-4">Kurzfristige Entwicklung und Weiterverkauf (Exit) zur Gewinnmaximierung.</p>
+                            <div class="text-xs font-semibold text-blue-600">Typisch für: Projektentwickler</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. Akteurs-Typen Grid -->
+                <section class="mb-12">
+                     <h3 class="text-lg font-bold text-slate-800 mb-6 flex items-center">
+                        <span class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center mr-2 text-sm">2</span>
+                        Die 5 zentralen Akteurs-Typen
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Projektentwickler -->
+                        <div class="bg-white rounded-lg border border-slate-200 p-5 shadow-sm hover:shadow-md transition-shadow">
+                            <div class="flex items-center mb-3">
+                                <div class="w-10 h-10 rounded bg-blue-50 flex items-center justify-center text-blue-600 mr-3">🛠️</div>
+                                <h4 class="font-bold text-slate-800">Projektentwickler</h4>
+                            </div>
+                            <p class="text-xs text-slate-600 mb-2">Kühle Rechner. Kaufen, entwickeln, verkaufen. Rendite 2–9%.</p>
+                            <div class="text-xs bg-slate-100 p-2 rounded"><strong>Relevanz:</strong> Einziger Akteur für große Brachflächen.</div>
+                        </div>
+                        <!-- Kommunale -->
+                        <div class="bg-white rounded-lg border border-slate-200 p-5 shadow-sm hover:shadow-md transition-shadow">
+                             <div class="flex items-center mb-3">
+                                <div class="w-10 h-10 rounded bg-emerald-50 flex items-center justify-center text-emerald-600 mr-3">🏛️</div>
+                                <h4 class="font-bold text-slate-800">Kommunale</h4>
+                            </div>
+                            <p class="text-xs text-slate-600 mb-2">Wirtschaftlich, aber mit "Stadtrendite". Der "Kümmerer".</p>
+                            <div class="text-xs bg-slate-100 p-2 rounded"><strong>Relevanz:</strong> Werkzeug bei Marktversagen.</div>
+                        </div>
+                        <!-- Baugruppen -->
+                        <div class="bg-white rounded-lg border border-slate-200 p-5 shadow-sm hover:shadow-md transition-shadow">
+                             <div class="flex items-center mb-3">
+                                <div class="w-10 h-10 rounded bg-orange-50 flex items-center justify-center text-orange-600 mr-3">👨‍👩‍👧‍👦</div>
+                                <h4 class="font-bold text-slate-800">Baugruppen</h4>
+                            </div>
+                            <p class="text-xs text-slate-600 mb-2">Gemeinschaftliche Bauherren. Gewinnfrei, hoch motiviert.</p>
+                            <div class="text-xs bg-slate-100 p-2 rounded"><strong>Relevanz:</strong> Sichert dauerhaft bezahlbares Wohnen.</div>
+                        </div>
+                         <!-- Institutionelle -->
+                        <div class="bg-white rounded-lg border border-slate-200 p-5 shadow-sm hover:shadow-md transition-shadow">
+                             <div class="flex items-center mb-3">
+                                <div class="w-10 h-10 rounded bg-slate-100 flex items-center justify-center text-slate-600 mr-3">🏢</div>
+                                <h4 class="font-bold text-slate-800">Institutionelle</h4>
+                            </div>
+                            <p class="text-xs text-slate-600 mb-2">Fonds & Versicherungen. Globales Portfolio, kein lokales Interesse.</p>
+                            <div class="text-xs bg-slate-100 p-2 rounded"><strong>Relevanz:</strong> Oft Blockierer großer Areale.</div>
+                        </div>
+                         <!-- Soziale Träger -->
+                        <div class="bg-white rounded-lg border border-slate-200 p-5 shadow-sm hover:shadow-md transition-shadow md:col-span-2 lg:col-span-1">
+                             <div class="flex items-center mb-3">
+                                <div class="w-10 h-10 rounded bg-rose-50 flex items-center justify-center text-rose-600 mr-3">❤</div>
+                                <h4 class="font-bold text-slate-800">Soziale Träger</h4>
+                            </div>
+                            <p class="text-xs text-slate-600 mb-2">Wohlfahrtsverbände. Fokus Betreuung, fördermittelabhängig.</p>
+                            <div class="text-xs bg-slate-100 p-2 rounded"><strong>Relevanz:</strong> Pflege-WGs & Umnutzung.</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. TREE VISUALIZATION -->
+                <section class="mb-8 pt-8 border-t border-slate-100">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
+                        <span class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center mr-2 text-sm">3</span>
+                        Der Private Kleineigentümer (Analyse-Raster)
+                    </h3>
+                    <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-100 mb-6 text-sm text-indigo-900">
+                        <strong>Warum dieses Raster?</strong> Um effektive Strategien zu entwickeln, müssen wir verstehen, <em>warum</em> ein Privater nicht saniert. Jedem Hemmnis (Orange) folgt eine spezifische Lösung (Grün).
+                    </div>
+
+                    <div class="bg-slate-100 rounded-3xl p-4 md:p-10 overflow-hidden border border-slate-200 shadow-inner">
+                        <div class="tree-wrapper">
+                            <div class="tree">
+                                <!-- STAMM -->
+                                <div class="trunk-node">
+                                    <div class="text-xs text-slate-300 uppercase tracking-widest mb-1 font-semibold">Zielgruppe</div>
+                                    <div class="font-bold text-xl uppercase tracking-wide">Der Private Kleineigentümer</div>
+                                    <div class="text-sm text-slate-300 mt-2 font-light border-t border-slate-500 pt-2 inline-block">Lokal verankert • Oft Laie • Heterogene Motive</div>
+                                </div>
+
+                                <!-- ÄSTE -->
+                                <div class="branches-container">
+                                    <!-- Ast 1 -->
+                                    <div class="branch-column">
+                                        <div class="branch-node group">
+                                            <div class="text-slate-800 font-bold text-sm mb-2">Kompetenzlücke</div>
+                                            <div class="text-xs text-slate-500 leading-snug">Fehlendes Fachwissen zur Sanierung.</div>
+                                        </div>
+                                        <div class="leaf-node">
+                                            <span class="text-xl block mb-1">🌱</span>
+                                            <div class="font-bold text-xs">Aktive Bauberatung</div>
+                                        </div>
+                                    </div>
+                                    <!-- Ast 2 -->
+                                    <div class="branch-column">
+                                        <div class="branch-node group">
+                                            <div class="text-slate-800 font-bold text-sm mb-2">Familienvorsorge</div>
+                                            <div class="text-xs text-slate-500 leading-snug">Objekt dient als emotionale Rücklage oder Erbe.</div>
+                                        </div>
+                                        <div class="leaf-node">
+                                            <span class="text-xl block mb-1">🤝</span>
+                                            <div class="font-bold text-xs">Pachtmodelle</div>
+                                        </div>
+                                    </div>
+                                    <!-- Ast 3 -->
+                                    <div class="branch-column">
+                                        <div class="branch-node group">
+                                            <div class="text-slate-800 font-bold text-sm mb-2">Überforderung</div>
+                                            <div class="text-xs text-slate-500 leading-snug">Finanzielle oder organisatorische Überlastung.</div>
+                                        </div>
+                                        <div class="leaf-node">
+                                            <span class="text-xl block mb-1">🏗️</span>
+                                            <div class="font-bold text-xs">Zwischenerwerb</div>
+                                        </div>
+                                    </div>
+                                    <!-- Ast 4 -->
+                                    <div class="branch-column">
+                                        <div class="branch-node group">
+                                            <div class="text-slate-800 font-bold text-sm mb-2">Lebenszyklus</div>
+                                            <div class="text-xs text-slate-500 leading-snug">Fehlende finanzielle Mittel oder altersbedingte Barrieren.</div>
+                                        </div>
+                                        <div class="leaf-node">
+                                            <span class="text-xl block mb-1">👴</span>
+                                            <div class="font-bold text-xs">Verrentung</div>
+                                        </div>
+                                    </div>
+                                    <!-- Ast 5 -->
+                                    <div class="branch-column">
+                                        <div class="branch-node group">
+                                            <div class="text-slate-800 font-bold text-sm mb-2">Markterwartung</div>
+                                            <div class="text-xs text-slate-500 leading-snug">Passive Haltung durch Erwartung künftiger Wertsteigerung.</div>
+                                        </div>
+                                        <div class="leaf-node">
+                                            <span class="text-xl block mb-1">⚖️</span>
+                                            <div class="font-bold text-xs">Druck & Impuls</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                 <!-- Summary Box -->
+                <div class="bg-slate-800 text-white rounded-xl p-6 shadow-lg relative overflow-hidden">
+                    <h3 class="text-lg font-bold mb-2 relative z-10">Fazit für die Arbeit</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed relative z-10">
+                        Während bei den <strong>Kleineigentümern</strong> viel "Enabling" (Beratung, Psychologie) nötig ist (siehe Ast 1-4), reagieren die professionellen Akteure primär auf <strong>harte Standortfaktoren</strong> (Baurecht, Rendite).
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- PHASE A: ANALYSE -->
+        <div id="phaseA" class="tab-content block animate-fade-in">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                <div>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2">A. Vorlauf & Analyse: Das Objekt finden</h3>
+                    <p class="text-slate-600 mb-6">
+                        Bevor ein Kontakt stattfindet, nutzt die Stadt Daten (Strom, Wasser, Kataster), um Leerstand zu identifizieren. 
+                        Nicht jedes Objekt lohnt den Aufwand – hier findet die erste Filterung statt.
+                    </p>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <h4 class="font-semibold text-slate-800 mb-4">Der Daten-Filter</h4>
+                        <div class="space-y-4">
+                            <!-- Visual Funnel -->
+                            <div class="flex flex-col items-center">
+                                <div class="w-full bg-slate-200 p-3 text-center text-slate-600 rounded-t-lg">Gesamter Immobilienbestand</div>
+                                <div class="w-[90%] bg-blue-100 p-3 text-center text-blue-800 mt-1 funnel-step">Phase 1: Datenerhebung (Strom/Wasser)</div>
+                                <div class="w-[80%] bg-blue-200 p-3 text-center text-blue-900 mt-1 funnel-step">Verdachtsfälle Leerstand</div>
+                                <div id="final-funnel" class="w-[60%] bg-slate-300 p-3 text-center text-slate-500 mt-1 rounded-b-lg transition-colors cursor-pointer hover:bg-emerald-100" onclick="simulateAnalysis()">
+                                    Klicken zur Analyse
+                                </div>
+                            </div>
+                            
+                            <div id="analysis-result" class="hidden mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+                                <p class="font-bold text-emerald-800 flex items-center">
+                                    <span class="text-xl mr-2">✅</span> Potenzial: HOCH
+                                </p>
+                                <p class="text-sm text-emerald-700 mt-1">Das Objekt qualifiziert sich für die aktive Ansprache. Weiter zu Phase B.</p>
+                                <button onclick="switchTab('phaseB')" class="mt-3 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 transition text-sm">Zur Kontaktaufnahme →</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h4 class="font-semibold text-slate-800 mb-4 text-center">Leerstandskataster Statistik (Beispiel)</h4>
+                    <p class="text-sm text-slate-500 mb-4 text-center">Verteilung der analysierten Objekte nach Potenzial</p>
+                    <div class="chart-container">
+                        <canvas id="analysisChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-xs text-slate-400 text-center">Datenbasis: Illustrative Verteilung</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHASE B: KONTAKT -->
+        <div id="phaseB" class="tab-content hidden animate-fade-in">
+            <div class="max-w-4xl mx-auto">
+                <h3 class="text-2xl font-bold text-slate-800 mb-2">B. Die Weichenstellung</h3>
+                <p class="text-slate-600 mb-8">
+                    Der Eigentümer erhält Infomaterial und ein Beratungsangebot. Seine Reaktion bestimmt den weiteren Verlauf vollkommen.
+                    Dies ist der kritischste Punkt im Prozess.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
+                    <!-- Connector Line for Desktop -->
+                    <div class="hidden md:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full border-4 border-slate-200 z-10 flex items-center justify-center font-bold text-slate-400">
+                        ?
+                    </div>
+
+                    <!-- Cooperative Path Choice -->
+                    <div onclick="choosePath('soft')" class="cursor-pointer group hover:ring-2 hover:ring-blue-400 bg-white p-8 rounded-2xl border border-slate-200 shadow-sm transition-all text-center">
+                        <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl group-hover:scale-110 transition-transform">
+                            🤝
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-800 mb-2">Kooperationswille</h4>
+                        <p class="text-slate-500 text-sm">Der Eigentümer reagiert, zeigt Interesse oder nimmt das Beratungsangebot an.</p>
+                        <div class="mt-6 inline-block text-blue-600 font-semibold group-hover:underline">Weg C: Soft Power wählen →</div>
+                    </div>
+
+                    <!-- Confrontational Path Choice -->
+                    <div onclick="choosePath('hard')" class="cursor-pointer group hover:ring-2 hover:ring-red-400 bg-white p-8 rounded-2xl border border-slate-200 shadow-sm transition-all text-center">
+                        <div class="w-16 h-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl group-hover:scale-110 transition-transform">
+                            ⛔
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-800 mb-2">Blockade / Keine Reaktion</h4>
+                        <p class="text-slate-500 text-sm">Der Eigentümer ignoriert Kontaktversuche oder lehnt jegliche Gespräche ab.</p>
+                        <div class="mt-6 inline-block text-red-600 font-semibold group-hover:underline">Weg D: Hard Power wählen →</div>
+                    </div>
+                </div>
+
+                <div id="path-message" class="mt-8 p-4 rounded-lg bg-slate-100 text-center text-slate-600 italic hidden">
+                    Wählen Sie eine Option oben, um fortzufahren.
+                </div>
+            </div>
+        </div>
+
+        <!-- PHASE C: KOOPERATIV -->
+        <div id="phaseC" class="tab-content hidden animate-fade-in">
+            <h3 class="text-2xl font-bold text-blue-600 mb-2">C. Der kooperative Weg (Soft Power)</h3>
+            <p class="text-slate-600 mb-6">
+                Das Ziel ist die Aktivierung durch Unterstützung. Die Stadt bietet Verträge, Finanzierungshilfen und Vernetzung.
+                Kernstück ist der "Angebots-Pool" mit 5 Modellen für verschiedene Eigentümer-Situationen.
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Left: Model Selector -->
+                <div class="lg:col-span-5 space-y-3">
+                    <h4 class="font-semibold text-slate-700 mb-2">Angebots-Pool (Wählen Sie ein Modell)</h4>
+                    
+                    <button onclick="showModel(0)" class="model-btn w-full text-left p-4 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center gap-3 active">
+                        <span class="text-xl">💰</span>
+                        <div>
+                            <div class="font-bold">Verkauf / Pacht</div>
+                            <div class="text-xs opacity-70">Für Eigentümer ohne Zeit</div>
+                        </div>
+                    </button>
+
+                    <button onclick="showModel(1)" class="model-btn w-full text-left p-4 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center gap-3">
+                        <span class="text-xl">👵</span>
+                        <div>
+                            <div class="font-bold">Verrentung (Viager)</div>
+                            <div class="text-xs opacity-70">Für Senioren</div>
+                        </div>
+                    </button>
+
+                    <button onclick="showModel(2)" class="model-btn w-full text-left p-4 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center gap-3">
+                        <span class="text-xl">🛠️</span>
+                        <div>
+                            <div class="font-bold">Mitwirkung</div>
+                            <div class="text-xs opacity-70">Für Gestalter</div>
+                        </div>
+                    </button>
+
+                    <button onclick="showModel(3)" class="model-btn w-full text-left p-4 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center gap-3">
+                        <span class="text-xl">🎭</span>
+                        <div>
+                            <div class="font-bold">Zwischennutzung</div>
+                            <div class="text-xs opacity-70">Kurzfristiger Leerstand</div>
+                        </div>
+                    </button>
+
+                    <button onclick="showModel(4)" class="model-btn w-full text-left p-4 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center gap-3">
+                        <span class="text-xl">🏘️</span>
+                        <div>
+                            <div class="font-bold">Genossenschaft</div>
+                            <div class="text-xs opacity-70">Gegen Spekulation</div>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Right: Details & Visuals -->
+                <div class="lg:col-span-7 space-y-6">
+                    <!-- Dynamic Detail Card -->
+                    <div class="bg-blue-50 p-6 rounded-xl border border-blue-100 min-h-[180px]">
+                        <div id="model-detail-content">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Radar Chart -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-semibold text-slate-700 mb-2 text-center">Modell-Eigenschaften im Vergleich</h4>
+                        <div class="chart-container">
+                            <canvas id="modelsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Risk Check Section -->
+            <div class="mt-8 p-4 bg-amber-50 rounded-lg border border-amber-200">
+                <h4 class="font-bold text-amber-800 mb-2">⚠️ Schritt 3: Risiko-Check</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-amber-900">
+                    <div class="flex items-start gap-2">
+                        <span>📉</span> <span>Gefahr: Finanzieller Verlust bei Verkauf unter Wert.</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span>⏳</span> <span>Gefahr: Lange Kapitalbindung bei Bürgerprojekten.</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span>🛑</span> <span>Gefahr: Blockade durch Überforderung ehrenamtlicher Gruppen.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHASE D: KONFRONTATIV -->
+        <div id="phaseD" class="tab-content hidden animate-fade-in">
+            <h3 class="text-2xl font-bold text-red-600 mb-2">D. Der konfrontative Weg (Hard Power)</h3>
+            <p class="text-slate-600 mb-6">
+                Wenn Dialog scheitert, greifen hoheitliche Instrumente. Zuerst erfolgt eine strenge Prüfung der Verhältnismäßigkeit.
+                Nur wenn diese gegeben ist, wird die Eskalationsleiter betreten.
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Pre-Check Logic -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">1. Vorprüfung & Verhältnismäßigkeit</h4>
+                    <p class="text-sm text-slate-500 mb-4">Bevor eskaliert wird, muss rechtlich (Zweckentfremdung?) und finanziell (Sanierungskosten?) geprüft werden.</p>
+                    
+                    <div class="bg-slate-50 p-4 rounded-lg mb-4">
+                        <label class="flex items-center justify-between cursor-pointer mb-2">
+                            <span class="font-semibold text-slate-700">Zweckentfremdung nachweisbar?</span>
+                            <input type="checkbox" id="check-legal" class="w-5 h-5 accent-red-600" onchange="checkProportionality()">
+                        </label>
+                        <label class="flex items-center justify-between cursor-pointer">
+                            <span class="font-semibold text-slate-700">Sanierung wirtschaftlich zumutbar?</span>
+                            <input type="checkbox" id="check-financial" class="w-5 h-5 accent-red-600" onchange="checkProportionality()">
+                        </label>
+                    </div>
+
+                    <div id="prop-result" class="p-3 rounded font-bold text-center bg-slate-200 text-slate-500 transition-colors">
+                        Prüfung läuft...
+                    </div>
+                    
+                    <div id="back-to-coop" class="hidden mt-4 text-center">
+                        <p class="text-sm text-slate-600 mb-2">Eingriff rechtlich zu heikel.</p>
+                        <button onclick="switchTab('phaseC')" class="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 text-sm font-semibold">
+                            ↩ Zurück zum Verhandlungsangebot
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Escalation Ladder -->
+                <div id="escalation-container" class="bg-red-50 p-6 rounded-xl border border-red-100 opacity-50 pointer-events-none transition-opacity">
+                    <h4 class="font-bold text-red-800 mb-4">2. Phase 3: Die Eskalationsleiter</h4>
+                    <p class="text-xs text-red-600 mb-4">Klicken Sie auf eine Stufe, um die Maßnahme zu aktivieren.</p>
+
+                    <div class="space-y-3 relative">
+                        <!-- Line -->
+                        <div class="absolute left-6 top-4 bottom-4 w-1 bg-red-200 z-0"></div>
+
+                        <!-- Steps -->
+                        <div onclick="setEscalation(1)" class="escalation-step relative z-10 flex items-center bg-white p-3 rounded shadow-sm cursor-pointer border-l-4 border-red-300 hover:border-red-500">
+                            <div class="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center font-bold mr-3">1</div>
+                            <div>
+                                <div class="font-bold text-slate-800">Steuerdruck</div>
+                                <div class="text-xs text-slate-500">Grundsteuer C für baureife Grundstücke</div>
+                            </div>
+                        </div>
+
+                        <div onclick="setEscalation(2)" class="escalation-step relative z-10 flex items-center bg-white p-3 rounded shadow-sm cursor-pointer border-l-4 border-red-400 hover:border-red-600">
+                            <div class="w-8 h-8 rounded-full bg-red-200 text-red-700 flex items-center justify-center font-bold mr-3">2</div>
+                            <div>
+                                <div class="font-bold text-slate-800">Sanktion</div>
+                                <div class="text-xs text-slate-500">Geldbußen und Baugebot</div>
+                            </div>
+                        </div>
+
+                        <div onclick="setEscalation(3)" class="escalation-step relative z-10 flex items-center bg-white p-3 rounded shadow-sm cursor-pointer border-l-4 border-red-500 hover:border-red-700">
+                            <div class="w-8 h-8 rounded-full bg-red-300 text-red-800 flex items-center justify-center font-bold mr-3">3</div>
+                            <div>
+                                <div class="font-bold text-slate-800">Eingriff</div>
+                                <div class="text-xs text-slate-500">Enteignung auf Zeit / Treuhänder</div>
+                            </div>
+                        </div>
+
+                        <div onclick="setEscalation(4)" class="escalation-step relative z-10 flex items-center bg-white p-3 rounded shadow-sm cursor-pointer border-l-4 border-red-600 hover:border-red-900">
+                            <div class="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center font-bold mr-3">4</div>
+                            <div>
+                                <div class="font-bold text-slate-800">Ultima Ratio</div>
+                                <div class="text-xs text-slate-500">Endgültige Enteignung</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="escalation-outcome" class="mt-4 p-3 bg-white rounded border border-red-200 text-center hidden">
+                        <!-- Dynamic text -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-slate-800 text-slate-300 py-6 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="font-semibold">Ziel: Aktivierung der Eigentumspotenziale und Sicherung der Gemeinwohlziele.</p>
+            <p class="text-xs text-slate-500 mt-2">Basierend auf dem Prozessdiagramm: Immobilienaktivierung</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- DATA & STATE ---
+        const models = [
+            {
+                title: "Verkauf / Pachtvertrag",
+                target: "Eigentümer ohne Zeit (z.B. Erbengemeinschaften)",
+                desc: "Vollständige Abgabe der Verantwortung gegen fairen finanziellen Gegenwert.",
+                icon: "💰",
+                stats: [90, 20, 10, 10] // Speed, Risk(Low=HighVal), Control, Cost(Low=HighVal)
+            },
+            {
+                title: "Verrentung (Viager)",
+                target: "Senioren in sanierungsbedürftigen Häusern",
+                desc: "Verkauf an die Stadt gegen eine lebenslange Rente und gesichertes Wohnrecht.",
+                icon: "👵",
+                stats: [60, 80, 50, 40]
+            },
+            {
+                title: "Mitwirkung / Partnerschaft",
+                target: "Gestalter & Kreative",
+                desc: "Verpachtung mit vertraglich gesichertem Mitspracherecht bei der Projektentwicklung.",
+                icon: "🛠️",
+                stats: [40, 40, 80, 60]
+            },
+            {
+                title: "Zwischennutzung",
+                target: "Kurzfristiger Leerstand",
+                desc: "Nutzung durch Start-ups oder Kultur unter städtischer Garantie zur Überbrückung.",
+                icon: "🎭",
+                stats: [100, 70, 60, 90]
+            },
+            {
+                title: "Genossenschaft",
+                target: "Gegen Spekulation",
+                desc: "Verkauf an Bürger-Syndikate zur Sicherung dauerhaft bezahlbarer Mieten.",
+                icon: "🏘️",
+                stats: [30, 50, 90, 50]
+            }
+        ];
+
+        let analysisChartInstance = null;
+        let modelsChartInstance = null;
+
+        // --- NAVIGATION ---
+        function switchTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            
+            // Reset ALL tabs styling
+            document.querySelectorAll('.nav-tab').forEach(el => {
+                // Determine style based on ID (actors tab is styled differently in the original concept, but let's unify for cleaner code or keep distinct)
+                // Unified active state for simplicity:
+                el.classList.remove('bg-white', 'shadow', 'text-blue-600', 'text-indigo-600'); // Removed text colors
+                el.classList.add('text-slate-500', 'border-transparent');
+                el.classList.remove('border-slate-200');
+            });
+
+            // Show selected
+            document.getElementById(tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('tab-' + tabId);
+            
+            // Specific active styling
+            activeBtn.classList.remove('text-slate-500', 'border-transparent');
+            activeBtn.classList.add('bg-white', 'shadow', 'border-slate-200');
+            
+            if(tabId === 'actorsTab') {
+                activeBtn.classList.add('text-indigo-600');
+            } else {
+                activeBtn.classList.add('text-blue-600');
+            }
+
+            // Init charts if needed
+            if (tabId === 'phaseA' && !analysisChartInstance) initAnalysisChart();
+            if (tabId === 'phaseC' && !modelsChartInstance) {
+                setTimeout(() => { // slight delay for layout
+                    initModelsChart();
+                    showModel(0);
+                }, 100);
+            }
+        }
+
+        // --- PHASE A LOGIC ---
+        function initAnalysisChart() {
+            const ctx = document.getElementById('analysisChart').getContext('2d');
+            analysisChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Geringes Potenzial (Aussortiert)', 'Hohes Potenzial (Aktivierung)'],
+                    datasets: [{
+                        data: [65, 35],
+                        backgroundColor: ['#cbd5e1', '#10b981'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        function simulateAnalysis() {
+            const funnel = document.getElementById('final-funnel');
+            const result = document.getElementById('analysis-result');
+            
+            funnel.innerText = "Analysiere...";
+            funnel.classList.add('animate-pulse');
+            
+            setTimeout(() => {
+                funnel.classList.remove('animate-pulse');
+                funnel.classList.add('bg-emerald-500', 'text-white');
+                funnel.innerText = "Objekt Identifiziert!";
+                result.classList.remove('hidden');
+            }, 800);
+        }
+
+        // --- PHASE B LOGIC ---
+        function choosePath(type) {
+            const msg = document.getElementById('path-message');
+            if (type === 'soft') {
+                switchTab('phaseC');
+            } else {
+                switchTab('phaseD');
+            }
+        }
+
+        // --- PHASE C LOGIC ---
+        function initModelsChart() {
+            const ctx = document.getElementById('modelsChart').getContext('2d');
+            modelsChartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Umsetzungs-Speed', 'Sicherheit (geringes Risiko)', 'Eigentümer-Kontrolle', 'Kosteneffizienz'],
+                    datasets: [{
+                        label: 'Modell-Profil',
+                        data: [0,0,0,0],
+                        backgroundColor: 'rgba(14, 165, 233, 0.2)',
+                        borderColor: '#0ea5e9',
+                        pointBackgroundColor: '#0ea5e9'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#e2e8f0' },
+                            grid: { color: '#e2e8f0' },
+                            suggestedMin: 0,
+                            suggestedMax: 100,
+                            ticks: { display: false }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function showModel(index) {
+            const m = models[index];
+            
+            // Update UI Cards
+            document.querySelectorAll('.model-btn').forEach((btn, i) => {
+                if(i === index) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+
+            // Update Content
+            const container = document.getElementById('model-detail-content');
+            container.innerHTML = `
+                <div class="flex items-start gap-4 animate-fade-in">
+                    <div class="text-4xl bg-white p-3 rounded-full shadow-sm">${m.icon}</div>
+                    <div>
+                        <h4 class="text-xl font-bold text-blue-800 mb-1">${m.title}</h4>
+                        <div class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mb-3 font-semibold">Zielgruppe: ${m.target}</div>
+                        <p class="text-slate-700 leading-relaxed">${m.desc}</p>
+                    </div>
+                </div>
+            `;
+
+            // Update Chart
+            if (modelsChartInstance) {
+                modelsChartInstance.data.datasets[0].data = m.stats;
+                modelsChartInstance.update();
+            }
+        }
+
+        // --- PHASE D LOGIC ---
+        function checkProportionality() {
+            const leg = document.getElementById('check-legal').checked;
+            const fin = document.getElementById('check-financial').checked;
+            const res = document.getElementById('prop-result');
+            const ladder = document.getElementById('escalation-container');
+            const backBtn = document.getElementById('back-to-coop');
+
+            if (leg && fin) {
+                res.className = "p-3 rounded font-bold text-center bg-red-100 text-red-700 transition-colors";
+                res.innerHTML = "⚠️ Verhältnismäßigkeit JA: Eskalation zulässig";
+                ladder.classList.remove('opacity-50', 'pointer-events-none');
+                ladder.classList.add('opacity-100');
+                backBtn.classList.add('hidden');
+            } else {
+                res.className = "p-3 rounded font-bold text-center bg-amber-100 text-amber-700 transition-colors";
+                res.innerHTML = "Verhältnismäßigkeit NEIN: Eingriff nicht zulässig";
+                ladder.classList.add('opacity-50', 'pointer-events-none');
+                backBtn.classList.remove('hidden');
+            }
+        }
+
+        function setEscalation(level) {
+            // Visual Update
+            document.querySelectorAll('.escalation-step').forEach((el, idx) => {
+                if (idx + 1 === level) {
+                    el.classList.add('active', 'bg-red-50', 'border-red-600');
+                } else {
+                    el.classList.remove('active', 'bg-red-50', 'border-red-600');
+                }
+            });
+
+            // Outcome Text
+            const outBox = document.getElementById('escalation-outcome');
+            outBox.classList.remove('hidden');
+            let text = "";
+            let outcomeClass = "";
+            
+            if (level < 3) {
+                text = "<strong>Reaktion wahrscheinlich:</strong> Eigentümer gibt nach. <br><span class='text-blue-600 cursor-pointer underline' onclick='switchTab(\"phaseC\")'>Wechsel in den kooperativen Pfad (C)</span>";
+                outcomeClass = "bg-blue-50 border-blue-200 text-blue-800";
+            } else if (level === 4) {
+                text = "<strong>Szenario 2 (Scheitern):</strong> Rechtsstreit, Blockade, dauerhafter Missstand. <br>Enteignung ist langwierig und teuer.";
+                outcomeClass = "bg-slate-800 border-slate-900 text-white";
+            } else {
+                 text = "<strong>Druck erhöht:</strong> Eigentümer unter Zugzwang. Einlenken möglich.";
+                 outcomeClass = "bg-amber-50 border-amber-200 text-amber-800";
+            }
+            outBox.innerHTML = text;
+            outBox.className = `mt-4 p-3 rounded border text-center transition-all ${outcomeClass}`;
+        }
+
+        // Initialize on Load (Set Phase A as Default but handle new tab logic)
+        window.addEventListener('load', () => {
+            initAnalysisChart();
+            // Default active tab styling is manually set in HTML for Phase A
+        });
+
+    </script>
+</body>
+</html>
