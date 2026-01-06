@@ -154,7 +154,7 @@
             font-weight: bold;
         }
 
-        /* --- OFFENLAGE ALARM (Das Benachrichtigungs-Feature) --- */
+        /* --- OFFENLAGE ALARM --- */
         .alert-section {
             background: white;
             padding: 40px;
@@ -165,7 +165,6 @@
             margin: 0 auto 60px;
         }
         
-        /* --- FORMULAR ELEMENTE (HIER IST DER FIX) --- */
         .input-group {
             display: flex;
             gap: 10px;
@@ -173,29 +172,25 @@
             margin: 20px auto;
         }
         
-        /* WICHTIGE ÄNDERUNG: height und box-sizing sorgen für identische Höhe */
         input, select {
-            padding: 0 12px; /* Padding Oben/Unten durch line-height/height geregelt */
+            padding: 0 12px; 
             border: 1px solid #ccc;
             border-radius: 4px;
             width: 100%;
-            height: 48px;        /* Erzwingt exakt gleiche Höhe */
-            line-height: 48px;   /* Zentriert Text vertikal */
-            box-sizing: border-box; /* Rahmen zählt zur Größe dazu */
+            height: 48px;        
+            line-height: 48px;   
+            box-sizing: border-box; 
             vertical-align: middle;
         }
         
-        /* Reset für Button, damit er nicht riesig wird */
-        button {
-            box-sizing: border-box; 
-        }
+        button { box-sizing: border-box; }
 
         .btn-alert {
             background: var(--alert-color);
             color: white;
             border: none;
-            padding: 0 25px; /* Höhe kommt durch parent/flex oder height setzung */
-            height: 48px;    /* Passend zu Input */
+            padding: 0 25px; 
+            height: 48px;    
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
@@ -209,7 +204,7 @@
             color: white;
             width: 100%;
             padding: 12px;
-            height: auto; /* Buttons hier normal lassen */
+            height: auto; 
             border: none;
             border-radius: 4px;
             margin-top: 20px;
@@ -257,16 +252,45 @@
         /* --- MOBILE ANPASSUNGEN (RESPONSIVE) --- */
         @media (max-width: 768px) {
             
-            /* 1. Das Gitter auf 1 Spalte zwingen */
+            /* 1. Navigation kleiner machen */
+            .nav-links a {
+                font-size: 0.7rem !important; /* Deutlich kleiner */
+            }
+            .logo {
+                font-size: 1.2rem; /* Logo auch etwas kleiner */
+            }
+            nav {
+                padding: 15px 20px; /* Weniger Rand in der Leiste */
+            }
+
+            /* 2. Das Gitter auf 1 Spalte zwingen */
             .grid-2 {
-                grid-template-columns: 1fr !important; /* Nimmt die volle Breite, egal was vorher stand */
+                grid-template-columns: 1fr !important;
             }
 
             .legal-grid {
                 grid-template-columns: 1fr !important;
             }
 
-            /* 2. Abstände verringern, damit mehr Platz für Inhalt ist */
+            /* 3. KPI / Amortisation Grid fixen (Untereinander statt nebeneinander) */
+            .kpi-grid {
+                grid-template-columns: 1fr !important; /* Alles in eine Spalte */
+                gap: 15px;
+            }
+            
+            /* Optional: Die Items dann horizontal anordnen, damit es schick aussieht */
+            .kpi-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 1px solid #ddd;
+                padding-bottom: 5px;
+            }
+            .kpi-item:last-child {
+                border-bottom: none;
+            }
+
+            /* 4. Abstände verringern */
             .container {
                 padding: 0 15px;
                 margin-top: 20px;
@@ -275,12 +299,12 @@
                 padding: 20px !important;
             }
 
-            /* 3. Schriftgrößen bei Überschriften etwas kleiner */
+            /* 5. Schriftgrößen bei Überschriften */
             .header-section h1 {
                 font-size: 1.8rem;
             }
 
-            /* 4. Formulare untereinander statt nebeneinander */
+            /* 6. Formulare untereinander */
             .input-group {
                 flex-direction: column;
             }
@@ -290,12 +314,12 @@
                 max-width: none;
             }
 
-            /* 5. Speziell für den Sanierungs-Rechner */
+            /* 7. Sanierungs-Rechner */
             .energy-form > div {
-                grid-template-columns: 1fr !important; /* Baujahr & Typ untereinander */
+                grid-template-columns: 1fr !important;
             }
             
-            /* 6. Better Practice Bilder-Höhe anpassen */
+            /* 8. Bilder-Höhe anpassen */
             .service-card > div[style*="height: 200px"] {
                 height: 150px !important;
             }
@@ -588,7 +612,6 @@
     </section>
 
     <script>
-        // Funktion für die Kommentar-Sektion
         function addComment(id) {
             const input = document.getElementById('input-' + id);
             const list = document.getElementById('comments-' + id);
@@ -596,43 +619,36 @@
 
             if (text.trim() === "") return;
 
-            // Neuen Kommentar erstellen
             const newLi = document.createElement('li');
             newLi.className = 'comment-bubble';
             newLi.innerHTML = '<span class="comment-author">Gast (Gerade eben)</span>' + text;
             
-            // Hinzufügen
             list.appendChild(newLi);
-            
-            // Reset
             input.value = "";
             alert("Danke! Ihr Kommentar wurde veröffentlicht.");
         }
     </script>
         
-        <section class="alert-section">
-            <h3 style="color: var(--alert-color);">🔔 Bau-Alarm: Nichts verpassen!</h3>
-            <p>Werden Sie benachrichtigt, wenn in Ihrem direkten Umfeld (Radius 200m) neue Bauprojekte in die <strong>Offenlage</strong> gehen oder Bebauungspläne geändert werden.</p>
-            
-            <div class="input-group">
-                <input type="text" placeholder="Ihre Adresse (Straße, Nr, PLZ)">
-                <input type="email" placeholder="Ihre E-Mail">
-                <button class="btn-alert" onclick="alert('Adresse gespeichert! Sie erhalten ab sofort Benachrichtigungen für Ihr Quartier.')">Aktivieren</button>
-            </div>
-            <p style="font-size:0.8rem; color:#888;">Kostenlos & jederzeit kündbar.</p>
-        </section>
+    <section class="alert-section">
+        <h3 style="color: var(--alert-color);">🔔 Bau-Alarm: Nichts verpassen!</h3>
+        <p>Werden Sie benachrichtigt, wenn in Ihrem direkten Umfeld (Radius 200m) neue Bauprojekte in die <strong>Offenlage</strong> gehen oder Bebauungspläne geändert werden.</p>
+        
+        <div class="input-group">
+            <input type="text" placeholder="Ihre Adresse (Straße, Nr, PLZ)">
+            <input type="email" placeholder="Ihre E-Mail">
+            <button class="btn-alert" onclick="alert('Adresse gespeichert! Sie erhalten ab sofort Benachrichtigungen für Ihr Quartier.')">Aktivieren</button>
+        </div>
+        <p style="font-size:0.8rem; color:#888;">Kostenlos & jederzeit kündbar.</p>
+    </section>
 
     </div>
 
     <script>
-        // Skript für die intelligente Sanierungs-Simulation
         function calculateRenovation() {
-            // 1. Werte auslesen
             const year = document.getElementById('inp-year').value;
             const type = document.getElementById('inp-type').value;
             const insulation = document.getElementById('inp-insulation').value;
             
-            // UI Elemente
             const resultBox = document.getElementById('simulation-result');
             const bar = document.getElementById('energy-bar');
             const textLabel = document.getElementById('energy-text');
@@ -640,65 +656,55 @@
             const resType = document.getElementById('res-type');
             const resYear = document.getElementById('res-year');
 
-            // Validierung
             if (!year || year < 1000 || year > 2030) {
                 alert("Bitte geben Sie ein gültiges Baujahr ein.");
                 return;
             }
 
-            // Ergebnisbox anzeigen
             resultBox.style.display = 'block';
             resType.innerText = type;
             resYear.innerText = year;
 
-            // "Lade"-Animation simulieren
             textLabel.innerText = "Berechne Potenzial...";
             valueLabel.innerText = "";
             bar.style.width = "10%";
-            bar.style.background = "#e74c3c"; // Rot
+            bar.style.background = "#e74c3c"; 
 
             setTimeout(() => {
-                // 2. Einfache Logik zur Simulation
                 let potential = "";
                 let increase = "";
                 let width = "0%";
                 let color = "";
                 let label = "";
 
-                // Logik: Je älter und schlechter gedämmt, desto höher das Potenzial
                 if (year < 1980 && insulation === 'none') {
-                    // Worst Case -> Höchstes Potenzial
                     width = "95%";
                     color = "linear-gradient(90deg, #e74c3c, #2ecc71)";
                     label = "Sprung von H auf A+ möglich";
                     increase = "+ 35% Wertsteigerung";
                 } else if (year < 2000 && insulation !== 'good') {
-                    // Mittelmaß
                     width = "70%";
                     color = "linear-gradient(90deg, #f1c40f, #2ecc71)";
                     label = "Sprung von D auf B möglich";
                     increase = "+ 18% Wertsteigerung";
                 } else {
-                    // Schon recht gut
                     width = "40%";
                     color = "#2ecc71";
                     label = "Optimierung der Anlagentechnik";
                     increase = "+ 5-8% Wertsteigerung";
                 }
 
-                // 3. Werte setzen
                 bar.style.width = width;
                 bar.style.background = color;
                 textLabel.innerText = label;
                 valueLabel.innerText = "Mögliche " + increase;
                 
-            }, 800); // Kurze Verzögerung für den Effekt
+            }, 800);
         }
     </script>
 
 </body>
 </html>
-
 
 
 
