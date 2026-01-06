@@ -5,19 +5,541 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Für Eigentümer:innen - BAUKOMPASS</title>
     <style>
-        body { font-family: sans-serif; background-color: #f8f1d9; color: #333; margin: 0; }
-        nav { background: white; padding: 20px; text-align: center; }
-        a { text-decoration: none; color: black; font-weight: bold; }
-        .container { max-width: 800px; margin: 50px auto; padding: 20px; background: white; border-radius: 8px; }
+        /* --- DESIGN-SYSTEM (Identisch zu den anderen Seiten) --- */
+        :root {
+            --bg-color: #f8f1d9;
+            --text-color: #222;
+            --accent-color: #2c3e50; /* Dunkelblau */
+            --highlight-color: #27ae60; /* Grün für Förderung/Geld */
+            --alert-color: #e67e22; /* Orange für Alarme */
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .nav-links a { text-decoration: none; color: var(--text-color); font-weight: bold; font-size: 0.9rem; text-transform: uppercase; }
+        .logo { font-weight: 900; font-size: 1.5rem; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; color: black; }
+
+        /* Layout Container */
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .header-section { text-align: center; margin-bottom: 50px; }
+        .header-section h1 { font-size: 2.5rem; color: var(--accent-color); margin-bottom: 10px; }
+        .header-section p { font-size: 1.2rem; color: #555; }
+
+        /* --- GRID SYSTEM --- */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        /* --- KARTEN DESIGN --- */
+        .service-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-top: 5px solid var(--accent-color);
+            transition: transform 0.2s;
+        }
+        .service-card:hover { transform: translateY(-3px); }
+        
+        .service-card h3 { margin-top: 0; color: var(--accent-color); display: flex; align-items: center; gap: 10px; }
+
+        /* --- FÖRDERGELD BOX --- */
+        .funding-item {
+            background: #f4f9f4; /* Ganz helles Grün */
+            border: 1px solid #c8e6c9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .funding-badge {
+            background: var(--highlight-color);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .btn-fund {
+            background: white;
+            border: 1px solid var(--highlight-color);
+            color: var(--highlight-color);
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .btn-fund:hover { background: var(--highlight-color); color: white; }
+
+        /* --- HANDWERKER SUCHE --- */
+        .craftsman-search {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .craftsman-list {
+            list-style: none;
+            padding: 0;
+        }
+        .craftsman-li {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+        .craftsman-tag {
+            background: #eee; color: #555; font-size: 0.75rem; padding: 2px 6px; border-radius: 4px;
+        }
+
+        /* --- SANIERUNG & KLIMA --- */
+        .energy-box {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .energy-box h3 { color: white; justify-content: center; }
+        .energy-meter {
+            height: 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            margin: 20px auto;
+            max-width: 600px;
+            position: relative;
+            overflow: hidden;
+        }
+        .energy-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e74c3c, #f1c40f, #2ecc71);
+            width: 40%; /* Startwert */
+            transition: width 1s ease;
+        }
+        .energy-btn {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* --- OFFENLAGE ALARM (Das Benachrichtigungs-Feature) --- */
+        .alert-section {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px dashed var(--alert-color);
+            max-width: 700px;
+            margin: 0 auto 60px;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            max-width: 500px;
+            margin: 20px auto;
+        }
+        input, select {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+        }
+        .btn-alert {
+            background: var(--alert-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        /* --- LEERSTANDSMELDER --- */
+        .vacancy-form label { display: block; margin-top: 10px; font-weight: bold; font-size: 0.9rem; }
+        .btn-submit {
+            background: var(--accent-color);
+            color: white;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            margin-top: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
     </style>
 </head>
 <body>
+
     <nav>
-        <a href="index.html">← ZURÜCK ZUR ÜBERSICHT</a>
+        <div class="nav-links">
+            <a href="index.html">&larr; ZURÜCK ZUR ÜBERSICHT</a>
+        </div>
+        <a href="index.html" class="logo">BAUKOMPASS</a>
     </nav>
+
+    <header class="header-section">
+        <h1>Werte erhalten, Zukunft sichern</h1>
+        <p>Ihr zentrales Portal für Sanierung, Förderung und Entwicklung Ihrer Immobilie.</p>
+    </header>
+
     <div class="container">
-        <h1>Informationen für Eigentümer:innen</h1>
-        <p>Hier finden Sie in Kürze Informationen darüber, wie Sie Ihre Immobilie entwickeln können.</p>
+
+        <section class="energy-box">
+            <h3>🌱 Wertsteigerung durch Sanierung</h3>
+            <p>Sehen Sie, wie sich Dämmung und moderne Klimatechnik auf den Wert Ihrer Immobilie auswirken.</p>
+            
+            <div class="energy-meter">
+                <div class="energy-fill" id="energy-bar"></div>
+            </div>
+            <p id="energy-text">Aktueller Status: <strong>Unrenoviert (Energieklasse F)</strong></p>
+            
+            <button class="energy-btn" onclick="boostEnergy()">Sanierung simulieren</button>
+        </section>
+
+
+        <div class="grid-2">
+            
+            <div class="service-card" style="border-top-color: var(--highlight-color);">
+                <h3>💰 Verfügbare Fördergelder</h3>
+                <p style="font-size:0.9rem; margin-bottom:20px;">Aktuelle Programme für Ihre Region:</p>
+
+                <div class="funding-item">
+                    <div>
+                        <strong>KfW 261 (Wohngebäude)</strong><br>
+                        <span class="funding-badge">Bis zu 45% Zuschuss</span>
+                    </div>
+                    <button class="btn-fund" onclick="alert('Sie werden zum KfW-Portal weitergeleitet...')">Info</button>
+                </div>
+
+                <div class="funding-item">
+                    <div>
+                        <strong>BAFA Heizungstausch</strong><br>
+                        <span class="funding-badge">Bis zu 70% Förderung</span>
+                    </div>
+                    <button class="btn-fund" onclick="alert('Antragsassistent wird gestartet...')">Hilfe</button>
+                </div>
+
+                <div class="funding-item">
+                    <div>
+                        <strong>Kommunales Fassadenprogramm</strong><br>
+                        <span class="funding-badge">Zuschuss: 5.000€</span>
+                    </div>
+                    <button class="btn-fund" onclick="alert('Formular wird heruntergeladen...')">Antrag</button>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <h3>🛠️ Handwerker in der Nähe</h3>
+                <p style="font-size:0.9rem; margin-bottom:20px;">Finden Sie verfügbare Experten im Umkreis von 10km.</p>
+
+                <div class="craftsman-search">
+                    <input type="text" placeholder="PLZ oder Gewerk (z.B. Dachdecker)">
+                    <button style="background:#ddd; border:none; padding:0 15px; border-radius:4px;">🔍</button>
+                </div>
+
+                <ul class="craftsman-list">
+                    <li class="craftsman-li">
+                        <div>
+                            <strong>Elektro Müller GmbH</strong><br>
+                            <span class="craftsman-tag">Photovoltaik</span> <span class="craftsman-tag">Smart Home</span>
+                        </div>
+                        <a href="#" style="color:var(--accent-color); font-weight:bold;">Anrufen</a>
+                    </li>
+                    <li class="craftsman-li">
+                        <div>
+                            <strong>Dachdeckerei Schmidt</strong><br>
+                            <span class="craftsman-tag">Dämmung</span> <span class="craftsman-tag">Sanierung</span>
+                        </div>
+                        <a href="#" style="color:var(--accent-color); font-weight:bold;">Anrufen</a>
+                    </li>
+                </ul>
+                <p style="text-align:center; font-size:0.8rem; color:#888; margin-top:10px;">Geprüfte Partner der Kommune</p>
+            </div>
+
+            <div class="service-card">
+                <h3>🏚️ Leerstand & Umnutzung</h3>
+                <p style="font-size:0.9rem; margin-bottom:20px;">Haben Sie eine ungenutzte Immobilie? Melden Sie sie freiwillig für Förder-Programme zur Reaktivierung oder Zwischennutzung.</p>
+                
+                <form class="vacancy-form" onsubmit="event.preventDefault(); alert('Vielen Dank! Das Bauamt wird sich vertraulich bei Ihnen melden, um Fördermöglichkeiten zu besprechen.');">
+                    <label>Art der Immobilie</label>
+                    <select>
+                        <option>Wohnhaus (leerstehend)</option>
+                        <option>Gewerbeeinheit / Ladenlokal</option>
+                        <option>Baugrundstück</option>
+                        <option>Scheune / Nebengebäude (Umnutzung)</option>
+                    </select>
+
+                    <label>Adresse des Objekts</label>
+                    <input type="text" placeholder="Straße, Hausnummer">
+
+                    <label>Interesse an:</label>
+                    <select>
+                        <option>Verkauf / Sanierung</option>
+                        <option>Zwischennutzung (Kultur/Startups)</option>
+                        <option>Beratung durch die Gemeinde</option>
+                    </select>
+
+                    <button type="submit" class="btn-submit">Vertraulich absenden</button>
+                </form>
+            </div>
+
+            <div class="service-card" style="background: #fdfdfd;">
+                <h3>🤝 Kooperation mit der Kommune</h3>
+                <p>Wir unterstützen Sie nicht nur finanziell, sondern auch planerisch.</p>
+                <ul style="padding-left:20px; color:#555;">
+                    <li style="margin-bottom:10px;">Kostenlose Erstberatung durch Stadtarchitekten</li>
+                    <li style="margin-bottom:10px;">Hilfe bei Bauanträgen & Genehmigungen</li>
+                    <li style="margin-bottom:10px;">Vermittlung an Investoren oder Baugruppen</li>
+                </ul>
+                <button class="btn-submit" style="background-color: #2c3e50; margin-top:10px;" onclick="alert('Terminbuchungssystem öffnet sich...')">Beratungstermin buchen</button>
+            </div>
+
+        </div>
+<style>
+        /* KPI Grid für Finanzdaten */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            background: #f0f7f4;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #dcdcdc;
+        }
+        .kpi-item { text-align: center; }
+        .kpi-value { display: block; font-weight: 800; font-size: 1.1rem; color: #2c3e50; }
+        .kpi-label { font-size: 0.75rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Kommentarbereich */
+        .comment-section {
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+            padding-top: 15px;
+        }
+        .comment-list { list-style: none; padding: 0; margin-bottom: 15px; }
+        .comment-bubble {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            border-left: 3px solid #ccc;
+        }
+        .comment-author { font-weight: bold; font-size: 0.8rem; color: #555; display: block; margin-bottom: 2px;}
+        
+        .comment-form { display: flex; gap: 10px; }
+        .comment-input { flex-grow: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9rem; }
+        .btn-comment { background: #7f8c8d; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
+        .btn-comment:hover { background: #2c3e50; }
+    </style>
+
+    <h2 style="text-align: center; margin-bottom: 30px;">Rechtssicher Eigentum halten</h2>
+    <section class="service-card" style="border-top-color: #c0392b; margin-bottom: 60px;">
+        <h3>⚖️ Rechte, Pflichten & Fristen</h3>
+        <p style="margin-bottom: 20px;">Vermeiden Sie Bußgelder und Haftungsrisiken. Hier sind die wichtigsten Punkte, die Sie als Eigentümer beachten müssen.</p>
+
+        <div class="legal-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            <details style="background: #fff5f5; padding: 15px; border-radius: 8px; cursor: pointer;">
+                <summary style="font-weight: bold; color: #c0392b;">Verkehrssicherungspflicht</summary>
+                <p style="font-size: 0.9rem; margin-top: 10px;">
+                    Sie haften für Schäden durch Glatteis oder herabfallende Ziegel.
+                    <br><strong>Pflicht:</strong> Räum- und Streupflicht (7-20 Uhr), Baumkontrolle.
+                </p>
+            </details>
+            <details style="background: #fff5f5; padding: 15px; border-radius: 8px; cursor: pointer;">
+                <summary style="font-weight: bold; color: #c0392b;">Energetische Nachrüstpflichten (GEG)</summary>
+                <p style="font-size: 0.9rem; margin-top: 10px;">
+                    Bei Eigentümerwechsel greifen oft Pflichten binnen 2 Jahren.
+                    <br><strong>Pflicht:</strong> Dämmung oberste Geschossdecke, Austausch 30+ Jahre alter Standardkessel.
+                </p>
+            </details>
+            <details style="background: #fff5f5; padding: 15px; border-radius: 8px; cursor: pointer;">
+                <summary style="font-weight: bold; color: #c0392b;">Straßenreinigung & Rückschnitt</summary>
+                <p style="font-size: 0.9rem; margin-top: 10px;">
+                    Pflanzen dürfen nicht in den Gehweg ragen. Gehwege sind oft vom Anlieger zu reinigen.
+                    <br><strong>Pflicht:</strong> Rückschnitt bis Grundstücksgrenze, Kehrpflicht.
+                </p>
+            </details>
+        </div>
+        <p style="font-size: 0.8rem; color: #888; margin-top: 20px; text-align: center;">Keine Rechtsberatung. Bitte prüfen Sie die lokale Ortssatzung.</p>
+    </section>
+
+
+    <h2 style="text-align: center; margin-bottom: 30px;">Better Practice: Von Nachbarn lernen</h2>
+    <section class="grid-2">
+        
+        <div class="service-card" style="padding: 0; overflow: hidden; border: none; display: flex; flex-direction: column;">
+            <div style="height: 200px; background: #2c3e50; display: flex; align-items: center; justify-content: center; color: white; position: relative;">
+                <span style="font-size: 3rem;">🏚️ ➔ 🏡</span>
+                <span style="position: absolute; top: 10px; right: 10px; background: #27ae60; color: white; padding: 4px 8px; font-size: 0.8rem; border-radius: 4px; font-weight: bold;">Abgeschlossen 2024</span>
+            </div>
+            
+            <div style="padding: 25px; display: flex; flex-direction: column; flex-grow: 1;">
+                <h3 style="margin-top: 0;">Scheune zu Loft-Wohnen</h3>
+                <p style="color: #555; font-size: 0.9rem;">"Die alte Scheune stand 10 Jahre leer. Durch die Umnutzung entstanden zwei moderne Mietwohnungen."</p>
+                
+                <div class="kpi-grid">
+                    <div class="kpi-item">
+                        <span class="kpi-value">340 T€</span>
+                        <span class="kpi-label">Gesamtkosten</span>
+                    </div>
+                    <div class="kpi-item">
+                        <span class="kpi-value" style="color: #27ae60;">85 T€</span>
+                        <span class="kpi-label">Förderanteil</span>
+                    </div>
+                    <div class="kpi-item">
+                        <span class="kpi-value">12 J.</span>
+                        <span class="kpi-label">Amortisation</span>
+                    </div>
+                </div>
+
+                <div class="comment-section">
+                    <p style="font-size: 0.85rem; font-weight: bold; margin-bottom: 10px;">Fragen & Kommentare:</p>
+                    <ul class="comment-list" id="comments-1">
+                        <li class="comment-bubble">
+                            <span class="comment-author">Markus B.</span>
+                            Gibt es Probleme mit dem Denkmalschutz bei den großen Fenstern?
+                        </li>
+                    </ul>
+                    <div class="comment-form">
+                        <input type="text" id="input-1" class="comment-input" placeholder="Frage stellen...">
+                        <button class="btn-comment" onclick="addComment('1')">Senden</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="service-card" style="padding: 0; overflow: hidden; border: none; display: flex; flex-direction: column;">
+            <div style="height: 200px; background: #34495e; display: flex; align-items: center; justify-content: center; color: white; position: relative;">
+                <span style="font-size: 3rem;">📉 ⚡</span>
+                <span style="position: absolute; top: 10px; right: 10px; background: #27ae60; color: white; padding: 4px 8px; font-size: 0.8rem; border-radius: 4px; font-weight: bold;">Laufend</span>
+            </div>
+            
+            <div style="padding: 25px; display: flex; flex-direction: column; flex-grow: 1;">
+                <h3 style="margin-top: 0;">Energetische Kernsanierung</h3>
+                <p style="color: #555; font-size: 0.9rem;">"Baujahr 1970. Durch Wärmepumpe und Dämmung haben wir die Nebenkosten um 70% gesenkt."</p>
+                
+                <div class="kpi-grid">
+                    <div class="kpi-item">
+                        <span class="kpi-value">120 T€</span>
+                        <span class="kpi-label">Investition</span>
+                    </div>
+                    <div class="kpi-item">
+                        <span class="kpi-value" style="color: #27ae60;">45 %</span>
+                        <span class="kpi-label">Förderquote</span>
+                    </div>
+                    <div class="kpi-item">
+                        <span class="kpi-value">9 J.</span>
+                        <span class="kpi-label">Rentabilität</span>
+                    </div>
+                </div>
+
+                <div class="comment-section">
+                    <p style="font-size: 0.85rem; font-weight: bold; margin-bottom: 10px;">Fragen & Kommentare:</p>
+                    <ul class="comment-list" id="comments-2">
+                        <li class="comment-bubble">
+                            <span class="comment-author">Familie K.</span>
+                            Welchen Energieberater hatten Sie? Wir suchen auch noch.
+                        </li>
+                    </ul>
+                    <div class="comment-form">
+                        <input type="text" id="input-2" class="comment-input" placeholder="Frage stellen...">
+                        <button class="btn-comment" onclick="addComment('2')">Senden</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <script>
+        function addComment(id) {
+            const input = document.getElementById('input-' + id);
+            const list = document.getElementById('comments-' + id);
+            const text = input.value;
+
+            if (text.trim() === "") return;
+
+            // Neuen Kommentar erstellen
+            const newLi = document.createElement('li');
+            newLi.className = 'comment-bubble';
+            newLi.innerHTML = '<span class="comment-author">Gast (Gerade eben)</span>' + text;
+            
+            // Hinzufügen
+            list.appendChild(newLi);
+            
+            // Reset
+            input.value = "";
+            alert("Danke! Ihr Kommentar wurde veröffentlicht.");
+        }
+    </script>
+        
+        <section class="alert-section">
+            <h3 style="color: var(--alert-color);">🔔 Bau-Alarm: Nichts verpassen!</h3>
+            <p>Werden Sie benachrichtigt, wenn in Ihrem direkten Umfeld (Radius 200m) neue Bauprojekte in die <strong>Offenlage</strong> gehen oder Bebauungspläne geändert werden.</p>
+            
+            <div class="input-group">
+                <input type="text" placeholder="Ihre Adresse (Straße, Nr, PLZ)">
+                <input type="email" placeholder="Ihre E-Mail">
+                <button class="btn-alert" onclick="alert('Adresse gespeichert! Sie erhalten ab sofort Benachrichtigungen für Ihr Quartier.')">Aktivieren</button>
+            </div>
+            <p style="font-size:0.8rem; color:#888;">Kostenlos & jederzeit kündbar.</p>
+        </section>
+
     </div>
+
+    <script>
+        // Skript für die Sanierungs-Simulation
+        function boostEnergy() {
+            const bar = document.getElementById('energy-bar');
+            const text = document.getElementById('energy-text');
+            
+            // Animation starten
+            bar.style.width = "95%";
+            bar.style.background = "linear-gradient(90deg, #2ecc71, #27ae60)";
+            
+            setTimeout(() => {
+                text.innerHTML = "Prognose nach Sanierung: <strong>Energieklasse A+ (Wertsteigerung ca. +25%)</strong>";
+                text.style.color = "#27ae60";
+            }, 1000);
+        }
+    </script>
+
 </body>
 </html>
