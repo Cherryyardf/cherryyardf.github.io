@@ -200,7 +200,41 @@
             cursor: pointer;
             width: 100%;
         }
-
+/* --- BAU-ALARM STYLES --- */
+        .alert-section {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px dashed #e67e22; /* Warn-Orange */
+            max-width: 700px;
+            margin: 0 auto 60px;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            max-width: 500px;
+            margin: 20px auto;
+            align-items: center;
+        }
+        /* Mobile Optimierung für kleine Bildschirme */
+        @media (max-width: 600px) {
+            .input-group { flex-direction: column; }
+            .input-group input, .input-group button { width: 100%; }
+        }
+        .btn-alert {
+            background: #e67e22;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+        .btn-alert:hover { background: #d35400; }
+        
     </style>
 </head>
 <body>
@@ -331,7 +365,18 @@
                 <button type="submit" class="btn-submit">Absenden</button>
             </form>
         </section>
-
+        <section class="alert-section">
+            <h3 style="color: #e67e22; margin-top: 0;">🔔 Bau-Alarm & Nachbarschafts-Radar</h3>
+            <p>Wissen, was vor der Haustür passiert: Erhalten Sie automatische Infos zu <strong>neuen Bauprojekten, Straßensperrungen oder Lärmbelästigung</strong> in Ihrem direkten Umfeld (200m Radius).</p>
+            
+            <div class="input-group">
+                <input type="text" placeholder="Ihre Straße & Hausnummer" style="margin: 0;">
+                <input type="email" placeholder="Ihre E-Mail" style="margin: 0;">
+                <button class="btn-alert" onclick="alert('Bau-Alarm aktiviert! Wir informieren Sie bei Änderungen in Ihrer Straße.')">Aktivieren</button>
+            </div>
+            <p style="font-size:0.8rem; color:#888;">Ein kostenloser Info-Service Ihrer Gemeinde.</p>
+        </section>
+        
     </div>
 
     <script>
@@ -362,3 +407,4 @@
 
 </body>
 </html>
+
