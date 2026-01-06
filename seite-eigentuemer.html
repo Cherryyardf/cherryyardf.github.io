@@ -164,23 +164,38 @@
             max-width: 700px;
             margin: 0 auto 60px;
         }
+        
+        /* --- FORMULAR ELEMENTE (HIER IST DER FIX) --- */
         .input-group {
             display: flex;
             gap: 10px;
             max-width: 500px;
             margin: 20px auto;
         }
+        
+        /* WICHTIGE ÄNDERUNG: height und box-sizing sorgen für identische Höhe */
         input, select {
-            padding: 12px;
+            padding: 0 12px; /* Padding Oben/Unten durch line-height/height geregelt */
             border: 1px solid #ccc;
             border-radius: 4px;
             width: 100%;
+            height: 48px;        /* Erzwingt exakt gleiche Höhe */
+            line-height: 48px;   /* Zentriert Text vertikal */
+            box-sizing: border-box; /* Rahmen zählt zur Größe dazu */
+            vertical-align: middle;
         }
+        
+        /* Reset für Button, damit er nicht riesig wird */
+        button {
+            box-sizing: border-box; 
+        }
+
         .btn-alert {
             background: var(--alert-color);
             color: white;
             border: none;
-            padding: 12px 25px;
+            padding: 0 25px; /* Höhe kommt durch parent/flex oder height setzung */
+            height: 48px;    /* Passend zu Input */
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
@@ -194,13 +209,52 @@
             color: white;
             width: 100%;
             padding: 12px;
+            height: auto; /* Buttons hier normal lassen */
             border: none;
             border-radius: 4px;
             margin-top: 20px;
             cursor: pointer;
             font-weight: bold;
         }
-/* --- MOBILE ANPASSUNGEN (RESPONSIVE) --- */
+        
+        /* --- KPI Grid & Comments --- */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            background: #f0f7f4;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #dcdcdc;
+        }
+        .kpi-item { text-align: center; }
+        .kpi-value { display: block; font-weight: 800; font-size: 1.1rem; color: #2c3e50; }
+        .kpi-label { font-size: 0.75rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .comment-section {
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+            padding-top: 15px;
+        }
+        .comment-list { list-style: none; padding: 0; margin-bottom: 15px; }
+        .comment-bubble {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            border-left: 3px solid #ccc;
+        }
+        .comment-author { font-weight: bold; font-size: 0.8rem; color: #555; display: block; margin-bottom: 2px;}
+        
+        .comment-form { display: flex; gap: 10px; }
+        .comment-input { flex-grow: 1; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9rem; }
+        .btn-comment { background: #7f8c8d; color: white; border: none; padding: 0 15px; height: 48px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
+        .btn-comment:hover { background: #2c3e50; }
+
+
+        /* --- MOBILE ANPASSUNGEN (RESPONSIVE) --- */
         @media (max-width: 768px) {
             
             /* 1. Das Gitter auf 1 Spalte zwingen */
@@ -271,7 +325,7 @@
             
             <div class="energy-form" style="text-align: left; max-width: 600px; margin: 25px auto; background: rgba(255,255,255,0.1); padding: 25px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);">
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; align-items: end;">
                     <div>
                         <label style="display:block; margin-bottom:5px; font-size:0.85rem; color:#ddd;">Baujahr</label>
                         <input type="number" id="inp-year" placeholder="z.B. 1975" style="background:white; color:#333; margin-bottom:0;">
@@ -412,44 +466,7 @@
             </div>
 
         </div>
-<style>
-        /* KPI Grid für Finanzdaten */
-        .kpi-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            background: #f0f7f4;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            border: 1px solid #dcdcdc;
-        }
-        .kpi-item { text-align: center; }
-        .kpi-value { display: block; font-weight: 800; font-size: 1.1rem; color: #2c3e50; }
-        .kpi-label { font-size: 0.75rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* Kommentarbereich */
-        .comment-section {
-            border-top: 1px solid #eee;
-            margin-top: 20px;
-            padding-top: 15px;
-        }
-        .comment-list { list-style: none; padding: 0; margin-bottom: 15px; }
-        .comment-bubble {
-            background: #f9f9f9;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-            border-left: 3px solid #ccc;
-        }
-        .comment-author { font-weight: bold; font-size: 0.8rem; color: #555; display: block; margin-bottom: 2px;}
-        
-        .comment-form { display: flex; gap: 10px; }
-        .comment-input { flex-grow: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9rem; }
-        .btn-comment { background: #7f8c8d; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
-        .btn-comment:hover { background: #2c3e50; }
-    </style>
 
     <h2 style="text-align: center; margin-bottom: 30px;">Rechtssicher Eigentum halten</h2>
     <section class="service-card" style="border-top-color: #c0392b; margin-bottom: 60px;">
@@ -571,6 +588,7 @@
     </section>
 
     <script>
+        // Funktion für die Kommentar-Sektion
         function addComment(id) {
             const input = document.getElementById('input-' + id);
             const list = document.getElementById('comments-' + id);
@@ -676,12 +694,11 @@
                 
             }, 800); // Kurze Verzögerung für den Effekt
         }
-        
-        // (Hier drunter kommt dann die addComment Funktion für die andere Sektion...)
     </script>
 
 </body>
 </html>
+
 
 
 
