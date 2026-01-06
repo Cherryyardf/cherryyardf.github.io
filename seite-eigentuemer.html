@@ -200,7 +200,53 @@
             cursor: pointer;
             font-weight: bold;
         }
+/* --- MOBILE ANPASSUNGEN (RESPONSIVE) --- */
+        @media (max-width: 768px) {
+            
+            /* 1. Das Gitter auf 1 Spalte zwingen */
+            .grid-2 {
+                grid-template-columns: 1fr !important; /* Nimmt die volle Breite, egal was vorher stand */
+            }
 
+            .legal-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            /* 2. Abstände verringern, damit mehr Platz für Inhalt ist */
+            .container {
+                padding: 0 15px;
+                margin-top: 20px;
+            }
+            .service-card, .energy-box, .alert-section, .vacancy-form {
+                padding: 20px !important;
+            }
+
+            /* 3. Schriftgrößen bei Überschriften etwas kleiner */
+            .header-section h1 {
+                font-size: 1.8rem;
+            }
+
+            /* 4. Formulare untereinander statt nebeneinander */
+            .input-group {
+                flex-direction: column;
+            }
+            .input-group input, .input-group button, .input-group select {
+                width: 100% !important;
+                margin-bottom: 10px;
+                max-width: none;
+            }
+
+            /* 5. Speziell für den Sanierungs-Rechner */
+            .energy-form > div {
+                grid-template-columns: 1fr !important; /* Baujahr & Typ untereinander */
+            }
+            
+            /* 6. Better Practice Bilder-Höhe anpassen */
+            .service-card > div[style*="height: 200px"] {
+                height: 150px !important;
+            }
+        }
+        
     </style>
 </head>
 <body>
@@ -636,5 +682,6 @@
 
 </body>
 </html>
+
 
 
