@@ -894,5 +894,29 @@
         });
 
     </script>
+    <script>
+        function sendHeight() {
+            // Wir messen die Höhe des Inhalts
+            const height = document.body.scrollHeight + 50; 
+            // Und senden sie an die Hauptseite
+            window.parent.postMessage({ type: 'resize-iframe', height: height }, '*');
+        }
+
+        // 1. Beim Laden senden
+        window.addEventListener('load', sendHeight);
+
+        // 2. Bei Größenänderungen (z.B. Tab-Wechsel) senden
+        const observer = new ResizeObserver(sendHeight);
+        observer.observe(document.body);
+        
+        // 3. Sicherheitshalber alle 0.5 Sekunden prüfen (für Animationen)
+        setInterval(sendHeight, 500);
+        
+        // 4. Auch beim Klicken explizit senden (hilft oft bei Tabs)
+        window.addEventListener('click', function() {
+            setTimeout(sendHeight, 100);
+            setTimeout(sendHeight, 500);
+        });
+    </script>
 </body>
 </html>
