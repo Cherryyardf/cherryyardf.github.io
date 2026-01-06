@@ -253,15 +253,74 @@
 
     <div class="container">
 
-        <section class="mood-box">
-            <h2>Wie zufrieden sind Sie aktuell mit der Wohnsituation?</h2>
-            <p>Ihr Feedback hilft uns, den Handlungsbedarf zu erkennen.</p>
+        <section class="mood-box" id="mood-section">
             
-            <div class="mood-slider-container">
-                <span id="mood-icon">😐</span>
-                <input type="range" min="1" max="5" value="3" id="mood-range" oninput="updateMood(this.value)">
+            <div id="mood-step-1">
+                <h2>Wie zufrieden sind Sie aktuell mit der Wohnsituation?</h2>
+                <p>Bewegen Sie den Regler und bestätigen Sie Ihre Auswahl.</p>
+                
+                <div class="mood-slider-container">
+                    <span id="mood-icon">😐</span>
+                    <input type="range" min="1" max="5" value="3" id="mood-range" oninput="updateMood(this.value)">
+                </div>
+                
+                <p id="mood-text" style="font-weight: bold; color: #666; margin-bottom: 20px;">Geht so</p>
+                
+                <button class="btn-register" style="background: var(--accent-color); color: white; border: none; cursor: pointer;" onclick="goToDemographics()">
+                    Auswahl bestätigen
+                </button>
             </div>
-            <p id="mood-text" style="font-weight: bold; color: #666;">Geht so</p>
+
+            <div id="mood-step-2" style="display: none; text-align: left; max-width: 500px; margin: 0 auto; animation: fadeEffect 0.5s;">
+                <h3 style="text-align: center; color: var(--accent-color);">Vielen Dank!</h3>
+                <p style="text-align: center; font-size: 0.9rem; margin-bottom: 20px;">Damit wir Ihre Stimmung besser einordnen können, helfen uns ein paar freiwillige Angaben zu Ihrer Situation.</p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div>
+                        <label style="font-size: 0.8rem; font-weight: bold;">Alter</label>
+                        <select id="demo-age" style="margin-top: 5px;">
+                            <option value="">Bitte wählen...</option>
+                            <option>unter 18</option>
+                            <option>18 - 30</option>
+                            <option>31 - 50</option>
+                            <option>51 - 65</option>
+                            <option>über 65</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.8rem; font-weight: bold;">Geschlecht</label>
+                        <select id="demo-gender" style="margin-top: 5px;">
+                            <option value="">Bitte wählen...</option>
+                            <option>Weiblich</option>
+                            <option>Männlich</option>
+                            <option>Divers</option>
+                            <option>Keine Angabe</option>
+                        </select>
+                    </div>
+                </div>
+
+                <label style="font-size: 0.8rem; font-weight: bold;">Aktuelle Wohnsituation</label>
+                <select id="demo-situation" style="margin-top: 5px; margin-bottom: 15px;">
+                    <option value="">Bitte wählen...</option>
+                    <option>Mieter (Wohnung)</option>
+                    <option>Eigentümer (Haus/Wohnung)</option>
+                    <option>Suche aktuell Wohnung</option>
+                    <option>Wohne bei Eltern/WG</option>
+                </select>
+
+                <label style="font-size: 0.8rem; font-weight: bold;">Was fehlt Ihnen am meisten? (Optional)</label>
+                <textarea rows="2" placeholder="z.B. Parkplätze, Spielplatz, Ruhe..." style="margin-top: 5px;"></textarea>
+
+                <button class="btn-submit" onclick="finishMood()">Daten anonym absenden</button>
+                <p style="text-align: center; font-size: 0.75rem; color: #999; margin-top: 10px; cursor: pointer; text-decoration: underline;" onclick="finishMood()">Überspringen</p>
+            </div>
+
+            <div id="mood-step-3" style="display: none; text-align: center; animation: fadeEffect 0.5s;">
+                <span style="font-size: 4rem;">✅</span>
+                <h3>Ihre Meinung wurde gezählt.</h3>
+                <p>Danke für Ihre Teilnahme am Stimmungsbarometer.</p>
+            </div>
+
         </section>
 
         <h2 style="text-align: center; margin-bottom: 30px;">Aktuelle Bauprojekte & Entscheidungen</h2>
@@ -380,31 +439,39 @@
     </div>
 
     <script>
-        // Funktion für das Stimmungsbarometer
+        // Bestehende Funktion für den Slider
         function updateMood(val) {
             const icon = document.getElementById('mood-icon');
             const text = document.getElementById('mood-text');
             const emojis = ['😡', '☹️', '😐', '🙂', '🤩'];
             const texts = ['Sehr unzufrieden', 'Unzufrieden', 'Geht so', 'Zufrieden', 'Begeistert'];
             
-            // Slider Werte sind 1-5, Array Index ist 0-4
             icon.innerText = emojis[val - 1];
             text.innerText = texts[val - 1];
             
-            // Kleine Animation
             icon.style.transform = 'scale(1.2)';
             setTimeout(() => icon.style.transform = 'scale(1)', 200);
         }
 
-        // Funktion für das Voting
+        // NEU: Von Stimmung zu Daten wechseln
+        function goToDemographics() {
+            document.getElementById('mood-step-1').style.display = 'none';
+            document.getElementById('mood-step-2').style.display = 'block';
+        }
+
+        // NEU: Abschließen
+        function finishMood() {
+            document.getElementById('mood-step-2').style.display = 'none';
+            document.getElementById('mood-step-3').style.display = 'block';
+        }
+
+        // ... Ihre Vote-Funktion bleibt hier unverändert ...
         function vote(pollId, percent) {
-            // Buttons ausblenden
-            document.getElementById(pollId + '-options').style.display = 'none';
-            // Ergebnis einblenden
-            document.getElementById(pollId + '-result').style.display = 'block';
+           // ...
         }
     </script>
 
 </body>
 </html>
+
 
