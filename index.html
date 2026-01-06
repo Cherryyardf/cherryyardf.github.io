@@ -85,26 +85,34 @@
         .card-3 { background-image: url('bild-3.jpg'); }
 
 
-        /* --- HOVER-EFFEKT --- */
+       /* --- DER OVERLAY (Text immer sichtbar) --- */
         .card-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: var(--overlay-color);
+            
+            /* NEU: Hintergrund ist standardmäßig da, aber transparenter (0.75), 
+               damit man das Bild noch gut durchsieht */
+            background-color: rgba(255, 255, 255, 0.75);
+            
+            /* Text zentrieren */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
             color: black;
-            opacity: 0;
-            transition: opacity 0.4s ease-in-out;
+
+            /* NEU: Opacity ist 1 (sichtbar), nicht mehr 0 */
+            opacity: 1;
+            transition: background-color 0.3s ease-in-out;
         }
 
+        /* WENN man über die Karte hovert, wird der Hintergrund heller/weißer */
         .card:hover .card-overlay {
-            opacity: 1;
+            background-color: rgba(255, 255, 255, 0.95);
         }
 
         .card-overlay h2 {
@@ -112,10 +120,8 @@
             text-transform: uppercase;
             margin-bottom: 10px;
             letter-spacing: 1px;
-        }
-        .card-overlay span {
-            font-size: 1rem;
-            color: #555;
+            /* NEU: Leichter Schatten für bessere Lesbarkeit auf hellen Bildern */
+            text-shadow: 0 1px 0 rgba(255,255,255,0.5);
         }
 
         /* --- RESPONSIVE --- */
@@ -170,3 +176,4 @@
 
 </body>
 </html>
+
