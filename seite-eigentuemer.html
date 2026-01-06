@@ -561,22 +561,80 @@
     </div>
 
     <script>
-        // Skript für die Sanierungs-Simulation
-        function boostEnergy() {
+        // Skript für die intelligente Sanierungs-Simulation
+        function calculateRenovation() {
+            // 1. Werte auslesen
+            const year = document.getElementById('inp-year').value;
+            const type = document.getElementById('inp-type').value;
+            const insulation = document.getElementById('inp-insulation').value;
+            
+            // UI Elemente
+            const resultBox = document.getElementById('simulation-result');
             const bar = document.getElementById('energy-bar');
-            const text = document.getElementById('energy-text');
-            
-            // Animation starten
-            bar.style.width = "95%";
-            bar.style.background = "linear-gradient(90deg, #2ecc71, #27ae60)";
-            
+            const textLabel = document.getElementById('energy-text');
+            const valueLabel = document.getElementById('value-text');
+            const resType = document.getElementById('res-type');
+            const resYear = document.getElementById('res-year');
+
+            // Validierung
+            if (!year || year < 1000 || year > 2030) {
+                alert("Bitte geben Sie ein gültiges Baujahr ein.");
+                return;
+            }
+
+            // Ergebnisbox anzeigen
+            resultBox.style.display = 'block';
+            resType.innerText = type;
+            resYear.innerText = year;
+
+            // "Lade"-Animation simulieren
+            textLabel.innerText = "Berechne Potenzial...";
+            valueLabel.innerText = "";
+            bar.style.width = "10%";
+            bar.style.background = "#e74c3c"; // Rot
+
             setTimeout(() => {
-                text.innerHTML = "Prognose nach Sanierung: <strong>Energieklasse A+ (Wertsteigerung ca. +25%)</strong>";
-                text.style.color = "#27ae60";
-            }, 1000);
+                // 2. Einfache Logik zur Simulation
+                let potential = "";
+                let increase = "";
+                let width = "0%";
+                let color = "";
+                let label = "";
+
+                // Logik: Je älter und schlechter gedämmt, desto höher das Potenzial
+                if (year < 1980 && insulation === 'none') {
+                    // Worst Case -> Höchstes Potenzial
+                    width = "95%";
+                    color = "linear-gradient(90deg, #e74c3c, #2ecc71)";
+                    label = "Sprung von H auf A+ möglich";
+                    increase = "+ 35% Wertsteigerung";
+                } else if (year < 2000 && insulation !== 'good') {
+                    // Mittelmaß
+                    width = "70%";
+                    color = "linear-gradient(90deg, #f1c40f, #2ecc71)";
+                    label = "Sprung von D auf B möglich";
+                    increase = "+ 18% Wertsteigerung";
+                } else {
+                    // Schon recht gut
+                    width = "40%";
+                    color = "#2ecc71";
+                    label = "Optimierung der Anlagentechnik";
+                    increase = "+ 5-8% Wertsteigerung";
+                }
+
+                // 3. Werte setzen
+                bar.style.width = width;
+                bar.style.background = color;
+                textLabel.innerText = label;
+                valueLabel.innerText = "Mögliche " + increase;
+                
+            }, 800); // Kurze Verzögerung für den Effekt
         }
+        
+        // (Hier drunter kommt dann die addComment Funktion für die andere Sektion...)
     </script>
 
 </body>
 </html>
+
 
