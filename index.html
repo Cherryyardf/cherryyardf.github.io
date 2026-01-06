@@ -23,12 +23,12 @@
         /* --- HEADER & NAVIGATION --- */
         nav {
             display: flex;
-            justify-content: center; /* Logo zentriert, da links jetzt leer ist */
+            justify-content: center;
             align-items: center;
             padding: 20px 40px;
             background: white;
             position: relative;
-            height: 40px; /* Feste Höhe, damit es nicht kollabiert */
+            height: 40px;
         }
 
         .logo {
@@ -38,13 +38,12 @@
             text-transform: uppercase;
             text-decoration: none;
             color: black;
-            /* Zentriert das Logo absolut */
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
         }
 
-        /* --- HERO SEKTION (Titelbereich) --- */
+        /* --- HERO SEKTION --- */
         .hero {
             text-align: center;
             padding: 80px 20px 60px;
@@ -71,7 +70,7 @@
             width: 100%;
         }
 
-        /* --- DIE KARTEN (TABS) --- */
+        /* --- DIE KARTEN --- */
         .card {
             position: relative;
             text-decoration: none; 
@@ -81,13 +80,12 @@
             cursor: pointer;
         }
 
-        /* BILDER */
         .card-1 { background-image: url('bild-1.jpg'); }
         .card-2 { background-image: url('bild-2.jpg'); }
         .card-3 { background-image: url('bild-3.jpg'); }
 
 
-        /* --- DER HOVER-EFFEKT --- */
+        /* --- HOVER-EFFEKT --- */
         .card-overlay {
             position: absolute;
             top: 0;
@@ -120,7 +118,7 @@
             color: #555;
         }
 
-        /* --- RESPONSIVE DESIGN --- */
+        /* --- RESPONSIVE --- */
         @media (max-width: 900px) {
             .logo { position: static; transform: none; }
             nav { justify-content: center; }
@@ -169,43 +167,6 @@
         </a>
 
     </main>
-<script>
-    // Funktion: Höhe an die Eltern-Seite senden
-    function sendHeight() {
-        // Wir nehmen die volle Scroll-Höhe des Inhalts + 60px Puffer
-        const height = document.body.scrollHeight + 60;
-        window.parent.postMessage({ type: 'resize-iframe', height: height }, '*');
-    }
 
-    // 1. Beim Laden senden
-    window.addEventListener('load', sendHeight);
-
-    // 2. Bei Größenänderungen (z.B. Tab-Wechsel) senden
-    const observer = new ResizeObserver(sendHeight);
-    observer.observe(document.body);
-    
-    // 3. Sicherheitshalber alle 1 Sekunde prüfen (falls Animationen laufen)
-    setInterval(sendHeight, 1000);
-</script>
-<script>
-    // Funktion: Höhe an die Eltern-Seite senden
-    function sendHeight() {
-        // Wir nehmen die volle Scroll-Höhe des Inhalts + 60px Puffer
-        const height = document.body.scrollHeight + 60;
-        window.parent.postMessage({ type: 'resize-iframe', height: height }, '*');
-    }
-
-    // 1. Beim Laden senden
-    window.addEventListener('load', sendHeight);
-
-    // 2. Bei Größenänderungen (z.B. Tab-Wechsel) senden
-    const observer = new ResizeObserver(sendHeight);
-    observer.observe(document.body);
-    
-    // 3. Sicherheitshalber alle 1 Sekunde prüfen (falls Animationen laufen)
-    setInterval(sendHeight, 1000);
-</script>
 </body>
-</body>
-
 </html>
