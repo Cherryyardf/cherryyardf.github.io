@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Für Gemeinden - BAUKOMPASS</title>
+    <style>
+        /* --- GRUNDEINSTELLUNGEN --- */
+        :root {
+            --bg-color: #f8f1d9;
+            --text-color: #222;
+            --accent-color: #2c3e50;
+            --active-tab: #e67e22;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .nav-links a { text-decoration: none; color: var(--text-color); font-weight: bold; font-size: 0.9rem; text-transform: uppercase; }
+        .logo { font-weight: 900; font-size: 1.5rem; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; color: black; }
+
+        /* --- HAUPT CONTAINER --- */
+        .content-wrapper {
+            width: 100%;          
+            max-width: 1920px;    
+            margin: 0 auto;       
+            padding: 20px 0;      
+        }
+
+        .header-section { 
+            text-align: center; 
+            margin: 40px 0; 
+            padding: 0 20px;
+        }
+        .header-section h1 { font-size: 2.5rem; color: var(--accent-color); margin-bottom: 10px; }
+
+        /* --- TABS --- */
+        .tab-container {
+            display: flex;
+            justify-content: center;
+            border-bottom: 2px solid #ccc;
+            margin-bottom: 40px;
+            background: white;
+            padding-top: 20px;
+        }
+
+        .tab-button {
+            background-color: transparent;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 40px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #666;
+            border-bottom: 4px solid transparent;
+            transition: 0.3s;
+        }
+
+        .tab-button:hover { color: var(--accent-color); background: #f9f9f9; }
+
+        .tab-button.active {
+            color: var(--accent-color);
+            border-bottom: 4px solid var(--active-tab);
+        }
+
+        /* --- INHALTE --- */
+        .tab-content {
+            display: none;
+            animation: fadeEffect 0.5s;
+        }
+
+        /* Textbereich zentriert und lesbar */
+        .text-content-limit {
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 0 20px;
+        }
+
+        .info-block {
+            background: white;
+            padding: 40px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .info-block h2 { color: var(--accent-color); border-bottom: 2px solid var(--bg-color); padding-bottom: 10px; }
+
+        /* --- DAS NAHTLOSE TOOL (SEAMLESS) --- */
+        .tool-wrapper {
+            width: 96%;           
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden; 
+            min-height: 800px; /* Start-Höhe */
+        }
+
+        /* Das Iframe selbst */
+        iframe#seamless-tool {
+            width: 100%;
+            border: none;
+            overflow: hidden; 
+            display: block;
+        }
+
+        @keyframes fadeEffect { from {opacity: 0;} to {opacity: 1;} }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-links">
+            <a href="index.html">&larr; Zurück zur Übersicht</a>
+        </div>
+        <a href="index.html" class="logo">BAUKOMPASS</a>
+    </nav>
+
+    <div class="header-section">
+        <h1>Von Gemeinden für Gemeinden</h1>
+        <p>Wählen Sie einen Bereich:</p>
+    </div>
+
+    <div class="tab-container">
+        <button class="tab-button active" onclick="openTab(event, 'Info')">Informationen</button>
+        <button class="tab-button" onclick="openTab(event, 'Tool')">Immobilien-Tool</button>
+    </div>
+
+    <main class="content-wrapper">
+        
+        <div id="Info" class="tab-content" style="display: block;">
+            <div class="text-content-limit">
+                <div class="info-block">
+                    <h2>Gemeinsame Ziele erreichen</h2>
+                    <p>Der Baukompass dient als Schnittstelle für interkommunale Zusammenarbeit. Hier teilen Gemeinden Best-Practice-Beispiele, um Wohnraumentwicklung effizienter und bürgernäher zu gestalten.</p>
+                </div>
+                <div class="info-block">
+                    <h2>Transparenz & Daten</h2>
+                    <p>Nutzen Sie unsere offene Datenbank für Bebauungspläne. Wir stellen Werkzeuge zur Verfügung, mit denen Sie Leerstände visualisieren können.</p>
+                </div>
+                <div class="info-block">
+                    <h2>Kontakt</h2>
+                    <p>Möchten Sie als Gemeinde teilnehmen? Schreiben Sie uns an kontakt@baukompass-beispiel.de</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="Tool" class="tab-content">
+            <div class="tool-wrapper">
+                <iframe 
+                    id="seamless-tool"
+                    src="https://cherryyardf.github.io/Website-Immobilien-Aktivierungs-Tool/" 
+                    scrolling="no">
+                </iframe>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // Tab Umschalter
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        // --- KOMMUNIKATION MIT DEM TOOL ---
+        // Hört auf Nachrichten vom Iframe ("Ich bin jetzt XY Pixel hoch")
+        window.addEventListener('message', function(e) {
+            // Wir prüfen, ob die Nachricht vom richtigen Typ ist
+            if (e.data && e.data.type === 'resize-iframe') {
+                const iframe = document.getElementById('seamless-tool');
+                if (iframe) {
+                    // Setzt die neue Höhe exakt so, wie das Tool es wünscht
+                    iframe.style.height = e.data.height + 'px';
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

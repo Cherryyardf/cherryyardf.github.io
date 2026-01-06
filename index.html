@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BAUKOMPASS - Gemeinsam Wohnraum schaffen</title>
+    <style>
+        /* --- GRUNDEINSTELLUNGEN & SCHRIFTEN --- */
+        :root {
+            --bg-color: #f8f1d9; /* Das Beige aus dem Design */
+            --text-color: #222;
+            --overlay-color: rgba(255, 255, 255, 0.9); /* Fast weißer Schleier beim Hover */
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        /* --- HEADER & NAVIGATION --- */
+        nav {
+            display: flex;
+            justify-content: center; /* Logo zentriert, da links jetzt leer ist */
+            align-items: center;
+            padding: 20px 40px;
+            background: white;
+            position: relative;
+            height: 40px; /* Feste Höhe, damit es nicht kollabiert */
+        }
+
+        .logo {
+            font-weight: 900;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: black;
+            /* Zentriert das Logo absolut */
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* --- HERO SEKTION (Titelbereich) --- */
+        .hero {
+            text-align: center;
+            padding: 80px 20px 60px;
+            background-color: var(--bg-color);
+        }
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* --- DAS 3-SPALTEN GRID --- */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); 
+            height: 70vh; 
+            min-height: 600px;
+            width: 100%;
+        }
+
+        /* --- DIE KARTEN (TABS) --- */
+        .card {
+            position: relative;
+            text-decoration: none; 
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        /* BILDER */
+        .card-1 { background-image: url('bild-1.jpg'); }
+        .card-2 { background-image: url('bild-2.jpg'); }
+        .card-3 { background-image: url('bild-3.jpg'); }
+
+
+        /* --- DER HOVER-EFFEKT --- */
+        .card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--overlay-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: black;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+        }
+
+        .card:hover .card-overlay {
+            opacity: 1;
+        }
+
+        .card-overlay h2 {
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        .card-overlay span {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        /* --- RESPONSIVE DESIGN --- */
+        @media (max-width: 900px) {
+            .logo { position: static; transform: none; }
+            nav { justify-content: center; }
+            .grid-container {
+                grid-template-columns: 1fr; 
+                height: auto;
+            }
+            .card {
+                height: 400px; 
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">BAUKOMPASS</a>
+    </nav>
+
+    <header class="hero">
+        <h1>Gemeinsam Wohnraum schaffen.</h1>
+        <p>Die digitale Plattform für interkommunale Bauentwicklung und Kooperation.</p>
+    </header>
+
+    <main class="grid-container">
+        
+        <a href="seite-bewohner.html" class="card card-1">
+            <div class="card-overlay">
+                <h2>FÜR BEWOHNER:INNEN</h2>
+                <span>2025</span>
+            </div>
+        </a>
+
+        <a href="seite-eigentuemer.html" class="card card-2">
+            <div class="card-overlay">
+                <h2>FÜR EIGENTÜMER:INNEN</h2>
+                <span>2025</span>
+            </div>
+        </a>
+
+        <a href="seite-gemeinden.html" class="card card-3">
+            <div class="card-overlay">
+                <h2>VON GEMEINDEN FÜR GEMEINDEN</h2>
+                <span>2025</span>
+            </div>
+        </a>
+
+    </main>
+<script>
+    // Funktion: Höhe an die Eltern-Seite senden
+    function sendHeight() {
+        // Wir nehmen die volle Scroll-Höhe des Inhalts + 60px Puffer
+        const height = document.body.scrollHeight + 60;
+        window.parent.postMessage({ type: 'resize-iframe', height: height }, '*');
+    }
+
+    // 1. Beim Laden senden
+    window.addEventListener('load', sendHeight);
+
+    // 2. Bei Größenänderungen (z.B. Tab-Wechsel) senden
+    const observer = new ResizeObserver(sendHeight);
+    observer.observe(document.body);
+    
+    // 3. Sicherheitshalber alle 1 Sekunde prüfen (falls Animationen laufen)
+    setInterval(sendHeight, 1000);
+</script>
+<script>
+    // Funktion: Höhe an die Eltern-Seite senden
+    function sendHeight() {
+        // Wir nehmen die volle Scroll-Höhe des Inhalts + 60px Puffer
+        const height = document.body.scrollHeight + 60;
+        window.parent.postMessage({ type: 'resize-iframe', height: height }, '*');
+    }
+
+    // 1. Beim Laden senden
+    window.addEventListener('load', sendHeight);
+
+    // 2. Bei Größenänderungen (z.B. Tab-Wechsel) senden
+    const observer = new ResizeObserver(sendHeight);
+    observer.observe(document.body);
+    
+    // 3. Sicherheitshalber alle 1 Sekunde prüfen (falls Animationen laufen)
+    setInterval(sendHeight, 1000);
+</script>
+</body>
+</body>
+</html>
