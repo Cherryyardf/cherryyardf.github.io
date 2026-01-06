@@ -220,15 +220,51 @@
     <div class="container">
 
         <section class="energy-box">
-            <h3>🌱 Wertsteigerung durch Sanierung</h3>
-            <p>Sehen Sie, wie sich Dämmung und moderne Klimatechnik auf den Wert Ihrer Immobilie auswirken.</p>
+            <h3>🌱 Sanierungs-Rechner</h3>
+            <p>Geben Sie Ihre Gebäudedaten ein, um das individuelle Wertsteigerungspotenzial zu ermitteln.</p>
             
-            <div class="energy-meter">
-                <div class="energy-fill" id="energy-bar"></div>
+            <div class="energy-form" style="text-align: left; max-width: 600px; margin: 25px auto; background: rgba(255,255,255,0.1); padding: 25px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);">
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <label style="display:block; margin-bottom:5px; font-size:0.85rem; color:#ddd;">Baujahr</label>
+                        <input type="number" id="inp-year" placeholder="z.B. 1975" style="background:white; color:#333; margin-bottom:0;">
+                    </div>
+                    <div>
+                        <label style="display:block; margin-bottom:5px; font-size:0.85rem; color:#ddd;">Gebäudetyp</label>
+                        <select id="inp-type" style="background:white; color:#333; margin-bottom:0;">
+                            <option>Einfamilienhaus</option>
+                            <option>Reihenhaus</option>
+                            <option>Mehrfamilienhaus</option>
+                            <option>Fachwerkhaus</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="margin-top: 15px;">
+                    <label style="display:block; margin-bottom:5px; font-size:0.85rem; color:#ddd;">Aktueller Dämm-Standard</label>
+                    <select id="inp-insulation" style="background:white; color:#333;">
+                        <option value="none">Unbekannt / Keine Dämmung</option>
+                        <option value="old">Altbestand (vor 1995)</option>
+                        <option value="partial">Teilgedämmt (z.B. nur Dach)</option>
+                        <option value="good">Gut (nach 2005)</option>
+                    </select>
+                </div>
+
+                <button class="energy-btn" style="width:100%; margin-top:20px;" onclick="calculateRenovation()">Analyse starten</button>
             </div>
-            <p id="energy-text">Aktueller Status: <strong>Unrenoviert (Energieklasse F)</strong></p>
-            
-            <button class="energy-btn" onclick="boostEnergy()">Sanierung simulieren</button>
+
+            <div id="simulation-result" style="display:none; margin-top:30px; border-top:1px solid rgba(255,255,255,0.3); padding-top:20px; animation: fadeEffect 1s;">
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 5px;">Ergebnis für Ihr <span id="res-type">Haus</span> (Bj. <span id="res-year"></span>):</p>
+                
+                <div class="energy-meter">
+                    <div class="energy-fill" id="energy-bar" style="width: 20%; background: #e74c3c;"></div>
+                </div>
+                
+                <p id="energy-text" style="font-size: 1.1rem; margin-bottom: 5px; font-weight: bold;">Energieklasse H</p>
+                <p id="value-text" style="color: #2ecc71; font-weight: 800; font-size: 1.4rem; margin-top: 10px;"></p>
+                <p style="font-size: 0.8rem; margin-top: 5px; opacity: 0.7;">*Basierend auf regionalen Durchschnittswerten.</p>
+            </div>
         </section>
 
 
@@ -543,3 +579,4 @@
 
 </body>
 </html>
+
