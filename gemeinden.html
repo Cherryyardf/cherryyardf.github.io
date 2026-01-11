@@ -1,739 +1,192 @@
+<!DOCTYPE html>
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Für die Gemeinde - BAUKOMPASS</title>
-    <title>Gemeinde Cockpit & Strategie</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Für Gemeinden - BAUKOMPASS</title>
     <style>
-        /* --- DESIGN-SYSTEM --- */
+        /* --- GRUNDEINSTELLUNGEN --- */
         :root {
             --bg-color: #f8f1d9;
             --text-color: #222;
-            --accent-color: #2c3e50; /* Dunkelblau */
-            --highlight-color: #27ae60; /* Grün */
-            --alert-color: #e67e22; /* Orange */
-            --admin-bg: #f0f2f5; /* Grau für Dashboard */
+            --accent-color: #2c3e50;
+            --active-tab: #e67e22;
         }
-
-        body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-        }
-
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; }
+        
         /* Navigation */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 40px;
-            background: white;
-            border-bottom: 1px solid #e0e0e0;
-        }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: white; border-bottom: 1px solid #e0e0e0; }
         .nav-links a { text-decoration: none; color: var(--text-color); font-weight: bold; font-size: 0.9rem; text-transform: uppercase; }
         .logo { font-weight: 900; font-size: 1.5rem; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; color: black; }
 
-        /* Container */
-        .container {
-            max-width: 1100px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
+        /* Language Switcher */
+        .lang-switch { display: flex; gap: 10px; }
+        .lang-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; opacity: 0.5; transition: opacity 0.2s; padding: 0; }
+        .lang-btn:hover, .lang-btn.active { opacity: 1; transform: scale(1.1); }
 
-        .header-section { text-align: center; margin-bottom: 30px; }
+        /* Layout */
+        .content-wrapper { width: 100%; max-width: 1920px; margin: 0 auto; padding: 20px 0; }
+        .header-section { text-align: center; margin: 40px 0; padding: 0 20px; }
         .header-section h1 { font-size: 2.5rem; color: var(--accent-color); margin-bottom: 10px; }
-        .header-section p { font-size: 1.2rem; color: #555; }
 
-        /* --- TABS SYSTEM --- */
-        .tab-nav {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 40px;
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 0;
-        }
-        .tab-btn {
-            padding: 12px 25px;
-            background: none;
-            border: none;
-            font-size: 1rem;
-            font-weight: bold;
-            color: #777;
-            cursor: pointer;
-            border-bottom: 4px solid transparent;
-            transition: 0.3s;
-        }
-        .tab-btn:hover { color: var(--accent-color); }
-        .tab-btn.active {
-            color: var(--accent-color);
-            border-bottom-color: var(--accent-color);
-        }
+        /* Tabs */
+        .tab-container { display: flex; justify-content: center; border-bottom: 2px solid #ccc; margin-bottom: 40px; background: white; padding-top: 20px; }
+        .tab-button { background-color: transparent; border: none; outline: none; cursor: pointer; padding: 14px 40px; font-size: 1.1rem; font-weight: bold; color: #666; border-bottom: 4px solid transparent; transition: 0.3s; }
+        .tab-button:hover { color: var(--accent-color); background: #f9f9f9; }
+        .tab-button.active { color: var(--accent-color); border-bottom: 4px solid var(--active-tab); }
+        .tab-content { display: none; animation: fadeEffect 0.5s; }
 
-        /* Inhalte der Tabs */
-        .tab-content { display: none; animation: fadeIn 0.5s; }
-        .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* Inhalte */
+        .text-content-limit { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+        .info-block { background: white; padding: 40px; margin-bottom: 30px; border-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .info-block h2 { color: var(--accent-color); border-bottom: 2px solid var(--bg-color); padding-bottom: 10px; }
 
-        /* --- GRID SYSTEM (Standard) --- */
-        .grid-2 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
+        /* Tool Wrapper */
+        .tool-wrapper { width: 96%; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; min-height: 800px; }
+        
+        @keyframes fadeEffect { from {opacity: 0;} to {opacity: 1;} }
 
-        /* --- KARTEN DESIGN --- */
-        .service-card {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border-top: 5px solid var(--accent-color);
-            transition: transform 0.2s;
-        }
-        .service-card h3 { margin-top: 0; color: var(--accent-color); display: flex; align-items: center; gap: 10px; }
-
-        /* --- DASHBOARD STYLES (Admin Tab) --- */
-        .dashboard-container {
-            background: var(--admin-bg);
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #ddd;
-        }
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-        .stat-box {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            border-bottom: 4px solid var(--accent-color);
-        }
-        .stat-number { display: block; font-size: 2rem; font-weight: 800; color: var(--accent-color); }
-        .stat-label { font-size: 0.75rem; text-transform: uppercase; color: #777; letter-spacing: 1px; }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-        }
-        .dash-card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        body { font-family: 'Inter', sans-serif; background-color: #f0f2f5; color: #334155; }
-
-        /* Ticket Liste */
-        .ticket-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #eee;
-        }
-        .badge { padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; color: white; font-weight: bold; margin-right: 5px; }
-        .badge-new { background: var(--alert-color); }
-        .badge-open { background: #f39c12; }
-
-        /* Standard Inputs & Buttons */
-        input, select {
-            padding: 0 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            width: 100%;
-            height: 48px;
-            line-height: 48px;
-            box-sizing: border-box;
-            vertical-align: middle;
-            margin-bottom: 15px;
-        }
-        button.btn-main {
-            background: var(--accent-color);
-            color: white;
-            width: 100%;
-            border: none;
-            height: 48px;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        button.btn-small {
-            background: var(--accent-color); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;
-        }
-
-
-        /* --- MOBILE ANPASSUNGEN --- */
-        @media (max-width: 900px) {
-            /* Navi */
+        @media (max-width: 768px) {
             .nav-links a { font-size: 0.7rem !important; }
+            .logo { font-size: 1.2rem; }
             nav { padding: 15px 20px; }
-
-            /* Grids */
-            .grid-2 { grid-template-columns: 1fr !important; }
-            .dashboard-grid { grid-template-columns: 1fr !important; }
-            .stats-row { grid-template-columns: 1fr !important; } /* KPIs untereinander */
-
-            /* Stat Box Layout mobil */
-            .stat-box { display: flex; justify-content: space-between; align-items: center; text-align: left; padding: 15px; }
-            .stat-number { font-size: 1.5rem; }
-
-            /* Container */
-            .container { padding: 0 15px; margin-top: 20px; }
-            .service-card, .dash-card { padding: 20px !important; }
-            .header-section h1 { font-size: 1.8rem; }
-            
-            /* Tabs mobil untereinander falls zu breit */
-            .tab-nav { flex-direction: column; gap: 0; }
-            .tab-btn { border-bottom: 1px solid #eee; width: 100%; }
-            .tab-btn.active { border-bottom: 4px solid var(--accent-color); background: #f9f9f9; }
+            .tab-button { padding: 10px 20px; font-size: 0.9rem; }
         }
-        /* Custom Styles für Tree & Charts */
-        .chart-container { position: relative; width: 100%; max-width: 600px; margin: 0 auto; height: 350px; }
-        
-        /* Animations */
-        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Interactive Elements */
-        .phase-card { transition: all 0.3s ease; border-left: 4px solid transparent; }
-        .phase-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-        .model-btn.active { background-color: #0ea5e9; color: white; border-color: #0ea5e9; }
-        .escalation-step.active { opacity: 1; transform: scale(1.02); border-left-width: 6px; }
-        
-        /* Tree Visualization Styles (aus deiner Datei übernommen) */
-        :root { --connector-color: #cbd5e1; }
-        .tree-wrapper { display: flex; justify-content: center; overflow-x: auto; padding-bottom: 2rem; }
-        .trunk-node { background: linear-gradient(145deg, #475569, #334155); color: white; padding: 1rem 2rem; border-radius: 12px; text-align: center; position: relative; margin-bottom: 3rem; max-width: 280px; margin-left: auto; margin-right: auto; }
-        .trunk-node::after { content: ''; position: absolute; bottom: -3rem; left: 50%; width: 2px; height: 3rem; background-color: var(--connector-color); }
-        .branches-container { display: flex; gap: 20px; justify-content: center; position: relative; }
-        .branches-container::before { content: ''; position: absolute; top: -20px; left: 50px; right: 50px; height: 2px; background-color: var(--connector-color); }
-        .branch-column { display: flex; flex-direction: column; align-items: center; width: 160px; position: relative; }
-        .branch-column::before { content: ''; position: absolute; top: -20px; left: 50%; width: 2px; height: 20px; background-color: var(--connector-color); }
-        .branch-node { background: white; border-top: 4px solid #f59e0b; padding: 1rem; text-align: center; border-radius: 0 0 8px 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 2rem; min-height: 120px; width: 100%; font-size: 0.85rem; }
-        .leaf-node { background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 0.5rem; border-radius: 8px; text-align: center; width: 100%; font-size: 0.8rem; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="nav-links">
-            <a href="index.html">&larr; ZURÜCK ZUR ÜBERSICHT</a>
-<body class="flex flex-col min-h-screen">
-
-    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <span class="text-2xl">🏛️</span>
-                <div>
-                    <h1 class="text-xl font-bold text-slate-800">Gemeinde-Cockpit</h1>
-                    <p class="text-xs text-slate-500 uppercase tracking-wide">Verwaltung & Strategie</p>
-                </div>
-            </div>
-            <div class="hidden md:block">
-                <button class="bg-slate-800 text-white px-4 py-2 rounded text-sm font-bold hover:bg-slate-700 transition">📊 Monatsbericht</button>
-            </div>
-        </div>
+        <div class="nav-links"><a href="index.html" data-i18n="nav_back">&larr; Zurück zur Übersicht</a></div>
         <a href="index.html" class="logo">BAUKOMPASS</a>
+        
+        <!-- Sprachumschalter -->
+        <div class="lang-switch">
+            <button onclick="changeLanguage('de')" class="lang-btn active" data-lang="de">🇩🇪</button>
+            <button onclick="changeLanguage('en')" class="lang-btn" data-lang="en">🇬🇧</button>
+            <button onclick="changeLanguage('fr')" class="lang-btn" data-lang="fr">🇫🇷</button>
+        </div>
     </nav>
 
-    <header class="header-section">
-        <h1>Smarte Verwaltung</h1>
-        <p>Datenbasierte Stadtentwicklung und effiziente Bürgerdienste.</p>
-    </header>
-
-    <div class="container">
-    <main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full">
-
-        <div class="tab-nav">
-            <button class="tab-btn active" onclick="openTab('planning', this)">Stadtplanung & Services</button>
-            <button class="tab-btn" onclick="openTab('cockpit', this)">🔒 Internes Cockpit</button>
-        <div class="grid grid-cols-2 md:grid-cols-6 gap-2 mb-8 bg-white p-2 rounded-xl shadow-sm border border-slate-200 sticky top-20 z-40 overflow-x-auto">
-            <button onclick="switchTab('cockpit')" id="tab-cockpit" class="nav-tab px-3 py-3 rounded-lg text-sm font-bold transition-colors bg-slate-800 text-white shadow">
-                🚀 Cockpit
-            </button>
-            
-            <button onclick="switchTab('actors')" id="tab-actors" class="nav-tab px-3 py-3 rounded-lg text-sm font-semibold text-slate-500 hover:bg-slate-100 transition-colors">
-                🎓 Wissen
-            </button>
-            <button onclick="switchTab('phaseA')" id="tab-phaseA" class="nav-tab px-3 py-3 rounded-lg text-sm font-semibold text-slate-500 hover:bg-slate-100 transition-colors">
-                A. Analyse
-            </button>
-            <button onclick="switchTab('phaseB')" id="tab-phaseB" class="nav-tab px-3 py-3 rounded-lg text-sm font-semibold text-slate-500 hover:bg-slate-100 transition-colors">
-                B. Kontakt
-            </button>
-            <button onclick="switchTab('phaseC')" id="tab-phaseC" class="nav-tab px-3 py-3 rounded-lg text-sm font-semibold text-slate-500 hover:bg-slate-100 transition-colors">
-                C. Soft Power
-            </button>
-            <button onclick="switchTab('phaseD')" id="tab-phaseD" class="nav-tab px-3 py-3 rounded-lg text-sm font-semibold text-slate-500 hover:bg-slate-100 transition-colors">
-                D. Hard Power
-            </button>
-        </div>
-
-        <div id="planning" class="tab-content active">
-            <div class="grid-2">
-                
-                <div class="service-card" style="border-top-color: var(--alert-color);">
-                    <h3>📊 Leerstands-Kataster</h3>
-                    <p>Erfassen und verwalten Sie ungenutzte Immobilien im Gemeindegebiet. Identifizieren Sie Potenziale für Nachverdichtung.</p>
-                    
-                    <div style="background:#f9f9f9; padding:15px; border-radius:8px; margin-bottom:15px; font-size:0.9rem;">
-                        <strong>Aktueller Status:</strong><br>
-                        • 12 gemeldete Leerstände<br>
-                        • 3 Objekte in Reaktivierung
-                    </div>
-                    <button class="btn-main">Zum internen Kataster</button>
-        <div id="cockpit" class="tab-content animate-fade-in">
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <div class="bg-white p-6 rounded-xl shadow-sm border-b-4 border-emerald-500">
-                    <div class="text-3xl font-bold text-slate-800">12</div>
-                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mt-1">Aktive Baustellen</div>
-                </div>
-                <div class="bg-white p-6 rounded-xl shadow-sm border-b-4 border-red-500">
-                    <div class="text-3xl font-bold text-slate-800">5</div>
-                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mt-1">Offene Mängel</div>
-                </div>
-                <div class="bg-white p-6 rounded-xl shadow-sm border-b-4 border-blue-500">
-                    <div class="text-3xl font-bold text-slate-800">85%</div>
-                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mt-1">Budget Nutzung</div>
-                </div>
-                <div class="bg-white p-6 rounded-xl shadow-sm border-b-4 border-amber-500">
-                    <div class="text-3xl font-bold text-slate-800">3</div>
-                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mt-1">Kritische Leerstände</div>
-                </div>
-            </div>
-
-                <div class="service-card" style="border-top-color: var(--highlight-color);">
-                    <h3>📝 Digitale Bauakte</h3>
-                    <p>Verwalten Sie eingehende Bauanträge und kommunizieren Sie direkt mit Eigentümern.</p>
-                    
-                    <label>Vorgangsnummer suchen:</label>
-                    <div style="display:flex; gap:10px;">
-                        <input type="text" placeholder="z.B. BA-2024-089" style="margin-bottom:0;">
-                        <button style="width:auto; padding:0 15px; background:#ddd; border:none; border-radius:4px; height:48px;">🔍</button>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-200">
-                    <div class="p-5 border-b border-slate-100 flex justify-between items-center">
-                        <h3 class="font-bold text-slate-800">🔔 Eingegangene Meldungen (Bürger)</h3>
-                        <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full font-bold">2 Neu</span>
-                    </div>
-                    <div class="divide-y divide-slate-100">
-                        <div class="p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-slate-50 transition">
-                            <div>
-                                <div class="flex items-center gap-2 mb-1">
-                                    <span class="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded font-bold">NEU</span>
-                                    <span class="font-bold text-slate-700">Wilder Müll, Parkweg 3</span>
-                                </div>
-                                <div class="text-xs text-slate-500">Gemeldet vor 2 Std. von M. Müller • Kategorie: Ordnung</div>
-                            </div>
-                            <button class="px-3 py-1.5 bg-slate-800 text-white text-xs rounded font-medium hover:bg-slate-700">Bearbeiten</button>
-                        </div>
-                        <div class="p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-slate-50 transition">
-                            <div>
-                                <div class="flex items-center gap-2 mb-1">
-                                    <span class="bg-amber-100 text-amber-700 text-[10px] px-2 py-0.5 rounded font-bold">IN ARBEIT</span>
-                                    <span class="font-bold text-slate-700">Straßenlaterne flackert</span>
-                                </div>
-                                <div class="text-xs text-slate-500">Bauhof beauftragt • Hauptstraße 4</div>
-                            </div>
-                            <button class="px-3 py-1.5 bg-slate-100 text-slate-600 text-xs rounded font-medium hover:bg-slate-200">Status</button>
-                        </div>
-                         <div class="p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-slate-50 transition">
-                            <div>
-                                <div class="flex items-center gap-2 mb-1">
-                                    <span class="bg-amber-100 text-amber-700 text-[10px] px-2 py-0.5 rounded font-bold">IN ARBEIT</span>
-                                    <span class="font-bold text-slate-700">Gehwegabsenkung Schulstraße</span>
-                                </div>
-                                <div class="text-xs text-slate-500">Wartet auf Material • Priorität Mittel</div>
-                            </div>
-                            <button class="px-3 py-1.5 bg-slate-100 text-slate-600 text-xs rounded font-medium hover:bg-slate-200">Status</button>
-                        </div>
-                    </div>
-                    <div class="p-3 text-center border-t border-slate-100">
-                        <button class="text-sm text-blue-600 font-medium hover:underline">Alle Tickets anzeigen →</button>
-                    </div>
-                    <p style="font-size:0.8rem; color:#888; margin-top:10px;">5 neue Anträge in dieser Woche.</p>
-                </div>
-
-                <div class="service-card">
-                    <h3>🏗️ Infrastruktur & Planung</h3>
-                    <p>Koordinieren Sie Baustellen, Straßensperrungen und Sanierungsmaßnahmen mit dem Bauhof.</p>
-                    <ul style="padding-left:20px; color:#555; margin-bottom:20px;">
-                        <li>Kanalsanierung Hauptstraße (Laufend)</li>
-                        <li>Breitbandausbau Nord (Geplant Q3)</li>
-                        <li>Neubau Kita "Sonnenschein" (Genehmigt)</li>
-                    </ul>
-                    <button class="btn-main" style="background-color: #7f8c8d;">Baustellen-Karte öffnen</button>
-                </div>
-                <div class="space-y-6">
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 text-center">
-                        <h3 class="font-bold text-slate-800 mb-4 text-left">📍 Baukarte & Kataster</h3>
-                        <div class="bg-slate-100 h-32 rounded mb-4 flex items-center justify-center text-slate-400 text-sm border border-slate-200">
-                            [Interaktive Karte]
-                        </div>
-                        <button class="w-full py-2 border border-slate-300 rounded text-slate-600 font-bold text-sm hover:bg-slate-50">Karte vergrößern</button>
-                    </div>
-
-                <div class="service-card">
-                    <h3>📢 Bürger-Information</h3>
-                    <p>Veröffentlichen Sie Bebauungspläne in der Offenlage oder informieren Sie über Förderprogramme.</p>
-                    <select>
-                        <option>Bebauungsplan Offenlage</option>
-                        <option>Straßensperrung Info</option>
-                        <option>Einladung Bürgerversammlung</option>
-                    </select>
-                    <button class="btn-main">Entwurf erstellen</button>
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-                        <h3 class="font-bold text-slate-800 mb-4">⚡ Schnellzugriff</h3>
-                        <div class="space-y-2">
-                            <button onclick="switchTab('phaseA')" class="w-full text-left px-3 py-2 rounded hover:bg-blue-50 text-blue-700 text-sm font-medium transition flex items-center gap-2">
-                                🔍 Neue Leerstands-Analyse
-                            </button>
-                            <button class="w-full text-left px-3 py-2 rounded hover:bg-slate-50 text-slate-600 text-sm font-medium transition flex items-center gap-2">
-                                📢 Bürger-Info veröffentlichen
-                            </button>
-                            <button class="w-full text-left px-3 py-2 rounded hover:bg-slate-50 text-slate-600 text-sm font-medium transition flex items-center gap-2">
-                                👥 Team verwalten
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <div id="cockpit" class="tab-content">
-            <div class="dashboard-container">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                    <h3 style="margin:0; color:#2c3e50;">Live-Überblick</h3>
-                    <button class="btn-small">📊 Bericht exportieren</button>
-        <div id="actors" class="tab-content hidden animate-fade-in">
-            <div class="bg-white rounded-xl p-8 shadow-sm border border-slate-200">
-                <header class="mb-8 border-b border-slate-100 pb-4">
-                    <span class="text-xs font-bold text-indigo-600 uppercase bg-indigo-50 px-2 py-1 rounded">Grundlagen</span>
-                    <h2 class="text-2xl font-bold text-slate-900 mt-2">Akteurs-Typen der Stadtentwicklung</h2>
-                    <p class="text-slate-500">Wer besitzt die Stadt und warum? (BBSR-Analyse)</p>
-                </header>
-                
-                <div class="mb-12">
-                    <h3 class="font-bold text-slate-800 mb-4">Deep Dive: Der Private Kleineigentümer</h3>
-                    <div class="bg-slate-50 rounded-xl p-6 border border-slate-200 overflow-hidden">
-                        <div class="tree-wrapper">
-                            <div class="flex flex-col items-center min-w-[800px]">
-                                <div class="trunk-node">
-                                    <div class="font-bold uppercase tracking-wide">Privater Eigentümer</div>
-                                    <div class="text-xs text-slate-300 mt-1">Lokal • Laie • Emotional</div>
-                                </div>
-                                <div class="branches-container">
-                                    <div class="branch-column">
-                                        <div class="branch-node"><strong>Kompetenzlücke</strong><br><span class="text-slate-500">Weiß nicht wie</span></div>
-                                        <div class="leaf-node">Bauberatung</div>
-                                    </div>
-                                    <div class="branch-column">
-                                        <div class="branch-node"><strong>Familie/Erbe</strong><br><span class="text-slate-500">Emotionale Bindung</span></div>
-                                        <div class="leaf-node">Pachtmodelle</div>
-                                    </div>
-                                    <div class="branch-column">
-                                        <div class="branch-node"><strong>Überforderung</strong><br><span class="text-slate-500">Kein Geld/Zeit</span></div>
-                                        <div class="leaf-node">Zwischenerwerb</div>
-                                    </div>
-                                    <div class="branch-column">
-                                        <div class="branch-node"><strong>Alter</strong><br><span class="text-slate-500">Lebenszyklus</span></div>
-                                        <div class="leaf-node">Verrentung</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="stats-row">
-                    <div class="stat-box" style="border-color: #27ae60;">
-                        <span class="stat-number">12</span>
-                        <span class="stat-label">Aktive Baustellen</span>
-                <h3 class="font-bold text-slate-800 mb-4">Die professionellen Akteure</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="p-4 border border-slate-200 rounded-lg hover:shadow-md transition">
-                        <div class="text-2xl mb-2">🛠️</div>
-                        <h4 class="font-bold">Projektentwickler</h4>
-                        <p class="text-sm text-slate-600">Entwickelt & verkauft. Renditeorientiert. Wichtig für Brachflächen.</p>
-                    </div>
-                    <div class="stat-box" style="border-color: #c0392b;">
-                        <span class="stat-number">5</span>
-                        <span class="stat-label">Offene Mängel</span>
-                    <div class="p-4 border border-slate-200 rounded-lg hover:shadow-md transition">
-                        <div class="text-2xl mb-2">🏢</div>
-                        <h4 class="font-bold">Institutionelle</h4>
-                        <p class="text-sm text-slate-600">Fonds & Versicherungen. Langfristige Rendite, oft ortsfremd.</p>
-                    </div>
-                    <div class="stat-box" style="border-color: #2980b9;">
-                        <span class="stat-number">85%</span>
-                        <span class="stat-label">Budget Nutzung</span>
-                    </div>
-                    <div class="stat-box" style="border-color: #f39c12;">
-                        <span class="stat-number">3</span>
-                        <span class="stat-label">Leerstände</span>
-                    <div class="p-4 border border-slate-200 rounded-lg hover:shadow-md transition">
-                        <div class="text-2xl mb-2">🏛️</div>
-                        <h4 class="font-bold">Kommunale</h4>
-                        <p class="text-sm text-slate-600">Stadtrendite vor Geldrendite. Das Werkzeug bei Marktversagen.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-                <div class="dashboard-grid">
-                    <div class="dash-card">
-                        <h4 style="margin-top:0; border-bottom:1px solid #eee; padding-bottom:10px;">🔔 Mängelmelder (Eingang)</h4>
-                        
-                        <div class="ticket-item">
-                            <div>
-                                <span class="badge badge-new">NEU</span> <strong>Wilder Müll, Parkweg 3</strong><br>
-                                <span style="font-size:0.8rem; color:#888;">Vor 2 Std. gemeldet</span>
-        <div id="phaseA" class="tab-content hidden animate-fade-in">
-            <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200">
-                <h3 class="text-2xl font-bold text-slate-800 mb-2">A. Vorlauf & Analyse</h3>
-                <p class="text-slate-600 mb-6">Datenbasierte Identifikation von Leerstandspotenzialen.</p>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
-                        <h4 class="font-bold mb-4">Der Selektions-Trichter</h4>
-                        <div class="space-y-2 text-center text-sm font-medium text-white">
-                            <div class="bg-slate-400 py-2 rounded">Gesamtbestand</div>
-                            <div class="bg-blue-400 py-2 rounded w-11/12 mx-auto">Datenerhebung (Verbrauch)</div>
-                            <div class="bg-blue-600 py-2 rounded w-10/12 mx-auto">Verdachtsfälle</div>
-                            <div onclick="document.getElementById('analysis-res').classList.remove('hidden')" class="bg-slate-800 py-3 rounded w-9/12 mx-auto cursor-pointer hover:bg-emerald-600 transition">
-                                ▶ Analyse Starten
-                            </div>
-                            <button class="btn-small">Ansehen</button>
-                        </div>
-
-                        <div class="ticket-item">
-                            <div>
-                                <span class="badge badge-open">IN ARBEIT</span> <strong>Laterne defekt</strong><br>
-                                <span style="font-size:0.8rem; color:#888;">Bauhof beauftragt</span>
-                            </div>
-                            <button class="btn-small" style="background:#ddd; color:#333;">Status</button>
-                        <div id="analysis-res" class="hidden mt-4 bg-emerald-100 text-emerald-800 p-4 rounded text-center">
-                            ✅ <strong>Potenzial HOCH</strong><br>Objekt für Ansprache geeignet.
-                        </div>
-                    </div>
-                    <div>
-                        <div class="chart-container">
-                            <canvas id="analysisChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-                        <div class="ticket-item" style="border-bottom:none;">
-                            <div>
-                                <span class="badge badge-open">IN ARBEIT</span> <strong>Gehwegabsenkung</strong><br>
-                                <span style="font-size:0.8rem; color:#888;">Wartet auf Material</span>
-                            </div>
-                            <button class="btn-small" style="background:#ddd; color:#333;">Status</button>
-        <div id="phaseB" class="tab-content hidden animate-fade-in">
-            <div class="max-w-4xl mx-auto text-center">
-                <h3 class="text-2xl font-bold text-slate-800 mb-8">B. Die Weichenstellung</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div onclick="switchTab('phaseC')" class="cursor-pointer bg-white p-8 rounded-2xl border-2 border-transparent hover:border-blue-500 shadow-sm hover:shadow-lg transition group">
-                        <div class="text-6xl mb-4 group-hover:scale-110 transition">🤝</div>
-                        <h4 class="text-xl font-bold text-blue-900">Kooperation</h4>
-                        <p class="text-slate-500 mt-2">Eigentümer ist gesprächsbereit.</p>
-                        <div class="mt-4 text-blue-600 font-bold">Weg: Soft Power →</div>
-                    </div>
-                    <div onclick="switchTab('phaseD')" class="cursor-pointer bg-white p-8 rounded-2xl border-2 border-transparent hover:border-red-500 shadow-sm hover:shadow-lg transition group">
-                        <div class="text-6xl mb-4 group-hover:scale-110 transition">⛔</div>
-                        <h4 class="text-xl font-bold text-red-900">Blockade</h4>
-                        <p class="text-slate-500 mt-2">Keine Reaktion oder Ablehnung.</p>
-                        <div class="mt-4 text-red-600 font-bold">Weg: Hard Power →</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="phaseC" class="tab-content hidden animate-fade-in">
-            <h3 class="text-2xl font-bold text-blue-600 mb-6">C. Kooperativer Angebots-Pool</h3>
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <div class="lg:col-span-4 space-y-2">
-                    <button onclick="updateModel(0)" class="model-btn w-full text-left p-4 bg-white rounded border border-slate-200 hover:bg-blue-50 active">💰 Verkauf / Pacht</button>
-                    <button onclick="updateModel(1)" class="model-btn w-full text-left p-4 bg-white rounded border border-slate-200 hover:bg-blue-50">👵 Verrentung</button>
-                    <button onclick="updateModel(2)" class="model-btn w-full text-left p-4 bg-white rounded border border-slate-200 hover:bg-blue-50">🛠️ Mitwirkung</button>
-                    <button onclick="updateModel(3)" class="model-btn w-full text-left p-4 bg-white rounded border border-slate-200 hover:bg-blue-50">🎭 Zwischennutzung</button>
-                    <button onclick="updateModel(4)" class="model-btn w-full text-left p-4 bg-white rounded border border-slate-200 hover:bg-blue-50">🏘️ Genossenschaft</button>
-                </div>
-                <div class="lg:col-span-8">
-                    <div class="bg-blue-50 p-6 rounded-xl border border-blue-100 min-h-[200px] mb-6" id="model-content">
-                        </div>
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                        <div class="chart-container" style="height:300px;">
-                            <canvas id="radarChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-                    <div class="dash-card">
-                        <h4 style="margin-top:0; border-bottom:1px solid #eee; padding-bottom:10px;">📍 Schnellzugriff</h4>
-                        <button class="btn-main" style="margin-bottom:10px; background:white; border:1px solid #ccc; color:#333;">Karte vergrößern</button>
-                        <button class="btn-main" style="margin-bottom:10px; background:white; border:1px solid #ccc; color:#333;">Team verwalten</button>
-                        <button class="btn-main" style="background:#e74c3c;">System-Einstellungen</button>
-        <div id="phaseD" class="tab-content hidden animate-fade-in">
-            <h3 class="text-2xl font-bold text-red-600 mb-6">D. Konfrontative Eskalation</h3>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h4 class="font-bold mb-4">1. Verhältnismäßigkeit prüfen</h4>
-                    <div class="space-y-2 mb-4">
-                        <label class="flex items-center gap-2"><input type="checkbox" id="chk1" onclick="checkEscalation()"> Zweckentfremdung nachweisbar?</label>
-                        <label class="flex items-center gap-2"><input type="checkbox" id="chk2" onclick="checkEscalation()"> Sanierung zumutbar?</label>
-                    </div>
-                    <div id="esc-status" class="bg-slate-100 p-3 rounded text-center text-slate-500 font-bold">Prüfung offen</div>
-                </div>
-                <div id="ladder" class="opacity-50 pointer-events-none transition-opacity bg-red-50 p-6 rounded-xl border border-red-100">
-                    <h4 class="font-bold text-red-800 mb-4">2. Eskalationsleiter</h4>
-                    <div class="space-y-3">
-                        <div onclick="alert('Steuerdruck erhöht')" class="escalation-step cursor-pointer bg-white p-3 rounded border-l-4 border-red-300 hover:bg-red-100">1. Grundsteuer C</div>
-                        <div onclick="alert('Bußgeld verhängt')" class="escalation-step cursor-pointer bg-white p-3 rounded border-l-4 border-red-500 hover:bg-red-100">2. Bußgeld / Gebot</div>
-                        <div onclick="alert('Treuhand eingeleitet')" class="escalation-step cursor-pointer bg-white p-3 rounded border-l-4 border-red-700 hover:bg-red-100">3. Treuhänder / Enteignung</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+    <div class="header-section">
+        <h1 data-i18n="header_title">Von Gemeinden für Gemeinden</h1>
+        <p data-i18n="header_sub">Wählen Sie einen Bereich:</p>
     </div>
+
+    <div class="tab-container">
+        <button class="tab-button active" onclick="openTab(event, 'Info')" data-i18n="tab_info">Informationen</button>
+        <button class="tab-button" onclick="openTab(event, 'Tool')" data-i18n="tab_tool">Immobilien-Tool</button>
+    </div>
+
+    <main class="content-wrapper">
+        <div id="Info" class="tab-content" style="display: block;">
+            <div class="text-content-limit">
+                <div class="info-block">
+                    <h2 data-i18n="info_title">Gemeinsame Ziele erreichen</h2>
+                    <p data-i18n="info_text">Hier finden Sie Informationen zur kommunalen Zusammenarbeit und Strategieentwicklung. Nutzen Sie unsere Netzwerke, um Synergien zu schaffen und Leerstand effektiv zu bekämpfen.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="Tool" class="tab-content">
+            <div class="tool-wrapper">
+                <!-- WICHTIG: Hier muss der Dateiname EXAKT stimmen. 
+                     Wenn die Datei im selben Ordner liegt, einfach nur den Namen. -->
+                <iframe 
+                    id="seamless-tool"
+                    src="ImmobilienAktivierung_Dashboard.html" 
+                    scrolling="no"
+                    style="width: 100%; border: none; overflow: hidden; display: block;"
+                >
+                </iframe>
+            </div>
+        </div>
     </main>
 
     <script>
-        function openTab(tabId, btnElement) {
-            // 1. Alle Tabs verstecken
-            const contents = document.querySelectorAll('.tab-content');
-            contents.forEach(content => content.classList.remove('active'));
-        // --- LOGIK ---
-        
-        // Navigation
-        function switchTab(id) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById(id).classList.remove('hidden');
-
-            // Reset Buttons
-            document.querySelectorAll('.nav-tab').forEach(btn => {
-                btn.classList.remove('bg-slate-800', 'text-white', 'shadow');
-                btn.classList.add('text-slate-500', 'hover:bg-slate-100');
-            });
-
-            // Activate Button
-            const activeBtn = document.getElementById('tab-' + id);
-            activeBtn.classList.remove('text-slate-500', 'hover:bg-slate-100');
-            activeBtn.classList.add('bg-slate-800', 'text-white', 'shadow');
-
-            // Init Charts on demand
-            if(id === 'phaseA') initPieChart();
-            if(id === 'phaseC') { initRadarChart(); updateModel(0); }
+        // --- TAB LOGIC ---
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; }
+            tablinks = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
         }
 
-            // 2. Alle Buttons deaktivieren
-            const buttons = document.querySelectorAll('.tab-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-        // Phase A Chart
-        let pieChart = null;
-        function initPieChart() {
-            if(pieChart) return;
-            const ctx = document.getElementById('analysisChart').getContext('2d');
-            pieChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Aussortiert', 'Potenzial'],
-                    datasets: [{ data: [65, 35], backgroundColor: ['#cbd5e1', '#10b981'] }]
-                }
-            });
-        }
+        // --- IFRAME RESIZE LOGIC ---
+        window.addEventListener('message', function(e) {
+            if (e.data && e.data.type === 'resize-iframe') {
+                const iframe = document.getElementById('seamless-tool');
+                if (iframe) { iframe.style.height = e.data.height + 'px'; }
+            }
+        });
 
-            // 3. Gewählten Tab zeigen
-            document.getElementById(tabId).classList.add('active');
+        // --- LANGUAGE LOGIC ---
+        const translations = {
+            "de": {
+                "nav_back": "← Zurück zur Übersicht",
+                "header_title": "Von Gemeinden für Gemeinden",
+                "header_sub": "Wählen Sie einen Bereich:",
+                "tab_info": "Informationen",
+                "tab_tool": "Immobilien-Tool",
+                "info_title": "Gemeinsame Ziele erreichen",
+                "info_text": "Hier finden Sie Informationen zur kommunalen Zusammenarbeit und Strategieentwicklung. Nutzen Sie unsere Netzwerke, um Synergien zu schaffen und Leerstand effektiv zu bekämpfen."
+            },
+            "en": {
+                "nav_back": "← Back to Overview",
+                "header_title": "From Municipalities For Municipalities",
+                "header_sub": "Select an area:",
+                "tab_info": "Information",
+                "tab_tool": "Real Estate Tool",
+                "info_title": "Achieving Goals Together",
+                "info_text": "Here you will find information on municipal cooperation and strategy development. Use our networks to create synergies and effectively combat vacancies."
+            },
+            "fr": {
+                "nav_back": "← Retour à l'aperçu",
+                "header_title": "Des Communes Pour Les Communes",
+                "header_sub": "Choisissez un domaine :",
+                "tab_info": "Informations",
+                "tab_tool": "Outil Immobilier",
+                "info_title": "Atteindre des objectifs communs",
+                "info_text": "Vous trouverez ici des informations sur la coopération municipale et le développement de stratégies. Utilisez nos réseaux pour créer des synergies et lutter efficacement contre la vacance."
+            }
+        };
+
+        function changeLanguage(lang) {
+            localStorage.setItem('baukompass_lang', lang);
             
-            // 4. Gewählten Button aktivieren
-            btnElement.classList.add('active');
-        // Phase C Models & Radar
-        const modelData = [
-            { title: "Verkauf / Pacht", desc: "Für Eigentümer ohne Zeit. Volle Entlastung.", stats: [90, 20, 10, 10] },
-            { title: "Verrentung", desc: "Für Senioren. Kapital freisetzen, wohnen bleiben.", stats: [60, 80, 50, 40] },
-            { title: "Mitwirkung", desc: "Für Gestalter. Mitsprache vertraglich gesichert.", stats: [40, 40, 80, 60] },
-            { title: "Zwischennutzung", desc: "Kurzfristige Überbrückung.", stats: [100, 70, 60, 90] },
-            { title: "Genossenschaft", desc: "Langfristige Sicherung gegen Spekulation.", stats: [30, 50, 90, 50] }
-        ];
-        let radarChart = null;
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                if(btn.dataset.lang === lang) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
 
-        function initRadarChart() {
-            if(radarChart) return;
-            const ctx = document.getElementById('radarChart').getContext('2d');
-            radarChart = new Chart(ctx, {
-                type: 'radar',
-                data: {
-                    labels: ['Tempo', 'Sicherheit', 'Kontrolle', 'Kosten'],
-                    datasets: [{
-                        label: 'Eigenschaften',
-                        data: [0,0,0,0],
-                        backgroundColor: 'rgba(14, 165, 233, 0.2)',
-                        borderColor: '#0ea5e9',
-                    }]
-                },
-                options: {
-                    scales: { r: { suggestedMin: 0, suggestedMax: 100, ticks: { display: false } } }
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                if(translations[lang][key]) {
+                    el.innerText = translations[lang][key];
                 }
             });
-        }
 
-        function updateModel(idx) {
-            const m = modelData[idx];
-            document.getElementById('model-content').innerHTML = `
-                <h4 class="text-xl font-bold text-blue-900 mb-2">${m.title}</h4>
-                <p class="text-slate-700">${m.desc}</p>
-            `;
-            if(radarChart) {
-                radarChart.data.datasets[0].data = m.stats;
-                radarChart.update();
-            }
-            // Button Highlight update
-            document.querySelectorAll('.model-btn').forEach((b, i) => {
-                if(i===idx) b.classList.add('bg-blue-100', 'border-blue-300');
-                else b.classList.remove('bg-blue-100', 'border-blue-300');
-            });
-        }
-    </script>
-
-        // Phase D Logic
-        function checkEscalation() {
-            const c1 = document.getElementById('chk1').checked;
-            const c2 = document.getElementById('chk2').checked;
-            const status = document.getElementById('esc-status');
-            const ladder = document.getElementById('ladder');
-
-            if(c1 && c2) {
-                status.className = "bg-red-100 p-3 rounded text-center text-red-700 font-bold";
-                status.innerText = "Eingriff zulässig";
-                ladder.classList.remove('opacity-50', 'pointer-events-none');
-            } else {
-                status.className = "bg-slate-100 p-3 rounded text-center text-slate-500 font-bold";
-                status.innerText = "Prüfung offen / Nicht zulässig";
-                ladder.classList.add('opacity-50', 'pointer-events-none');
+            // Sprache an Iframe senden
+            const iframe = document.getElementById('seamless-tool');
+            if(iframe && iframe.contentWindow) {
+                iframe.contentWindow.postMessage({ type: 'changeLanguage', lang: lang }, '*');
             }
         }
 
+        window.addEventListener('load', () => {
+            const savedLang = localStorage.getItem('baukompass_lang') || 'de';
+            changeLanguage(savedLang);
+            
+            const iframe = document.getElementById('seamless-tool');
+            if (iframe) {
+                iframe.onload = function() {
+                    changeLanguage(savedLang);
+                };
+            }
+        });
     </script>
 </body>
+</html>
