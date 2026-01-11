@@ -9,13 +9,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Für Gemeinden - BAUKOMPASS</title>
     <title>Unser Quartier - Bürgerbeteiligung</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* --- GRUNDEINSTELLUNGEN --- */
+        :root {
+            --bg-color: #f8f1d9;
+            --text-color: #222;
+            --accent-color: #2c3e50;
+            --active-tab: #e67e22;
+        }
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; }
         body { font-family: 'Inter', sans-serif; background-color: #fff7ed; color: #431407; }
+
+        /* Navigation */
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: white; border-bottom: 1px solid #e0e0e0; }
+        .nav-links a { text-decoration: none; color: var(--text-color); font-weight: bold; font-size: 0.9rem; text-transform: uppercase; }
+        .logo { font-weight: 900; font-size: 1.5rem; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; color: black; }
+
+        /* Layout */
+        .content-wrapper { width: 100%; max-width: 1920px; margin: 0 auto; padding: 20px 0; }
+        .header-section { text-align: center; margin: 40px 0; padding: 0 20px; }
+        .header-section h1 { font-size: 2.5rem; color: var(--accent-color); margin-bottom: 10px; }
+
+        /* Tabs */
+        .tab-container { display: flex; justify-content: center; border-bottom: 2px solid #ccc; margin-bottom: 40px; background: white; padding-top: 20px; }
+        .tab-button { background-color: transparent; border: none; outline: none; cursor: pointer; padding: 14px 40px; font-size: 1.1rem; font-weight: bold; color: #666; border-bottom: 4px solid transparent; transition: 0.3s; }
+        .tab-button:hover { color: var(--accent-color); background: #f9f9f9; }
+        .tab-button.active { color: var(--accent-color); border-bottom: 4px solid var(--active-tab); }
+        .tab-content { display: none; animation: fadeEffect 0.5s; }
+
+        /* Inhalte */
+        .text-content-limit { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+        .info-block { background: white; padding: 40px; margin-bottom: 30px; border-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .info-block h2 { color: var(--accent-color); border-bottom: 2px solid var(--bg-color); padding-bottom: 10px; }
+
+        /* Tool Wrapper */
+        .tool-wrapper { width: 96%; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; min-height: 800px; }
         
+        @keyframes fadeEffect { from {opacity: 0;} to {opacity: 1;} }
         /* Custom Chart Container */
         .gauge-container { position: relative; width: 100%; max-width: 400px; margin: 0 auto; height: 250px; }
         .barometer-btn { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -38,6 +73,7 @@
         .lang-btn.active { opacity: 1; transform: scale(1.2); font-weight: bold; }
     </style>
 </head>
+<body>
 <body class="flex flex-col min-h-screen overflow-hidden" id="main-body">
 
     <!-- LOCATION MODAL -->
@@ -76,6 +112,9 @@
         </div>
     </div>
 
+    <nav>
+        <div class="nav-links"><a href="index.html">&larr; Zurück zur Übersicht</a></div>
+        <a href="index.html" class="logo">BAUKOMPASS</a>
     <!-- Navbar -->
     <nav class="bg-white shadow-sm border-b border-orange-100 sticky top-0 z-50">
         <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
@@ -101,6 +140,10 @@
         </div>
     </nav>
 
+    <div class="header-section">
+        <h1>Von Gemeinden für Gemeinden</h1>
+        <p>Wählen Sie einen Bereich:</p>
+    </div>
     <!-- Main Content -->
     <main class="flex-grow max-w-5xl mx-auto px-4 py-8 w-full space-y-12">
         <section class="text-center max-w-3xl mx-auto mt-4 mb-8">
@@ -112,6 +155,10 @@
             <p class="text-lg text-slate-600" data-i18n="hero_desc">Leerstand vermeiden, Wohnraum schaffen, Charakter bewahren. Ihre Stimmung und Ihre Prioritäten sind unser Kompass.</p>
         </section>
 
+    <div class="tab-container">
+        <button class="tab-button active" onclick="openTab(event, 'Info')">Informationen</button>
+        <button class="tab-button" onclick="openTab(event, 'Tool')">Immobilien-Tool</button>
+    </div>
         <!-- Events & Leih-Bar -->
         <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 relative overflow-hidden">
@@ -143,6 +190,12 @@
             </div>
         </section>
 
+    <main class="content-wrapper">
+        <div id="Info" class="tab-content" style="display: block;">
+            <div class="text-content-limit">
+                <div class="info-block">
+                    <h2>Gemeinsame Ziele erreichen</h2>
+                    <p>Hier finden Sie Informationen zur kommunalen Zusammenarbeit und Strategieentwicklung.</p>
         <!-- Stimmungsbarometer -->
         <section class="bg-white rounded-3xl p-6 md:p-10 shadow-lg border border-orange-100">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
@@ -176,8 +229,18 @@
                     <p class="text-center text-xs text-slate-400 mt-[-20px]"><span data-i18n="based_on">Basierend auf</span> <span id="vote-count">1.240</span> <span data-i18n="votes">Stimmen</span></p>
                 </div>
             </div>
+        </div>
         </section>
 
+        <div id="Tool" class="tab-content">
+            <div class="tool-wrapper">
+                <iframe 
+                    id="seamless-tool"
+                    src="tool/index.html" 
+                    scrolling="no"
+                    style="width: 100%; border: none; overflow: hidden; display: block;"
+                >
+                </iframe>
         <!-- Prioritäten -->
         <section>
             <h2 class="text-2xl font-bold text-slate-800 mb-6 text-center" data-i18n="prio_title">Worauf sollen wir uns fokussieren?</h2>
@@ -317,6 +380,14 @@
 
     <!-- LOGIC -->
     <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; }
+            tablinks = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
         // --- TRANSLATION DATABASE ---
         const translations = {
             "de": {
@@ -364,6 +435,11 @@
             return null;
         }
 
+        // Empfängt die Nachricht vom iframe
+        window.addEventListener('message', function(e) {
+            if (e.data && e.data.type === 'resize-iframe') {
+                const iframe = document.getElementById('seamless-tool');
+                if (iframe) { iframe.style.height = e.data.height + 'px'; }
         function handleLocationSubmit(event) {
             event.preventDefault();
             const country = document.getElementById('country-select').value;
@@ -444,4 +520,3 @@
 
     </script>
 </body>
-</html>
