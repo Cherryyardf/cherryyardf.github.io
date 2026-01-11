@@ -79,6 +79,7 @@
     </div>
 
     <main class="content-wrapper">
+        <!-- TAB 1: INFORMATIONEN -->
         <div id="Info" class="tab-content" style="display: block;">
             <div class="text-content-limit">
                 <div class="info-block">
@@ -88,13 +89,13 @@
             </div>
         </div>
 
+        <!-- TAB 2: TOOL -->
         <div id="Tool" class="tab-content">
             <div class="tool-wrapper">
-                <!-- WICHTIG: Hier muss der Dateiname EXAKT stimmen. 
-                     Wenn die Datei im selben Ordner liegt, einfach nur den Namen. -->
+                <!-- Verweis auf das Tool im Unterordner -->
                 <iframe 
                     id="seamless-tool"
-                    src="ImmobilienAktivierung_Dashboard.html" 
+                    src="tool/index.html" 
                     scrolling="no"
                     style="width: 100%; border: none; overflow: hidden; display: block;"
                 >
@@ -155,13 +156,16 @@
         };
 
         function changeLanguage(lang) {
+            // 1. Sprache speichern
             localStorage.setItem('baukompass_lang', lang);
             
+            // 2. Buttons aktualisieren
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 if(btn.dataset.lang === lang) btn.classList.add('active');
                 else btn.classList.remove('active');
             });
 
+            // 3. Texte auf DIESER Seite aktualisieren
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.dataset.i18n;
                 if(translations[lang][key]) {
@@ -169,17 +173,20 @@
                 }
             });
 
-            // Sprache an Iframe senden
+            // 4. Sprache an das Tool im IFRAME senden
             const iframe = document.getElementById('seamless-tool');
             if(iframe && iframe.contentWindow) {
+                // Sende Nachricht an das Tool
                 iframe.contentWindow.postMessage({ type: 'changeLanguage', lang: lang }, '*');
             }
         }
 
+        // Init beim Laden
         window.addEventListener('load', () => {
             const savedLang = localStorage.getItem('baukompass_lang') || 'de';
             changeLanguage(savedLang);
             
+            // Falls das Iframe etwas später lädt, senden wir die Sprache nochmal beim Iframe-Load
             const iframe = document.getElementById('seamless-tool');
             if (iframe) {
                 iframe.onload = function() {
