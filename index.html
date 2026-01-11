@@ -43,6 +43,29 @@
             transform: translateX(-50%);
         }
 
+        /* Sprachumschalter (Neu hinzugefügt) */
+        .lang-switch {
+            position: absolute;
+            right: 40px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .lang-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.2s, transform 0.2s;
+            padding: 0;
+        }
+
+        .lang-btn:hover, .lang-btn.active {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
         /* --- HERO SEKTION --- */
         .hero {
             text-align: center;
@@ -80,9 +103,9 @@
             cursor: pointer;
         }
 
-        .card-1 { background-image: url('bild-1.jpg'); }
-        .card-2 { background-image: url('bild-2.jpg'); }
-        .card-3 { background-image: url('bild-3.jpg'); }
+        .card-1 { background-image: url('bild-1.jpg'); background-color: #e0f2f1; }
+        .card-2 { background-image: url('bild-2.jpg'); background-color: #f3e5f5; }
+        .card-3 { background-image: url('bild-3.jpg'); background-color: #fff3e0; }
 
 
        /* --- DER OVERLAY (Text immer sichtbar) --- */
@@ -93,8 +116,7 @@
             width: 100%;
             height: 100%;
             
-            /* NEU: Hintergrund ist standardmäßig da, aber transparenter (0.75), 
-               damit man das Bild noch gut durchsieht */
+            /* Hintergrund ist standardmäßig da, aber transparent */
             background-color: rgba(255, 255, 255, 0.75);
             
             /* Text zentrieren */
@@ -105,7 +127,7 @@
             text-align: center;
             color: black;
 
-            /* NEU: Opacity ist 1 (sichtbar), nicht mehr 0 */
+            /* Opacity ist 1 (sichtbar) */
             opacity: 1;
             transition: background-color 0.3s ease-in-out;
         }
@@ -120,14 +142,22 @@
             text-transform: uppercase;
             margin-bottom: 10px;
             letter-spacing: 1px;
-            /* NEU: Leichter Schatten für bessere Lesbarkeit auf hellen Bildern */
+            /* Leichter Schatten für bessere Lesbarkeit auf hellen Bildern */
             text-shadow: 0 1px 0 rgba(255,255,255,0.5);
         }
 
         /* --- RESPONSIVE --- */
         @media (max-width: 900px) {
-            .logo { position: static; transform: none; }
-            nav { justify-content: center; }
+            .logo {
+                position: static;
+                transform: none;
+            }
+            nav {
+                justify-content: space-between;
+            }
+            .lang-switch {
+                position: static;
+            }
             .grid-container {
                 grid-template-columns: 1fr; 
                 height: auto;
@@ -142,38 +172,96 @@
 
     <nav>
         <a href="index.html" class="logo">BAUKOMPASS</a>
+        
+        <!-- Sprachumschalter -->
+        <div class="lang-switch">
+            <button onclick="changeLanguage('de')" class="lang-btn active" data-lang="de">🇩🇪</button>
+            <button onclick="changeLanguage('en')" class="lang-btn" data-lang="en">🇬🇧</button>
+            <button onclick="changeLanguage('fr')" class="lang-btn" data-lang="fr">🇫🇷</button>
+        </div>
     </nav>
 
     <header class="hero">
-        <h1>Gemeinsam Wohnraum schaffen.</h1>
-        <p>Die digitale Plattform für interkommunale Bauentwicklung und Kooperation.</p>
+        <h1 data-i18n="hero_title">Gemeinsam Wohnraum schaffen.</h1>
+        <p data-i18n="hero_desc">Die digitale Plattform für interkommunale Bauentwicklung und Kooperation.</p>
     </header>
 
     <main class="grid-container">
         
         <a href="seite-bewohner.html" class="card card-1">
             <div class="card-overlay">
-                <h2>FÜR BEWOHNER:INNEN</h2>
+                <h2 data-i18n="card_res">FÜR BEWOHNER:INNEN</h2>
                 <span>2025</span>
             </div>
         </a>
 
         <a href="seite-eigentuemer.html" class="card card-2">
             <div class="card-overlay">
-                <h2>FÜR EIGENTÜMER:INNEN</h2>
+                <h2 data-i18n="card_own">FÜR EIGENTÜMER:INNEN</h2>
                 <span>2025</span>
             </div>
         </a>
 
         <a href="gemeinden.html" class="card card-3">
             <div class="card-overlay">
-                <h2>VON GEMEINDEN FÜR GEMEINDEN</h2>
+                <h2 data-i18n="card_mun">VON GEMEINDEN FÜR GEMEINDEN</h2>
                 <span>2025</span>
             </div>
         </a>
 
     </main>
 
+    <script>
+        // --- SPRACH-LOGIK ---
+        const translations = {
+            "de": {
+                "hero_title": "Gemeinsam Wohnraum schaffen.",
+                "hero_desc": "Die digitale Plattform für interkommunale Bauentwicklung und Kooperation.",
+                "card_res": "FÜR BEWOHNER:INNEN",
+                "card_own": "FÜR EIGENTÜMER:INNEN",
+                "card_mun": "VON GEMEINDEN FÜR GEMEINDEN"
+            },
+            "en": {
+                "hero_title": "Creating Housing Together.",
+                "hero_desc": "The digital platform for inter-municipal development and cooperation.",
+                "card_res": "FOR RESIDENTS",
+                "card_own": "FOR OWNERS",
+                "card_mun": "FROM MUNICIPALITIES FOR MUNICIPALITIES"
+            },
+            "fr": {
+                "hero_title": "Créer des logements ensemble.",
+                "hero_desc": "La plateforme numérique pour le développement intercommunal et la coopération.",
+                "card_res": "POUR LES RÉSIDENTS",
+                "card_own": "POUR LES PROPRIÉTAIRES",
+                "card_mun": "DES COMMUNES POUR LES COMMUNES"
+            }
+        };
+
+        function changeLanguage(lang) {
+            // 1. Sprache speichern
+            localStorage.setItem('baukompass_lang', lang);
+            
+            // 2. Buttons aktualisieren
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                if(btn.dataset.lang === lang) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+
+            // 3. Texte aktualisieren
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                if(translations[lang][key]) {
+                    el.innerText = translations[lang][key];
+                }
+            });
+        }
+
+        // Init beim Laden
+        window.addEventListener('load', () => {
+            const savedLang = localStorage.getItem('baukompass_lang') || 'de';
+            changeLanguage(savedLang);
+        });
+    </script>
+
 </body>
 </html>
-
