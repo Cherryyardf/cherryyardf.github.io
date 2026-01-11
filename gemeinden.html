@@ -1,20 +1,16 @@
-<!-- Application Structure Plan:
-    1.  **Persistence:** Uses localStorage to remember language selection across pages.
-    2.  **Language Switcher:** In Navbar and Modal.
-    3.  **Content:** Full resident features (Events, Barometer, etc.).
--->
-
-<!DOCTYPE html>
-<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Für Gemeinden - BAUKOMPASS</title>
-    <title>Unser Quartier - Bürgerbeteiligung</title>
+    <title>Gemeinde Cockpit & Strategie</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Für Gemeinden - BAUKOMPASS</title>
     <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f0f2f5; color: #334155; }
+        
+        /* Custom Styles für Tree & Charts */
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin: 0 auto; height: 350px; }
         /* --- GRUNDEINSTELLUNGEN --- */
         :root {
             --bg-color: #f8f1d9;
@@ -23,8 +19,16 @@
             --active-tab: #e67e22;
         }
         body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; }
-        body { font-family: 'Inter', sans-serif; background-color: #fff7ed; color: #431407; }
 
+        /* Animations */
+        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Interactive Elements */
+        .phase-card { transition: all 0.3s ease; border-left: 4px solid transparent; }
+        .phase-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .model-btn.active { background-color: #0ea5e9; color: white; border-color: #0ea5e9; }
+        .escalation-step.active { opacity: 1; transform: scale(1.02); border-left-width: 6px; }
         /* Navigation */
         nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: white; border-bottom: 1px solid #e0e0e0; }
         .nav-links a { text-decoration: none; color: var(--text-color); font-weight: bold; font-size: 0.9rem; text-transform: uppercase; }
@@ -49,146 +53,275 @@
 
         /* Tool Wrapper */
         .tool-wrapper { width: 96%; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; min-height: 800px; }
-        
-        @keyframes fadeEffect { from {opacity: 0;} to {opacity: 1;} }
-        /* Custom Chart Container */
-        .gauge-container { position: relative; width: 100%; max-width: 400px; margin: 0 auto; height: 250px; }
-        .barometer-btn { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
-        .barometer-btn:hover { transform: scale(1.05); }
-        .barometer-btn:active { transform: scale(0.95); }
-        .prio-card { transition: all 0.3s ease; cursor: pointer; }
-        .prio-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-        .prio-card.selected { border-color: #f97316; background-color: #ffedd5; }
-        .action-btn { transition: background-color 0.2s; }
-        .action-btn:hover { background-color: #f97316; color: white; border-color: #f97316; }
-        #location-modal { transition: opacity 0.3s ease-in-out; }
-        #location-modal.hidden { opacity: 0; pointer-events: none; }
 
-        /* Flag Button Styles - Consistent across all pages */
-        .lang-btn {
-            background: none; border: none; font-size: 1.5rem; cursor: pointer;
-            opacity: 0.5; transition: opacity 0.2s, transform 0.2s; padding: 0 5px;
-        }
-        .lang-btn:hover { opacity: 1; transform: scale(1.1); }
-        .lang-btn.active { opacity: 1; transform: scale(1.2); font-weight: bold; }
+        /* Tree Visualization Styles (aus deiner Datei übernommen) */
+        :root { --connector-color: #cbd5e1; }
+        .tree-wrapper { display: flex; justify-content: center; overflow-x: auto; padding-bottom: 2rem; }
+        .trunk-node { background: linear-gradient(145deg, #475569, #334155); color: white; padding: 1rem 2rem; border-radius: 12px; text-align: center; position: relative; margin-bottom: 3rem; max-width: 280px; margin-left: auto; margin-right: auto; }
+        .trunk-node::after { content: ''; position: absolute; bottom: -3rem; left: 50%; width: 2px; height: 3rem; background-color: var(--connector-color); }
+        .branches-container { display: flex; gap: 20px; justify-content: center; position: relative; }
+        .branches-container::before { content: ''; position: absolute; top: -20px; left: 50px; right: 50px; height: 2px; background-color: var(--connector-color); }
+        .branch-column { display: flex; flex-direction: column; align-items: center; width: 160px; position: relative; }
+        .branch-column::before { content: ''; position: absolute; top: -20px; left: 50%; width: 2px; height: 20px; background-color: var(--connector-color); }
+        .branch-node { background: white; border-top: 4px solid #f59e0b; padding: 1rem; text-align: center; border-radius: 0 0 8px 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 2rem; min-height: 120px; width: 100%; font-size: 0.85rem; }
+        .leaf-node { background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 0.5rem; border-radius: 8px; text-align: center; width: 100%; font-size: 0.8rem; font-weight: bold; }
+        @keyframes fadeEffect { from {opacity: 0;} to {opacity: 1;} }
     </style>
 </head>
-<body>
-<body class="flex flex-col min-h-screen overflow-hidden" id="main-body">
+<body class="flex flex-col min-h-screen">
 
-    <!-- LOCATION MODAL -->
-    <div id="location-modal" class="fixed inset-0 z-[100] bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 border-t-4 border-orange-500 animate-bounce-in relative">
-            <div class="absolute top-4 right-4 flex gap-2">
-                <button onclick="changeLanguage('de')" class="lang-btn active" data-lang="de">🇩🇪</button>
-                <button onclick="changeLanguage('en')" class="lang-btn" data-lang="en">🇬🇧</button>
-                <button onclick="changeLanguage('fr')" class="lang-btn" data-lang="fr">🇫🇷</button>
-            </div>
-            <div class="text-center mb-6">
-                <span class="text-4xl mb-2 block">🌍</span>
-                <h2 class="text-2xl font-bold text-slate-800" data-i18n="modal_title">Willkommen im Quartier!</h2>
-                <p class="text-slate-500 text-sm mt-2" data-i18n="modal_desc">Damit wir Sie mit Ihrer Nachbarschaft verbinden können, benötigen wir kurz Ihre Region.</p>
-            </div>
-            <form id="location-form" onsubmit="handleLocationSubmit(event)" class="space-y-4">
+    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">🏛️</span>
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1" data-i18n="lbl_country">Land</label>
-                    <select id="country-select" class="w-full p-3 rounded-lg bg-slate-50 border border-slate-200 focus:border-orange-500 outline-none transition-colors">
-                        <option value="DE">Deutschland 🇩🇪</option>
-                        <option value="BE">Belgien 🇧🇪</option>
-                        <option value="NL">Niederlande 🇳🇱</option>
-                    </select>
+                    <h1 class="text-xl font-bold text-slate-800">Gemeinde-Cockpit</h1>
+                    <p class="text-xs text-slate-500 uppercase tracking-wide">Verwaltung & Strategie</p>
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1" data-i18n="lbl_zip">Postleitzahl</label>
-                    <input id="plz-input" type="text" placeholder="z.B. 52152" class="w-full p-3 rounded-lg bg-slate-50 border border-slate-200 focus:border-orange-500 outline-none transition-colors" required>
-                </div>
-                <div id="location-error" class="hidden text-red-500 text-xs text-center font-bold bg-red-50 p-2 rounded" data-i18n="modal_error">
-                    Diese PLZ liegt leider außerhalb unseres Pilotgebiets.
-                </div>
-                <button type="submit" class="w-full bg-orange-600 text-white font-bold py-3 rounded-lg hover:bg-orange-700 transition-transform active:scale-95 shadow-lg shadow-orange-200" data-i18n="btn_enter">
-                    Zum Quartier
-                </button>
-            </form>
+            </div>
+            <div class="hidden md:block">
+                <button class="bg-slate-800 text-white px-4 py-2 rounded text-sm font-bold hover:bg-slate-700 transition">📊 Monatsbericht</button>
+            </div>
         </div>
-    </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full">
+
+        <div class="grid grid-cols-2 md:grid-cols-6 gap-2 mb-8 bg-white p-2 rounded-xl shadow-sm border border-slate-200 sticky top-20 z-40 overflow-x-auto">
+            <button onclick="switchTab('cockpit')" id="tab-cockpit" class="nav-tab px-3 py-3 rounded-lg text-sm font-bold transition-colors bg-slate-800 text-white shadow">
+                🚀 Cockpit
+            </button>
+            
+            <button onclick="switchTab('actors')" id="tab-actors" class="nav-tab px-3 py-3 rounded-lg text-sm font-semibold text-slate-500 hover:bg-slate-100 transition-colors">
+                🎓 Wissen
+            </button>
+            <button onclick="switchTab('phaseA')" id="tab-phaseA" class="nav-tab px-3 py-3 rounded-lg text-sm font-semibold text-slate-500 hover:bg-slate-100 transition-colors">
+                A. Analyse
+            </button>
+            <button onclick="switchTab('phaseB')" id="tab-phaseB" class="nav-tab px-3 py-3 rounded-lg text-sm font-semibold text-slate-500 hover:bg-slate-100 transition-colors">
+                B. Kontakt
+            </button>
+            <button onclick="switchTab('phaseC')" id="tab-phaseC" class="nav-tab px-3 py-3 rounded-lg text-sm font-semibold text-slate-500 hover:bg-slate-100 transition-colors">
+                C. Soft Power
+            </button>
+            <button onclick="switchTab('phaseD')" id="tab-phaseD" class="nav-tab px-3 py-3 rounded-lg text-sm font-semibold text-slate-500 hover:bg-slate-100 transition-colors">
+                D. Hard Power
+            </button>
+        </div>
+
+        <div id="cockpit" class="tab-content animate-fade-in">
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border-b-4 border-emerald-500">
+                    <div class="text-3xl font-bold text-slate-800">12</div>
+                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mt-1">Aktive Baustellen</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border-b-4 border-red-500">
+                    <div class="text-3xl font-bold text-slate-800">5</div>
+                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mt-1">Offene Mängel</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border-b-4 border-blue-500">
+                    <div class="text-3xl font-bold text-slate-800">85%</div>
+                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mt-1">Budget Nutzung</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border-b-4 border-amber-500">
+                    <div class="text-3xl font-bold text-slate-800">3</div>
+                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mt-1">Kritische Leerstände</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-200">
+                    <div class="p-5 border-b border-slate-100 flex justify-between items-center">
+                        <h3 class="font-bold text-slate-800">🔔 Eingegangene Meldungen (Bürger)</h3>
+                        <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full font-bold">2 Neu</span>
+                    </div>
+                    <div class="divide-y divide-slate-100">
+                        <div class="p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-slate-50 transition">
+                            <div>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded font-bold">NEU</span>
+                                    <span class="font-bold text-slate-700">Wilder Müll, Parkweg 3</span>
+                                </div>
+                                <div class="text-xs text-slate-500">Gemeldet vor 2 Std. von M. Müller • Kategorie: Ordnung</div>
+                            </div>
+                            <button class="px-3 py-1.5 bg-slate-800 text-white text-xs rounded font-medium hover:bg-slate-700">Bearbeiten</button>
+                        </div>
+                        <div class="p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-slate-50 transition">
+                            <div>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="bg-amber-100 text-amber-700 text-[10px] px-2 py-0.5 rounded font-bold">IN ARBEIT</span>
+                                    <span class="font-bold text-slate-700">Straßenlaterne flackert</span>
+                                </div>
+                                <div class="text-xs text-slate-500">Bauhof beauftragt • Hauptstraße 4</div>
+                            </div>
+                            <button class="px-3 py-1.5 bg-slate-100 text-slate-600 text-xs rounded font-medium hover:bg-slate-200">Status</button>
+                        </div>
+                         <div class="p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-slate-50 transition">
+                            <div>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="bg-amber-100 text-amber-700 text-[10px] px-2 py-0.5 rounded font-bold">IN ARBEIT</span>
+                                    <span class="font-bold text-slate-700">Gehwegabsenkung Schulstraße</span>
+                                </div>
+                                <div class="text-xs text-slate-500">Wartet auf Material • Priorität Mittel</div>
+                            </div>
+                            <button class="px-3 py-1.5 bg-slate-100 text-slate-600 text-xs rounded font-medium hover:bg-slate-200">Status</button>
+                        </div>
+                    </div>
+                    <div class="p-3 text-center border-t border-slate-100">
+                        <button class="text-sm text-blue-600 font-medium hover:underline">Alle Tickets anzeigen →</button>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 text-center">
+                        <h3 class="font-bold text-slate-800 mb-4 text-left">📍 Baukarte & Kataster</h3>
+                        <div class="bg-slate-100 h-32 rounded mb-4 flex items-center justify-center text-slate-400 text-sm border border-slate-200">
+                            [Interaktive Karte]
+                        </div>
+                        <button class="w-full py-2 border border-slate-300 rounded text-slate-600 font-bold text-sm hover:bg-slate-50">Karte vergrößern</button>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+                        <h3 class="font-bold text-slate-800 mb-4">⚡ Schnellzugriff</h3>
+                        <div class="space-y-2">
+                            <button onclick="switchTab('phaseA')" class="w-full text-left px-3 py-2 rounded hover:bg-blue-50 text-blue-700 text-sm font-medium transition flex items-center gap-2">
+                                🔍 Neue Leerstands-Analyse
+                            </button>
+                            <button class="w-full text-left px-3 py-2 rounded hover:bg-slate-50 text-slate-600 text-sm font-medium transition flex items-center gap-2">
+                                📢 Bürger-Info veröffentlichen
+                            </button>
+                            <button class="w-full text-left px-3 py-2 rounded hover:bg-slate-50 text-slate-600 text-sm font-medium transition flex items-center gap-2">
+                                👥 Team verwalten
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="actors" class="tab-content hidden animate-fade-in">
+            <div class="bg-white rounded-xl p-8 shadow-sm border border-slate-200">
+                <header class="mb-8 border-b border-slate-100 pb-4">
+                    <span class="text-xs font-bold text-indigo-600 uppercase bg-indigo-50 px-2 py-1 rounded">Grundlagen</span>
+                    <h2 class="text-2xl font-bold text-slate-900 mt-2">Akteurs-Typen der Stadtentwicklung</h2>
+                    <p class="text-slate-500">Wer besitzt die Stadt und warum? (BBSR-Analyse)</p>
+                </header>
+                
+                <div class="mb-12">
+                    <h3 class="font-bold text-slate-800 mb-4">Deep Dive: Der Private Kleineigentümer</h3>
+                    <div class="bg-slate-50 rounded-xl p-6 border border-slate-200 overflow-hidden">
+                        <div class="tree-wrapper">
+                            <div class="flex flex-col items-center min-w-[800px]">
+                                <div class="trunk-node">
+                                    <div class="font-bold uppercase tracking-wide">Privater Eigentümer</div>
+                                    <div class="text-xs text-slate-300 mt-1">Lokal • Laie • Emotional</div>
+                                </div>
+                                <div class="branches-container">
+                                    <div class="branch-column">
+                                        <div class="branch-node"><strong>Kompetenzlücke</strong><br><span class="text-slate-500">Weiß nicht wie</span></div>
+                                        <div class="leaf-node">Bauberatung</div>
+                                    </div>
+                                    <div class="branch-column">
+                                        <div class="branch-node"><strong>Familie/Erbe</strong><br><span class="text-slate-500">Emotionale Bindung</span></div>
+                                        <div class="leaf-node">Pachtmodelle</div>
+                                    </div>
+                                    <div class="branch-column">
+                                        <div class="branch-node"><strong>Überforderung</strong><br><span class="text-slate-500">Kein Geld/Zeit</span></div>
+                                        <div class="leaf-node">Zwischenerwerb</div>
+                                    </div>
+                                    <div class="branch-column">
+                                        <div class="branch-node"><strong>Alter</strong><br><span class="text-slate-500">Lebenszyklus</span></div>
+                                        <div class="leaf-node">Verrentung</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="font-bold text-slate-800 mb-4">Die professionellen Akteure</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="p-4 border border-slate-200 rounded-lg hover:shadow-md transition">
+                        <div class="text-2xl mb-2">🛠️</div>
+                        <h4 class="font-bold">Projektentwickler</h4>
+                        <p class="text-sm text-slate-600">Entwickelt & verkauft. Renditeorientiert. Wichtig für Brachflächen.</p>
+                    </div>
+                    <div class="p-4 border border-slate-200 rounded-lg hover:shadow-md transition">
+                        <div class="text-2xl mb-2">🏢</div>
+                        <h4 class="font-bold">Institutionelle</h4>
+                        <p class="text-sm text-slate-600">Fonds & Versicherungen. Langfristige Rendite, oft ortsfremd.</p>
+                    </div>
+                    <div class="p-4 border border-slate-200 rounded-lg hover:shadow-md transition">
+                        <div class="text-2xl mb-2">🏛️</div>
+                        <h4 class="font-bold">Kommunale</h4>
+                        <p class="text-sm text-slate-600">Stadtrendite vor Geldrendite. Das Werkzeug bei Marktversagen.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="phaseA" class="tab-content hidden animate-fade-in">
+            <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+                <h3 class="text-2xl font-bold text-slate-800 mb-2">A. Vorlauf & Analyse</h3>
+                <p class="text-slate-600 mb-6">Datenbasierte Identifikation von Leerstandspotenzialen.</p>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                        <h4 class="font-bold mb-4">Der Selektions-Trichter</h4>
+                        <div class="space-y-2 text-center text-sm font-medium text-white">
+                            <div class="bg-slate-400 py-2 rounded">Gesamtbestand</div>
+                            <div class="bg-blue-400 py-2 rounded w-11/12 mx-auto">Datenerhebung (Verbrauch)</div>
+                            <div class="bg-blue-600 py-2 rounded w-10/12 mx-auto">Verdachtsfälle</div>
+                            <div onclick="document.getElementById('analysis-res').classList.remove('hidden')" class="bg-slate-800 py-3 rounded w-9/12 mx-auto cursor-pointer hover:bg-emerald-600 transition">
+                                ▶ Analyse Starten
+                            </div>
+                        </div>
+                        <div id="analysis-res" class="hidden mt-4 bg-emerald-100 text-emerald-800 p-4 rounded text-center">
+                            ✅ <strong>Potenzial HOCH</strong><br>Objekt für Ansprache geeignet.
+                        </div>
+                    </div>
+                    <div>
+                        <div class="chart-container">
+                            <canvas id="analysisChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="phaseB" class="tab-content hidden animate-fade-in">
+            <div class="max-w-4xl mx-auto text-center">
+                <h3 class="text-2xl font-bold text-slate-800 mb-8">B. Die Weichenstellung</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div onclick="switchTab('phaseC')" class="cursor-pointer bg-white p-8 rounded-2xl border-2 border-transparent hover:border-blue-500 shadow-sm hover:shadow-lg transition group">
+                        <div class="text-6xl mb-4 group-hover:scale-110 transition">🤝</div>
+                        <h4 class="text-xl font-bold text-blue-900">Kooperation</h4>
+                        <p class="text-slate-500 mt-2">Eigentümer ist gesprächsbereit.</p>
+                        <div class="mt-4 text-blue-600 font-bold">Weg: Soft Power →</div>
+                    </div>
+                    <div onclick="switchTab('phaseD')" class="cursor-pointer bg-white p-8 rounded-2xl border-2 border-transparent hover:border-red-500 shadow-sm hover:shadow-lg transition group">
+                        <div class="text-6xl mb-4 group-hover:scale-110 transition">⛔</div>
+                        <h4 class="text-xl font-bold text-red-900">Blockade</h4>
+                        <p class="text-slate-500 mt-2">Keine Reaktion oder Ablehnung.</p>
+                        <div class="mt-4 text-red-600 font-bold">Weg: Hard Power →</div>
+                    </div>
+<body>
 
     <nav>
         <div class="nav-links"><a href="index.html">&larr; Zurück zur Übersicht</a></div>
         <a href="index.html" class="logo">BAUKOMPASS</a>
-    <!-- Navbar -->
-    <nav class="bg-white shadow-sm border-b border-orange-100 sticky top-0 z-50">
-        <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center gap-2 cursor-pointer" onclick="window.location.href='index.html'">
-                <span class="text-2xl">🏡</span>
-                <div class="flex flex-col leading-tight">
-                    <span class="font-bold text-lg text-slate-800 tracking-tight" data-i18n="nav_title">Unser Quartier</span>
-                    <span id="header-location" class="text-xs text-orange-600 font-semibold uppercase" data-i18n="nav_subtitle">Region wählen...</span>
-                </div>
-            </div>
-            
-            <div class="flex items-center gap-4">
-                <div class="hidden md:block text-xs font-medium bg-orange-100 text-orange-800 px-3 py-1 rounded-full" data-i18n="nav_phase">
-                    Phase: Bürger-Dialog
-                </div>
-                <!-- Global Language Switcher -->
-                <div class="flex gap-2 border-l border-slate-200 pl-4">
-                    <button onclick="changeLanguage('de')" class="lang-btn active" data-lang="de">🇩🇪</button>
-                    <button onclick="changeLanguage('en')" class="lang-btn" data-lang="en">🇬🇧</button>
-                    <button onclick="changeLanguage('fr')" class="lang-btn" data-lang="fr">🇫🇷</button>
-                </div>
-            </div>
-        </div>
     </nav>
 
     <div class="header-section">
         <h1>Von Gemeinden für Gemeinden</h1>
         <p>Wählen Sie einen Bereich:</p>
     </div>
-    <!-- Main Content -->
-    <main class="flex-grow max-w-5xl mx-auto px-4 py-8 w-full space-y-12">
-        <section class="text-center max-w-3xl mx-auto mt-4 mb-8">
-            <h1 class="text-3xl md:text-5xl font-extrabold text-slate-900 mb-4 leading-tight">
-                <span data-i18n="hero_title_1">Wie soll sich</span> 
-                <span id="hero-city-name" class="text-orange-600 underline decoration-4 decoration-orange-200" data-i18n="hero_title_city">unsere Stadt</span> 
-                <span data-i18n="hero_title_2">entwickeln?</span>
-            </h1>
-            <p class="text-lg text-slate-600" data-i18n="hero_desc">Leerstand vermeiden, Wohnraum schaffen, Charakter bewahren. Ihre Stimmung und Ihre Prioritäten sind unser Kompass.</p>
-        </section>
 
     <div class="tab-container">
         <button class="tab-button active" onclick="openTab(event, 'Info')">Informationen</button>
         <button class="tab-button" onclick="openTab(event, 'Tool')">Immobilien-Tool</button>
     </div>
-        <!-- Events & Leih-Bar -->
-        <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 relative overflow-hidden">
-                <div class="absolute top-0 right-0 bg-orange-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider" data-i18n="badge_soon">Demnächst</div>
-                <div class="flex items-start gap-4">
-                    <div class="bg-orange-50 text-orange-600 w-12 h-12 flex flex-col items-center justify-center rounded-lg font-bold border border-orange-100">
-                        <span class="text-xs uppercase" data-i18n="date_day">So</span>
-                        <span class="text-lg leading-none">14</span>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-slate-800 text-lg" data-i18n="event_title">Quartiersflohmarkt</h3>
-                        <p class="text-slate-500 text-sm mb-3" data-i18n="event_loc">Marktplatz, 14:00 Uhr</p>
-                        <button class="text-orange-600 text-sm font-semibold hover:underline flex items-center">
-                            <span class="mr-1">📅</span> <span data-i18n="btn_calendar">Kalender öffnen</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 relative overflow-hidden">
-                <div class="absolute top-0 right-0 bg-green-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider" data-i18n="badge_avail">Verfügbar</div>
-                <div class="flex items-start gap-4">
-                    <div class="bg-green-50 text-green-600 w-12 h-12 flex items-center justify-center rounded-lg text-2xl border border-green-100">🚲</div>
-                    <div>
-                        <h3 class="font-bold text-slate-800 text-lg" data-i18n="rent_title">Leih-Bar: Lastenrad "E-Donkey"</h3>
-                        <p class="text-slate-500 text-sm mb-3" data-i18n="rent_desc">Kostenlos ausleihen für 24h.</p>
-                        <button onclick="alert('Reservierungs-Modul öffnet sich...')" class="bg-slate-800 text-white px-3 py-1.5 rounded text-xs font-semibold hover:bg-slate-700 transition-colors" data-i18n="btn_reserve">Jetzt reservieren</button>
-                    </div>
-                </div>
-            </div>
-        </section>
 
     <main class="content-wrapper">
         <div id="Info" class="tab-content" style="display: block;">
@@ -196,42 +329,29 @@
                 <div class="info-block">
                     <h2>Gemeinsame Ziele erreichen</h2>
                     <p>Hier finden Sie Informationen zur kommunalen Zusammenarbeit und Strategieentwicklung.</p>
-        <!-- Stimmungsbarometer -->
-        <section class="bg-white rounded-3xl p-6 md:p-10 shadow-lg border border-orange-100">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-                <div>
-                    <h2 class="text-2xl font-bold text-slate-800 mb-2" data-i18n="baro_title">Das Stimmungsbarometer</h2>
-                    <p class="text-slate-500 mb-8" data-i18n="baro_desc">Wie bewerten Sie die aktuelle Entwicklung in Ihrer Nachbarschaft?</p>
-                    <div class="flex justify-between gap-4 mb-8">
-                        <button onclick="voteSentiment(0)" class="barometer-btn flex flex-col items-center gap-2 w-1/3 group">
-                            <div class="w-16 h-16 rounded-2xl bg-red-50 group-hover:bg-red-100 flex items-center justify-center text-3xl shadow-sm border border-red-100">😟</div>
-                            <span class="text-xs font-bold text-red-600 uppercase tracking-wide" data-i18n="mood_bad">Besorgt</span>
-                        </button>
-                        <button onclick="voteSentiment(1)" class="barometer-btn flex flex-col items-center gap-2 w-1/3 group">
-                            <div class="w-16 h-16 rounded-2xl bg-yellow-50 group-hover:bg-yellow-100 flex items-center justify-center text-3xl shadow-sm border border-yellow-100">😐</div>
-                            <span class="text-xs font-bold text-yellow-600 uppercase tracking-wide" data-i18n="mood_neutral">Neutral</span>
-                        </button>
-                        <button onclick="voteSentiment(2)" class="barometer-btn flex flex-col items-center gap-2 w-1/3 group">
-                            <div class="w-16 h-16 rounded-2xl bg-green-50 group-hover:bg-green-100 flex items-center justify-center text-3xl shadow-sm border border-green-100">😊</div>
-                            <span class="text-xs font-bold text-green-600 uppercase tracking-wide" data-i18n="mood_good">Zuversichtlich</span>
-                        </button>
-                    </div>
-                    <div id="vote-msg" class="text-center text-sm font-medium text-orange-600 opacity-0 transition-opacity" data-i18n="vote_thanks">Danke für Ihre Stimme!</div>
-                </div>
-                <div class="relative">
-                    <div class="gauge-container">
-                        <canvas id="sentimentChart"></canvas>
-                        <div class="absolute top-[60%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
-                            <div id="sentiment-score" class="text-4xl font-bold text-slate-800">72%</div>
-                            <div class="text-xs text-slate-400 uppercase tracking-wider" id="sentiment-label" data-i18n="status_positive">Positiv</div>
-                        </div>
-                    </div>
-                    <p class="text-center text-xs text-slate-400 mt-[-20px]"><span data-i18n="based_on">Basierend auf</span> <span id="vote-count">1.240</span> <span data-i18n="votes">Stimmen</span></p>
                 </div>
             </div>
         </div>
-        </section>
 
+        <div id="phaseC" class="tab-content hidden animate-fade-in">
+            <h3 class="text-2xl font-bold text-blue-600 mb-6">C. Kooperativer Angebots-Pool</h3>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div class="lg:col-span-4 space-y-2">
+                    <button onclick="updateModel(0)" class="model-btn w-full text-left p-4 bg-white rounded border border-slate-200 hover:bg-blue-50 active">💰 Verkauf / Pacht</button>
+                    <button onclick="updateModel(1)" class="model-btn w-full text-left p-4 bg-white rounded border border-slate-200 hover:bg-blue-50">👵 Verrentung</button>
+                    <button onclick="updateModel(2)" class="model-btn w-full text-left p-4 bg-white rounded border border-slate-200 hover:bg-blue-50">🛠️ Mitwirkung</button>
+                    <button onclick="updateModel(3)" class="model-btn w-full text-left p-4 bg-white rounded border border-slate-200 hover:bg-blue-50">🎭 Zwischennutzung</button>
+                    <button onclick="updateModel(4)" class="model-btn w-full text-left p-4 bg-white rounded border border-slate-200 hover:bg-blue-50">🏘️ Genossenschaft</button>
+                </div>
+                <div class="lg:col-span-8">
+                    <div class="bg-blue-50 p-6 rounded-xl border border-blue-100 min-h-[200px] mb-6" id="model-content">
+                        </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                        <div class="chart-container" style="height:300px;">
+                            <canvas id="radarChart"></canvas>
+                        </div>
+                    </div>
+                </div>
         <div id="Tool" class="tab-content">
             <div class="tool-wrapper">
                 <iframe 
@@ -241,145 +361,100 @@
                     style="width: 100%; border: none; overflow: hidden; display: block;"
                 >
                 </iframe>
-        <!-- Prioritäten -->
-        <section>
-            <h2 class="text-2xl font-bold text-slate-800 mb-6 text-center" data-i18n="prio_title">Worauf sollen wir uns fokussieren?</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div onclick="togglePrio(this)" class="prio-card bg-white p-6 rounded-xl border-2 border-transparent shadow-sm flex flex-col items-center text-center">
-                    <div class="w-12 h-12 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mb-4 text-xl">🔨</div>
-                    <h3 class="font-bold text-slate-800 mb-2" data-i18n="prio_1_title">Sanierung fördern</h3>
-                    <p class="text-xs text-slate-500" data-i18n="prio_1_desc">Altbauten erhalten statt neu bauen.</p>
-                </div>
-                <div onclick="togglePrio(this)" class="prio-card bg-white p-6 rounded-xl border-2 border-transparent shadow-sm flex flex-col items-center text-center">
-                    <div class="w-12 h-12 bg-green-50 text-green-500 rounded-full flex items-center justify-center mb-4 text-xl">🌳</div>
-                    <h3 class="font-bold text-slate-800 mb-2" data-i18n="prio_2_title">Mehr Grünflächen</h3>
-                    <p class="text-xs text-slate-500" data-i18n="prio_2_desc">Versiegelte Flächen entsiegeln.</p>
-                </div>
-                <div onclick="togglePrio(this)" class="prio-card bg-white p-6 rounded-xl border-2 border-transparent shadow-sm flex flex-col items-center text-center">
-                    <div class="w-12 h-12 bg-purple-50 text-purple-500 rounded-full flex items-center justify-center mb-4 text-xl">🎓</div>
-                    <h3 class="font-bold text-slate-800 mb-2" data-i18n="prio_3_title">Junges Wohnen</h3>
-                    <p class="text-xs text-slate-500" data-i18n="prio_3_desc">Bezahlbarer Raum für Familien.</p>
-                </div>
             </div>
-        </section>
-
-        <!-- Mängelmelder -->
-        <section class="bg-white rounded-3xl p-8 shadow-sm border border-slate-200">
-            <div class="flex items-center gap-3 mb-6">
-                <span class="text-3xl">📸</span>
-                <div>
-                    <h2 class="text-2xl font-bold text-slate-800" data-i18n="report_title">Mängelmelder</h2>
-                    <p class="text-sm text-slate-500" data-i18n="report_desc">Schlagloch entdeckt? Laterne defekt? Direkt an den Bauhof melden.</p>
-                </div>
-            </div>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-2 space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1" data-i18n="lbl_category">Kategorie</label>
-                            <select class="w-full p-3 rounded-lg bg-slate-50 border border-slate-200 focus:border-orange-500 focus:ring-0 outline-none">
-                                <option data-i18n="opt_street">Straßenschäden</option>
-                                <option data-i18n="opt_light">Beleuchtung defekt</option>
-                                <option data-i18n="opt_trash">Müll / Sauberkeit</option>
-                                <option data-i18n="opt_green">Grünflächenpflege</option>
-                                <option data-i18n="opt_other">Sonstiges</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1" data-i18n="lbl_loc">Standort</label>
-                            <input type="text" placeholder="Straße oder Beschreibung" class="w-full p-3 rounded-lg bg-slate-50 border border-slate-200 focus:border-orange-500 outline-none">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1" data-i18n="lbl_desc">Beschreibung</label>
-                        <textarea rows="3" placeholder="Details..." class="w-full p-3 rounded-lg bg-slate-50 border border-slate-200 focus:border-orange-500 outline-none"></textarea>
-                    </div>
-                    <button class="bg-orange-600 text-white font-bold py-3 px-6 rounded-lg w-full md:w-auto hover:bg-orange-700 transition-colors shadow-lg shadow-orange-200" data-i18n="btn_submit_report">Meldung absenden</button>
-                </div>
-                <div class="bg-slate-50 rounded-xl p-5 border border-slate-100">
-                    <h4 class="text-sm font-bold text-slate-700 mb-4 border-b border-slate-200 pb-2" data-i18n="last_report">Ihre letzte Meldung:</h4>
-                    <div class="flex items-start gap-3">
-                        <div class="w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center flex-shrink-0 mt-1 text-xs">✔</div>
-                        <div>
-                            <div class="font-bold text-slate-800 text-sm">Laterne Hauptstraße 4</div>
-                            <div class="text-xs text-green-600 font-semibold mb-1" data-i18n="status_done">Erledigt (Repariert)</div>
-                            <div class="text-xs text-slate-400" data-i18n="report_date">Gemeldet am 10.04. • Behoben am 12.04.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Bau-Alarm & Handwerker -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <section class="bg-indigo-50 rounded-3xl p-6 border border-indigo-100">
-                <div class="flex items-start justify-between mb-4">
-                    <div>
-                        <h3 class="text-xl font-bold text-indigo-900" data-i18n="alarm_title">Bau-Alarm: Nichts verpassen!</h3>
-                        <p class="text-sm text-indigo-700/80 mt-1" data-i18n="alarm_desc">Nachricht erhalten, wenn im Umkreis von 200m Bauprojekte starten oder Pläne geändert werden.</p>
-                    </div>
-                    <span class="text-3xl">🏗️</span>
-                </div>
-                <div class="bg-white p-4 rounded-xl shadow-sm flex items-center gap-2">
-                    <input type="email" placeholder="E-Mail" class="flex-grow p-2 outline-none text-sm text-slate-600">
-                    <button class="text-xs font-bold bg-indigo-600 text-white px-3 py-2 rounded-lg hover:bg-indigo-700" data-i18n="btn_activate">Aktivieren</button>
-                </div>
-            </section>
-            <section class="bg-white rounded-3xl p-6 border border-slate-200">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-xl font-bold text-slate-800" data-i18n="craft_title">🛠️ Handwerker in der Nähe</h3>
-                    <span class="text-xs bg-slate-100 text-slate-500 px-2 py-1 rounded" data-i18n="radius">Radius: 10km</span>
-                </div>
-                <div class="relative mb-4">
-                    <input type="text" placeholder="PLZ..." class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 pl-3 pr-10 text-sm focus:border-slate-400 outline-none">
-                    <span class="absolute right-3 top-2 text-slate-400">🔍</span>
-                </div>
-                <div class="space-y-3">
-                    <div class="flex items-center justify-between p-3 border border-slate-100 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer group">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600 font-bold text-xs">EM</div>
-                            <div>
-                                <div class="font-bold text-slate-800 text-sm">Elektro Müller GmbH</div>
-                                <div class="flex gap-1 mt-1"><span class="text-[10px] bg-slate-100 text-slate-500 px-1.5 rounded">Photovoltaik</span> <span class="text-[10px] bg-slate-100 text-slate-500 px-1.5 rounded">Smart Home</span></div>
-                            </div>
-                        </div>
-                        <button class="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">📞</button>
-                    </div>
-                    <div class="flex items-center justify-between p-3 border border-slate-100 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer group">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600 font-bold text-xs">DS</div>
-                            <div>
-                                <div class="font-bold text-slate-800 text-sm">Dachdeckerei Schmidt</div>
-                                <div class="flex gap-1 mt-1"><span class="text-[10px] bg-slate-100 text-slate-500 px-1.5 rounded" data-i18n="tag_insulation">Dämmung</span> <span class="text-[10px] bg-slate-100 text-slate-500 px-1.5 rounded" data-i18n="tag_renovation">Sanierung</span></div>
-                            </div>
-                        </div>
-                        <button class="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">📞</button>
-                    </div>
-                </div>
-            </section>
         </div>
 
-        <!-- Objekt melden -->
-        <section class="bg-slate-900 rounded-3xl p-8 text-white text-center">
-            <h3 class="text-xl font-bold mb-2" data-i18n="empty_title">Leerstand melden?</h3>
-            <p class="text-slate-400 text-sm mb-4 max-w-lg mx-auto" data-i18n="empty_desc">Kennen Sie ein weiteres leerstehendes Haus, das Potenzial hat? Helfen Sie uns.</p>
-            <button class="bg-orange-600 text-white px-6 py-2 rounded-full font-bold hover:bg-orange-700 transition-colors" data-i18n="btn_empty_report">Zum Leerstandsmelder →</button>
-        </section>
+        <div id="phaseD" class="tab-content hidden animate-fade-in">
+            <h3 class="text-2xl font-bold text-red-600 mb-6">D. Konfrontative Eskalation</h3>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h4 class="font-bold mb-4">1. Verhältnismäßigkeit prüfen</h4>
+                    <div class="space-y-2 mb-4">
+                        <label class="flex items-center gap-2"><input type="checkbox" id="chk1" onclick="checkEscalation()"> Zweckentfremdung nachweisbar?</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" id="chk2" onclick="checkEscalation()"> Sanierung zumutbar?</label>
+                    </div>
+                    <div id="esc-status" class="bg-slate-100 p-3 rounded text-center text-slate-500 font-bold">Prüfung offen</div>
+                </div>
+                <div id="ladder" class="opacity-50 pointer-events-none transition-opacity bg-red-50 p-6 rounded-xl border border-red-100">
+                    <h4 class="font-bold text-red-800 mb-4">2. Eskalationsleiter</h4>
+                    <div class="space-y-3">
+                        <div onclick="alert('Steuerdruck erhöht')" class="escalation-step cursor-pointer bg-white p-3 rounded border-l-4 border-red-300 hover:bg-red-100">1. Grundsteuer C</div>
+                        <div onclick="alert('Bußgeld verhängt')" class="escalation-step cursor-pointer bg-white p-3 rounded border-l-4 border-red-500 hover:bg-red-100">2. Bußgeld / Gebot</div>
+                        <div onclick="alert('Treuhand eingeleitet')" class="escalation-step cursor-pointer bg-white p-3 rounded border-l-4 border-red-700 hover:bg-red-100">3. Treuhänder / Enteignung</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </main>
 
-    <footer class="bg-white border-t border-slate-200 text-slate-400 py-8 mt-auto">
-        <div class="max-w-5xl mx-auto px-4 text-center">
-            <p class="mb-4 text-sm">&copy; 2024 Stadtentwicklung & Bürgerdialog</p>
-            <div class="flex justify-center gap-4 text-xs">
-                <a href="#" class="hover:text-slate-600" data-i18n="link_imprint">Impressum</a>
-                <a href="#" class="hover:text-slate-600" data-i18n="link_privacy">Datenschutz</a>
-                <a href="#" class="hover:text-slate-600" data-i18n="link_contact">Kontakt</a>
-            </div>
-        </div>
-    </footer>
-
-    <!-- LOGIC -->
     <script>
+        // --- LOGIK ---
+        
+        // Navigation
+        function switchTab(id) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+
+            // Reset Buttons
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.classList.remove('bg-slate-800', 'text-white', 'shadow');
+                btn.classList.add('text-slate-500', 'hover:bg-slate-100');
+            });
+
+            // Activate Button
+            const activeBtn = document.getElementById('tab-' + id);
+            activeBtn.classList.remove('text-slate-500', 'hover:bg-slate-100');
+            activeBtn.classList.add('bg-slate-800', 'text-white', 'shadow');
+
+            // Init Charts on demand
+            if(id === 'phaseA') initPieChart();
+            if(id === 'phaseC') { initRadarChart(); updateModel(0); }
+        }
+
+        // Phase A Chart
+        let pieChart = null;
+        function initPieChart() {
+            if(pieChart) return;
+            const ctx = document.getElementById('analysisChart').getContext('2d');
+            pieChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Aussortiert', 'Potenzial'],
+                    datasets: [{ data: [65, 35], backgroundColor: ['#cbd5e1', '#10b981'] }]
+                }
+            });
+        }
+
+        // Phase C Models & Radar
+        const modelData = [
+            { title: "Verkauf / Pacht", desc: "Für Eigentümer ohne Zeit. Volle Entlastung.", stats: [90, 20, 10, 10] },
+            { title: "Verrentung", desc: "Für Senioren. Kapital freisetzen, wohnen bleiben.", stats: [60, 80, 50, 40] },
+            { title: "Mitwirkung", desc: "Für Gestalter. Mitsprache vertraglich gesichert.", stats: [40, 40, 80, 60] },
+            { title: "Zwischennutzung", desc: "Kurzfristige Überbrückung.", stats: [100, 70, 60, 90] },
+            { title: "Genossenschaft", desc: "Langfristige Sicherung gegen Spekulation.", stats: [30, 50, 90, 50] }
+        ];
+        let radarChart = null;
+
+        function initRadarChart() {
+            if(radarChart) return;
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            radarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Tempo', 'Sicherheit', 'Kontrolle', 'Kosten'],
+                    datasets: [{
+                        label: 'Eigenschaften',
+                        data: [0,0,0,0],
+                        backgroundColor: 'rgba(14, 165, 233, 0.2)',
+                        borderColor: '#0ea5e9',
+                    }]
+                },
+                options: {
+                    scales: { r: { suggestedMin: 0, suggestedMax: 100, ticks: { display: false } } }
+                }
+            });
         function openTab(evt, tabName) {
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tab-content");
@@ -388,135 +463,48 @@
             for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
             document.getElementById(tabName).style.display = "block";
             evt.currentTarget.className += " active";
-        // --- TRANSLATION DATABASE ---
-        const translations = {
-            "de": {
-                "modal_title": "Willkommen im Quartier!", "modal_desc": "Damit wir Sie mit Ihrer Nachbarschaft verbinden können, benötigen wir kurz Ihre Region.", "lbl_country": "Land", "lbl_zip": "Postleitzahl", "modal_error": "Diese PLZ liegt leider außerhalb unseres Pilotgebiets.", "btn_enter": "Zum Quartier", "nav_title": "Unser Quartier", "nav_subtitle": "Region wählen...", "nav_phase": "Phase: Bürger-Dialog", "hero_title_1": "Wie soll sich", "hero_title_city": "unsere Stadt", "hero_title_2": "entwickeln?", "hero_desc": "Leerstand vermeiden, Wohnraum schaffen, Charakter bewahren. Ihre Stimmung und Ihre Prioritäten sind unser Kompass.", "badge_soon": "Demnächst", "badge_avail": "Verfügbar", "date_day": "So", "event_title": "Quartiersflohmarkt", "event_loc": "Marktplatz, 14:00 Uhr", "btn_calendar": "Kalender öffnen", "rent_title": "Leih-Bar: Lastenrad \"E-Donkey\"", "rent_desc": "Kostenlos ausleihen für 24h.", "btn_reserve": "Jetzt reservieren", "baro_title": "Das Stimmungsbarometer", "baro_desc": "Wie bewerten Sie die aktuelle Entwicklung in Ihrer Nachbarschaft?", "mood_bad": "Besorgt", "mood_neutral": "Neutral", "mood_good": "Zuversichtlich", "vote_thanks": "Danke für Ihre Stimme!", "status_positive": "Positiv", "based_on": "Basierend auf", "votes": "Stimmen", "prio_title": "Worauf sollen wir uns fokussieren?", "prio_1_title": "Sanierung fördern", "prio_1_desc": "Altbauten erhalten statt neu bauen.", "prio_2_title": "Mehr Grünflächen", "prio_2_desc": "Versiegelte Flächen entsiegeln.", "prio_3_title": "Junges Wohnen", "prio_3_desc": "Bezahlbarer Raum für Familien.", "report_title": "Mängelmelder", "report_desc": "Schlagloch entdeckt? Laterne defekt? Direkt an den Bauhof melden.", "lbl_category": "Kategorie", "opt_street": "Straßenschäden", "opt_light": "Beleuchtung defekt", "opt_trash": "Müll / Sauberkeit", "opt_green": "Grünflächenpflege", "opt_other": "Sonstiges", "lbl_loc": "Standort", "lbl_desc": "Beschreibung", "btn_submit_report": "Meldung absenden", "last_report": "Ihre letzte Meldung:", "status_done": "Erledigt (Repariert)", "report_date": "Gemeldet am 10.04. • Behoben am 12.04.", "alarm_title": "Bau-Alarm: Nichts verpassen!", "alarm_desc": "Nachricht erhalten, wenn im Umkreis von 200m Bauprojekte starten oder Pläne geändert werden.", "btn_activate": "Aktivieren", "craft_title": "🛠️ Handwerker in der Nähe", "radius": "Radius: 10km", "tag_insulation": "Dämmung", "tag_renovation": "Sanierung", "empty_title": "Leerstand melden?", "empty_desc": "Kennen Sie ein weiteres leerstehendes Haus, das Potenzial hat? Helfen Sie uns.", "btn_empty_report": "Zum Leerstandsmelder →", "link_imprint": "Impressum", "link_privacy": "Datenschutz", "link_contact": "Kontakt"
-            },
-            "en": {
-                "modal_title": "Welcome to the Neighborhood!", "modal_desc": "To connect you with your neighborhood, we briefly need your region.", "lbl_country": "Country", "lbl_zip": "Zip Code", "modal_error": "This zip code is unfortunately outside our pilot area.", "btn_enter": "Go to Neighborhood", "nav_title": "Our Neighborhood", "nav_subtitle": "Select region...", "nav_phase": "Phase: Citizen Dialogue", "hero_title_1": "How should", "hero_title_city": "our city", "hero_title_2": "develop?", "hero_desc": "Avoid vacancies, create living space, preserve character. Your mood and priorities are our compass.", "badge_soon": "Coming Soon", "badge_avail": "Available", "date_day": "Sun", "event_title": "Neighborhood Flea Market", "event_loc": "Market Square, 2:00 PM", "btn_calendar": "Open Calendar", "rent_title": "Rental Bar: Cargo Bike \"E-Donkey\"", "rent_desc": "Borrow for free for 24h.", "btn_reserve": "Reserve Now", "baro_title": "Community Sentiment", "baro_desc": "How do you rate the current development in your neighborhood?", "mood_bad": "Worried", "mood_neutral": "Neutral", "mood_good": "Confident", "vote_thanks": "Thanks for your vote!", "status_positive": "Positive", "based_on": "Based on", "votes": "votes", "prio_title": "What should we focus on?", "prio_1_title": "Promote Renovation", "prio_1_desc": "Preserve old buildings instead of building new ones.", "prio_2_title": "More Green Spaces", "prio_2_desc": "Unseal sealed surfaces.", "prio_3_title": "Young Living", "prio_3_desc": "Affordable space for families.", "report_title": "Defect Reporter", "report_desc": "Spotted a pothole? Broken street light? Report directly to the depot.", "lbl_category": "Category", "opt_street": "Road Damage", "opt_light": "Defective Lighting", "opt_trash": "Trash / Cleanliness", "opt_green": "Green Maintenance", "opt_other": "Other", "lbl_loc": "Location", "lbl_desc": "Description", "btn_submit_report": "Submit Report", "last_report": "Your last report:", "status_done": "Done (Repaired)", "report_date": "Reported on Apr 10 • Fixed on Apr 12", "alarm_title": "Construction Alarm: Don't miss out!", "alarm_desc": "Get notified when construction projects start or plans change within a 200m radius.", "btn_activate": "Activate", "craft_title": "🛠️ Craftsmen nearby", "radius": "Radius: 10km", "tag_insulation": "Insulation", "tag_renovation": "Renovation", "empty_title": "Report Vacancy?", "empty_desc": "Do you know another vacant house with potential? Help us.", "btn_empty_report": "Go to Vacancy Reporter →", "link_imprint": "Imprint", "link_privacy": "Privacy", "link_contact": "Contact"
-            },
-            "fr": {
-                "modal_title": "Bienvenue dans le quartier !", "modal_desc": "Pour vous connecter à votre voisinage, nous avons besoin de votre région.", "lbl_country": "Pays", "lbl_zip": "Code Postal", "modal_error": "Ce code postal est malheureusement hors de notre zone pilote.", "btn_enter": "Accéder au quartier", "nav_title": "Notre Quartier", "nav_subtitle": "Choisir la région...", "nav_phase": "Phase : Dialogue Citoyen", "hero_title_1": "Comment", "hero_title_city": "notre ville", "hero_title_2": "doit-elle évoluer ?", "hero_desc": "Éviter les vacances, créer des logements, préserver le caractère. Votre humeur et vos priorités sont notre boussole.", "badge_soon": "Bientôt", "badge_avail": "Disponible", "date_day": "Dim", "event_title": "Brocante de quartier", "event_loc": "Place du Marché, 14h00", "btn_calendar": "Ouvrir le calendrier", "rent_title": "Bar à prêt : Vélo cargo \"E-Donkey\"", "rent_desc": "Emprunter gratuitement pour 24h.", "btn_reserve": "Réserver maintenant", "baro_title": "Baromètre d'ambiance", "baro_desc": "Comment évaluez-vous le développement actuel de votre quartier ?", "mood_bad": "Inquiet", "mood_neutral": "Neutre", "mood_good": "Confiant", "vote_thanks": "Merci pour votre vote !", "status_positive": "Positif", "based_on": "Basé sur", "votes": "votes", "prio_title": "Sur quoi devons-nous nous concentrer ?", "prio_1_title": "Promouvoir la rénovation", "prio_1_desc": "Préserver l'ancien au lieu de construire du neuf.", "prio_2_title": "Plus d'espaces verts", "prio_2_desc": "Désimperméabiliser les surfaces.", "prio_3_title": "Logement jeune", "prio_3_desc": "Espace abordable pour les familles.", "report_title": "Signalement de défauts", "report_desc": "Nid de poule ? Lampadaire cassé ? Signalez-le directement.", "lbl_category": "Catégorie", "opt_street": "Dégâts routiers", "opt_light": "Éclairage défectueux", "opt_trash": "Déchets / Propreté", "opt_green": "Entretien espaces verts", "opt_other": "Autre", "lbl_loc": "Emplacement", "lbl_desc": "Description", "btn_submit_report": "Envoyer le rapport", "last_report": "Votre dernier rapport :", "status_done": "Terminé (Réparé)", "report_date": "Signalé le 10 avr. • Réparé le 12 avr.", "alarm_title": "Alarme chantier : Ne manquez rien !", "alarm_desc": "Recevez une notification lorsque des projets de construction commencent dans un rayon de 200m.", "btn_activate": "Activer", "craft_title": "🛠️ Artisans à proximité", "radius": "Rayon : 10km", "tag_insulation": "Isolation", "tag_renovation": "Rénovation", "empty_title": "Signaler une vacance ?", "empty_desc": "Connaissez-vous une autre maison vide avec du potentiel ? Aidez-nous.", "btn_empty_report": "Vers le signalement →", "link_imprint": "Mentions légales", "link_privacy": "Confidentialité", "link_contact": "Contact"
-            }
-        };
-
-        // --- LANGUAGE & LOCATION LOGIC ---
-        function changeLanguage(lang) {
-            // 1. Save to LocalStorage
-            localStorage.setItem('baukompass_lang', lang);
-            
-            // 2. Visual Update of Buttons
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                if(btn.dataset.lang === lang) btn.classList.add('active');
-                else btn.classList.remove('active');
-            });
-
-            // 3. Update Text
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.dataset.i18n;
-                if(translations[lang][key]) {
-                    el.innerText = translations[lang][key];
-                }
-            });
         }
 
-        const plzDatabase = {
-            "DE": { "52062": "Aachen", "52064": "Aachen", "52066": "Aachen", "52068": "Aachen", "52070": "Aachen", "52072": "Aachen", "52074": "Aachen", "52076": "Aachen", "52078": "Aachen", "52080": "Aachen", "52477": "Alsdorf", "52499": "Baesweiler", "52249": "Eschweiler", "52134": "Herzogenrath", "52156": "Monschau", "52159": "Roetgen", "52152": "Simmerath", "52222": "Stolberg", "52223": "Stolberg", "52224": "Stolberg", "52146": "Würselen", "52457": "Aldenhoven", "52459": "Inden", "52379": "Langerwehe", "52393": "Hürtgenwald", "52396": "Heimbach", "52385": "Nideggen", "52531": "Übach-Palenberg", "52511": "Geilenkirchen", "53937": "Schleiden", "53940": "Hellenthal" },
-            "BE": { "4720": "Kelmis", "4850": "Plombières", "4730": "Raeren", "4731": "Raeren-Eynatten", "4700": "Eupen", "4750": "Bütgenbach" },
-            "NL": { "6291": "Vaals", "6369": "Simpelveld" }
-        };
-
-        function checkRangeNL(plz) {
-            const p = parseInt(plz);
-            if (p >= 6460 && p <= 6471) return "Kerkrade";
-            if (p >= 6370 && p <= 6374) return "Landgraaf";
-            if (p >= 6400 && p <= 6433) return "Heerlen";
-            return null;
-        }
-
+        function updateModel(idx) {
+            const m = modelData[idx];
+            document.getElementById('model-content').innerHTML = `
+                <h4 class="text-xl font-bold text-blue-900 mb-2">${m.title}</h4>
+                <p class="text-slate-700">${m.desc}</p>
+            `;
+            if(radarChart) {
+                radarChart.data.datasets[0].data = m.stats;
+                radarChart.update();
         // Empfängt die Nachricht vom iframe
         window.addEventListener('message', function(e) {
             if (e.data && e.data.type === 'resize-iframe') {
                 const iframe = document.getElementById('seamless-tool');
                 if (iframe) { iframe.style.height = e.data.height + 'px'; }
-        function handleLocationSubmit(event) {
-            event.preventDefault();
-            const country = document.getElementById('country-select').value;
-            const plz = document.getElementById('plz-input').value.trim();
-            const errorBox = document.getElementById('location-error');
-            const modal = document.getElementById('location-modal');
-            const body = document.getElementById('main-body');
-            
-            let foundCity = null;
-            if (plzDatabase[country] && plzDatabase[country][plz]) foundCity = plzDatabase[country][plz];
-            else if (country === 'NL') foundCity = checkRangeNL(plz);
-
-            if (foundCity) {
-                document.getElementById('header-location').innerText = foundCity;
-                document.getElementById('hero-city-name').innerText = foundCity;
-                modal.classList.add('hidden');
-                body.classList.remove('overflow-hidden');
-            } else {
-                errorBox.classList.remove('hidden');
-                // Optional: translate error message dynamic based on currentLang if needed
             }
-        }
-
-        // --- CHART JS ---
-        let chartInstance = null;
-        let currentScore = 72;
-        let voteCount = 1240;
-
-        function initChart() {
-            const ctx = document.getElementById('sentimentChart').getContext('2d');
-            const gradient = ctx.createLinearGradient(0, 0, 400, 0);
-            gradient.addColorStop(0, '#ef4444');   
-            gradient.addColorStop(0.5, '#eab308'); 
-            gradient.addColorStop(1, '#22c55e');   
-
-            chartInstance = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Stimmung', 'Rest'],
-                    datasets: [{
-                        data: [currentScore, 100 - currentScore],
-                        backgroundColor: [gradient, '#e2e8f0'],
-                        borderWidth: 0,
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false, rotation: -90, circumference: 180, cutout: '75%',
-                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
-                    animation: { animateScale: true, animateRotate: true }
-                }
+            // Button Highlight update
+            document.querySelectorAll('.model-btn').forEach((b, i) => {
+                if(i===idx) b.classList.add('bg-blue-100', 'border-blue-300');
+                else b.classList.remove('bg-blue-100', 'border-blue-300');
             });
         }
 
-        function voteSentiment(type) {
-            if (type === 0) currentScore = Math.max(0, currentScore - 5);
-            if (type === 1) currentScore = Math.min(100, Math.max(0, currentScore + 1));
-            if (type === 2) currentScore = Math.min(100, currentScore + 3);
-            voteCount++;
-            document.getElementById('vote-count').innerText = voteCount.toLocaleString();
-            document.getElementById('sentiment-score').innerText = currentScore + '%';
-            chartInstance.data.datasets[0].data = [currentScore, 100 - currentScore];
-            chartInstance.update();
-            const msg = document.getElementById('vote-msg');
-            msg.style.opacity = '1';
-            setTimeout(() => { msg.style.opacity = '0'; }, 2000);
+        // Phase D Logic
+        function checkEscalation() {
+            const c1 = document.getElementById('chk1').checked;
+            const c2 = document.getElementById('chk2').checked;
+            const status = document.getElementById('esc-status');
+            const ladder = document.getElementById('ladder');
+
+            if(c1 && c2) {
+                status.className = "bg-red-100 p-3 rounded text-center text-red-700 font-bold";
+                status.innerText = "Eingriff zulässig";
+                ladder.classList.remove('opacity-50', 'pointer-events-none');
+            } else {
+                status.className = "bg-slate-100 p-3 rounded text-center text-slate-500 font-bold";
+                status.innerText = "Prüfung offen / Nicht zulässig";
+                ladder.classList.add('opacity-50', 'pointer-events-none');
+            }
         }
 
-        function togglePrio(element) { element.classList.toggle('selected'); }
-
-        // --- INIT ON LOAD ---
-        window.addEventListener('load', () => {
-            initChart();
-            // Load saved language
-            const savedLang = localStorage.getItem('baukompass_lang') || 'de';
-            changeLanguage(savedLang);
         });
-
     </script>
 </body>
