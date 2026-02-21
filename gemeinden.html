@@ -69,26 +69,44 @@
         .btn-contact { background: var(--active-tab); color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; text-align: center; display: block; text-decoration: none; }
 
         @keyframes fadeEffect { from {opacity: 0;} to {opacity: 1;} }
+
+        /* Flag Button Styles für Text-Kürzel */
+        .lang-btn {
+            background: none; 
+            border: none; 
+            font-size: 0.85rem; 
+            font-weight: 800;
+            cursor: pointer;
+            opacity: 0.4; 
+            transition: all 0.2s; 
+            padding: 0 8px;
+            color: var(--accent-color);
+        }
+        .lang-btn:hover { opacity: 1; }
+        .lang-btn.active { 
+            opacity: 1; 
+            color: var(--active-tab); 
+        }
     </style>
 </head>
 <body>
 
     <div id="contactModal" class="modal">
         <div class="modal-content">
-            <h2>Projekt-Anfrage</h2>
-            <p style="font-size: 0.8rem; color: #666;">Vermittlung via StädteRegion Aachen.</p>
+            <h2 data-i18n="modal_title">Projekt-Anfrage</h2>
+            <p style="font-size: 0.8rem; color: #666;" data-i18n="modal_desc">Vermittlung via StädteRegion Aachen.</p>
             <form id="projectForm">
                 <input type="text" placeholder="Organisation / Gemeinde" required>
                 <input type="email" placeholder="E-Mail" required>
                 <textarea rows="4" id="modalMessage" placeholder="Ihre Nachricht..."></textarea>
-                <button type="submit" class="btn-contact">Anfrage absenden</button>
-                <button type="button" onclick="closeModal()" style="background:none; border:none; color:#888; width:100%; margin-top:10px; cursor:pointer;">Abbrechen</button>
+                <button type="submit" class="btn-contact" data-i18n="modal_submit">Anfrage absenden</button>
+                <button type="button" onclick="closeModal()" style="background:none; border:none; color:#888; width:100%; margin-top:10px; cursor:pointer;" data-i18n="modal_cancel">Abbrechen</button>
             </form>
         </div>
     </div>
 
 <nav>
-    <div class="nav-links"><a href="index.html">&larr; Zurück</a></div>
+    <div class="nav-links"><a href="index.html" data-i18n="nav_back">&larr; Zurück</a></div>
     <a href="index.html" class="logo">BAUKOMPASS</a>
     
      <div class="lang-switch">
@@ -99,52 +117,52 @@
 </nav>
 
     <div style="text-align: center; margin: 40px 0;">
-        <h1>Von Gemeinden für Gemeinden</h1>
-        <p>MORO-Strategieprozess StädteRegion Aachen & Ostbelgien</p>
+        <h1 data-i18n="main_title">Von Gemeinden für Gemeinden</h1>
+        <p data-i18n="main_subtitle">MORO-Strategieprozess StädteRegion Aachen & Ostbelgien</p>
     </div>
 
     <div class="tab-container">
-        <button class="tab-button active" onclick="openTab(event, 'Info')">Informationen</button>
-        <button class="tab-button" onclick="openTab(event, 'Geoportale')">Geoportale</button>
-        <button class="tab-button" onclick="openTab(event, 'Tool')">Immobilien-Tool</button>
-        <button class="tab-button" onclick="openTab(event, 'Kontakte')">Gemeinden</button>
-        <button class="tab-button" onclick="openTab(event, 'Projekte')">Projekte</button>
+        <button class="tab-button active" onclick="openTab(event, 'Info')" data-i18n="tab_info">Informationen</button>
+        <button class="tab-button" onclick="openTab(event, 'Geoportale')" data-i18n="tab_geo">Geoportale</button>
+        <button class="tab-button" onclick="openTab(event, 'Tool')" data-i18n="tab_tool">Immobilien-Tool</button>
+        <button class="tab-button" onclick="openTab(event, 'Kontakte')" data-i18n="tab_contacts">Gemeinden</button>
+        <button class="tab-button" onclick="openTab(event, 'Projekte')" data-i18n="tab_projects">Projekte</button>
     </div>
 
     <main class="content-wrapper">
         
         <div id="Info" class="tab-content" style="display: block;">
             <div class="info-section">
-                <h2>1. Status Quo & Flächenpotenziale</h2>
-                <p>Das MORO-Konzept „Mehr Wohnraum schaffen“ hat gezeigt, dass die identifizierten Flächenpotenziale oft zweitrangig sind oder aufgrund schwieriger Eigentümerstrukturen kaum nutzbar bleiben. Aktuelle Bauvorhaben haben Vorrang, wodurch die tatsächliche Aktivierung dieser Flächen erst verzögert stattfinden kann.</p>
-                <div class="highlight-box">
+                <h2 data-i18n="info_1_title">1. Status Quo & Flächenpotenziale</h2>
+                <p data-i18n="info_1_text">Das MORO-Konzept „Mehr Wohnraum schaffen“ hat gezeigt, dass die identifizierten Flächenpotenziale oft zweitrangig sind oder aufgrund schwieriger Eigentümerstrukturen kaum nutzbar bleiben. Aktuelle Bauvorhaben haben Vorrang, wodurch die tatsächliche Aktivierung dieser Flächen erst verzögert stattfinden kann.</p>
+                <div class="highlight-box" data-i18n="info_highlight">
                     „Der Widerstand von Eigentümer:innen führt zu einer schwachen Innenentwicklung und einem stetigen Wachstum nach außen – ein Trend, der sowohl in Deutschland als auch in Belgien sichtbar ist.“
                 </div>
             </div>
 
             <div class="info-section">
-                <h2>2. Systemvergleich: Reaktiv vs. Proaktiv</h2>
+                <h2 data-i18n="info_2_title">2. Systemvergleich: Reaktiv vs. Proaktiv</h2>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px;">
                     <div>
-                        <h4 style="color: #c0392b;">Deutschland (Reaktiv)</h4>
-                        <p style="font-size: 0.9rem;">Fokus auf Schutz der Naturräume und Infrastruktureffizienz. Instrumente wie der vorhabenbezogene B-Plan (§ 12 BauGB) reagieren auf private Initiativen. <strong>Folge:</strong> Hoher Zeitaufwand und Schwerfälligkeit.</p>
+                        <h4 style="color: #c0392b;" data-i18n="sys_de_title">Deutschland (Reaktiv)</h4>
+                        <p style="font-size: 0.9rem;" data-i18n="sys_de_text">Fokus auf Schutz der Naturräume und Infrastruktureffizienz. Instrumente wie der vorhabenbezogene B-Plan (§ 12 BauGB) reagieren auf private Initiativen. <strong>Folge:</strong> Hoher Zeitaufwand und Schwerfälligkeit.</p>
                     </div>
                     <div>
-                        <h4 style="color: #27ae60;">Belgien (Proaktiv)</h4>
-                        <p style="font-size: 0.9rem;">Angebotsplanung (ZACC-Zonen), um Eigenheimbau zu forcieren. Hohe Geschwindigkeit und einfache Eigentumsbildung. <strong>Folge:</strong> Starke Zersiedelung und hoher Flächenverbrauch.</p>
+                        <h4 style="color: #27ae60;" data-i18n="sys_be_title">Belgien (Proaktiv)</h4>
+                        <p style="font-size: 0.9rem;" data-i18n="sys_be_text">Angebotsplanung (ZACC-Zonen), um Eigenheimbau zu forcieren. Hohe Geschwindigkeit und einfache Eigentumsbildung. <strong>Folge:</strong> Starke Zersiedelung und hoher Flächenverbrauch.</p>
                     </div>
                 </div>
             </div>
 
             <div class="info-section">
-                <h2>3. Strategische Vision: RegFNP & Infrastruktur</h2>
-                <p>Ein Transfer von Verantwortlichkeiten ist das Ziel: Die Übertragung des Flächennutzungsplans (FNP) auf die <strong>StädteRegion Aachen</strong> (analog zum RVR im Ruhrgebiet) würde Ressourcen bündeln und eine gesamtregionale Steuerung ermöglichen.</p>
-                <p><strong>Zentrale Erkenntnis:</strong> Grenzüberschreitende Kooperation gelingt am besten über den <strong>gemeinsamen Ausbau der Infrastruktur und Mobilität</strong>, statt über den reinen Wohnungsbau. Nur eine verknüpfte Grenzregion kann den Wohnungsdruck nachhaltig bewältigen.</p>
+                <h2 data-i18n="info_3_title">3. Strategische Vision: RegFNP & Infrastruktur</h2>
+                <p data-i18n="info_3_text">Ein Transfer von Verantwortlichkeiten ist das Ziel: Die Übertragung des Flächennutzungsplans (FNP) auf die <strong>StädteRegion Aachen</strong> (analog zum RVR im Ruhrgebiet) würde Ressourcen bündeln und eine gesamtregionale Steuerung ermöglichen.</p>
+                <p data-i18n="info_3_sub"><strong>Zentrale Erkenntnis:</strong> Grenzüberschreitende Kooperation gelingt am besten über den <strong>gemeinsamen Ausbau der Infrastruktur und Mobilität</strong>, statt über den reinen Wohnungsbau. Nur eine verknüpfte Grenzregion kann den Wohnungsdruck nachhaltig bewältigen.</p>
             </div>
 
             <div class="info-section">
-                <h2>4. Ausblick: Innen- vor Außenentwicklung</h2>
-                <p>Mit Blick auf die Prognosen ab 2035 (Bevölkerungsrückgang) ist die proaktive Ansprache der Eigentümerschaft unerlässlich. Der Leitfaden zur Eigentümeraktivierung dient hierbei als zentrales Werkzeug, um Leerständen vorausschauend vorzubeugen.</p>
+                <h2 data-i18n="info_4_title">4. Ausblick: Innen- vor Außenentwicklung</h2>
+                <p data-i18n="info_4_text">Mit Blick auf die Prognosen ab 2035 (Bevölkerungsrückgang) ist die proaktive Ansprache der Eigentümerschaft unerlässlich. Der Leitfaden zur Eigentümeraktivierung dient hierbei als zentrales Werkzeug, um Leerständen vorausschauend vorzubeugen.</p>
             </div>
         </div>
 
@@ -211,118 +229,118 @@
         <div class="card">
             <h3>Stadt Aachen</h3>
             <p>Zollernstraße 10</p>
-            <a href="https://www.aachen.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a>
+            <a href="https://www.aachen.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;" data-i18n="link_service">Service &rarr;</a>
         </div>
         
         <div class="card">
             <h3>Stolberg</h3>
             <p>Rathausstraße 11</p>
-            <a href="https://www.stolberg.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a>
+            <a href="https://www.stolberg.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;" data-i18n="link_service">Service &rarr;</a>
         </div>
 
         <div class="card">
             <h3>Simmerath</h3>
             <p>Rathausplatz 1</p>
-            <a href="https://www.simmerath.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a>
+            <a href="https://www.simmerath.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;" data-i18n="link_service">Service &rarr;</a>
         </div>
 
         <div class="card">
             <h3>Eschweiler</h3>
             <p>Johannes-Rau-Platz 1</p>
-            <a href="https://www.eschweiler.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a>
+            <a href="https://www.eschweiler.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;" data-i18n="link_service">Service &rarr;</a>
         </div>
 
         <div class="card">
             <h3>Monschau</h3>
             <p>Laufenstraße 84</p>
-            <a href="https://www.monschau.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a>
+            <a href="https://www.monschau.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;" data-i18n="link_service">Service &rarr;</a>
         </div>
 
         <div class="card" style="border-right: 4px solid #ffcc00;">
             <h3>Raeren (B)</h3>
             <p>Hauptstraße 87</p>
-            <a href="https://www.raeren.be" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a>
+            <a href="https://www.raeren.be" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;" data-i18n="link_service">Service &rarr;</a>
         </div>
 
         <div class="card" style="border-right: 4px solid #ffcc00;">
             <h3>Kelmis (B)</h3>
             <p>Kirchstraße 31</p>
-            <a href="https://www.kelmis.be" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a>
+            <a href="https://www.kelmis.be" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;" data-i18n="link_service">Service &rarr;</a>
         </div>
 
         <div class="card" style="border-right: 4px solid #ffcc00;">
             <h3>Lontzen (B)</h3>
             <p>Kirchstraße 46</p>
-            <a href="https://www.lontzen.be" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a>
+            <a href="https://www.lontzen.be" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;" data-i18n="link_service">Service &rarr;</a>
         </div>
 
         <div class="card">
             <h3>Alsdorf</h3>
             <p>Hubertusstraße 17</p>
-            <a href="https://www.alsdorf.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a>
+            <a href="https://www.alsdorf.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;" data-i18n="link_service">Service &rarr;</a>
         </div>
 
         <div class="card">
             <h3>Herzogenrath</h3>
             <p>Rathausplatz 1</p>
-            <a href="https://www.herzogenrath.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a>
+            <a href="https://www.herzogenrath.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;" data-i18n="link_service">Service &rarr;</a>
         </div>
 
         <div class="card">
             <h3>Würselen</h3>
             <p>Morlaixplatz 1</p>
-            <a href="https://www.wuerselen.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a>
+            <a href="https://www.wuerselen.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;" data-i18n="link_service">Service &rarr;</a>
         </div>
 
         <div class="card">
             <h3>Roetgen</h3>
             <p>Hauptstraße 95</p>
-            <a href="https://www.roetgen.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a>
+            <a href="https://www.roetgen.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;" data-i18n="link_service">Service &rarr;</a>
         </div>
 
         <div class="card">
             <h3>Baesweiler</h3>
             <p>Mariastraße 2</p>
-            <a href="https://www.baesweiler.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a>
+            <a href="https://www.baesweiler.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;" data-i18n="link_service">Service &rarr;</a>
         </div>
     </div>
 </div>
         <div id="Projekte" class="tab-content">
             <div class="project-table-row">
                 <div class="project-col">
-                    <div class="col-title">Infrastruktur & Mobilität</div>
+                    <div class="col-title" data-i18n="prj_col_1">Infrastruktur & Mobilität</div>
                     <div class="project-card infra">
-                        <span class="badge bg-infra">Strategisch</span>
-                        <h3>Interkommunale Mobilitätsachse</h3>
-                        <p>Ausbau der Anbindung Aachen-Umland zur Entlastung des Wohnungsdrucks.</p>
-                        <button class="btn-contact" onclick="openModal('Mobilitätsachse')">Anfrage stellen</button>
+                        <span class="badge bg-infra" data-i18n="badge_strat">Strategisch</span>
+                        <h3 data-i18n="prj_1_title">Interkommunale Mobilitätsachse</h3>
+                        <p data-i18n="prj_1_desc">Ausbau der Anbindung Aachen-Umland zur Entlastung des Wohnungsdrucks.</p>
+                        <button class="btn-contact" onclick="openModal('Mobilitätsachse')" data-i18n="btn_req">Anfrage stellen</button>
                     </div>
                 </div>
                 <div class="project-col">
-                    <div class="col-title">Wohnen & Innenentwicklung</div>
+                    <div class="col-title" data-i18n="prj_col_2">Wohnen & Innenentwicklung</div>
                     <div class="project-card wohnen">
-                        <span class="badge bg-wohnen">Pilot</span>
-                        <h3>Eigentümeraktivierung</h3>
-                        <p>Anwendung des MORO-Leitfadens zur Mobilisierung von Innenpotenzialen.</p>
-                        <button class="btn-contact" onclick="openModal('Eigentümeraktivierung')">Anfrage stellen</button>
+                        <span class="badge bg-wohnen" data-i18n="badge_pilot">Pilot</span>
+                        <h3 data-i18n="prj_2_title">Eigentümeraktivierung</h3>
+                        <p data-i18n="prj_2_desc">Anwendung des MORO-Leitfadens zur Mobilisierung von Innenpotenzialen.</p>
+                        <button class="btn-contact" onclick="openModal('Eigentümeraktivierung')" data-i18n="btn_req">Anfrage stellen</button>
                     </div>
                 </div>
                 <div class="project-col">
-                    <div class="col-title">Soziales & Wohnraum</div>
+                    <div class="col-title" data-i18n="prj_col_3">Soziales & Wohnraum</div>
                     <div class="project-card sozial">
-                        <span class="badge bg-sozial">In Planung</span>
-                        <h3>Sozialer Wohnungsbau AC</h3>
-                        <p>Bündelung von Fördermitteln für grenznahe Sozialprojekte.</p>
-                        <button class="btn-contact" onclick="openModal('Soziales Wohnen')">Anfrage stellen</button>
+                        <span class="badge bg-sozial" data-i18n="badge_plan">In Planung</span>
+                        <h3 data-i18n="prj_3_title">Sozialer Wohnungsbau AC</h3>
+                        <p data-i18n="prj_3_desc">Bündelung von Fördermitteln für grenznahe Sozialprojekte.</p>
+                        <button class="btn-contact" onclick="openModal('Soziales Wohnen')" data-i18n="btn_req">Anfrage stellen</button>
                     </div>
                 </div>
                 <div class="project-col">
-                    <div class="col-title">Natur & Umwelt</div>
+                    <div class="col-title" data-i18n="prj_col_4">Natur & Umwelt</div>
                     <div class="project-card natur">
-                        <span class="badge bg-natur">Gutachten</span>
-                        <h3>Klimaanalyse Rurtal</h3>
-                        <p>Grenzüberschreitende Analyse von Kaltluftströmen.</p>
-                        <button class="btn-contact" onclick="openModal('Klimaanalyse')">Anfrage stellen</button>
+                        <span class="badge bg-natur" data-i18n="badge_rep">Gutachten</span>
+                        <h3 data-i18n="prj_4_title">Klimaanalyse Rurtal</h3>
+                        <p data-i18n="prj_4_desc">Grenzüberschreitende Analyse von Kaltluftströmen.</p>
+                        <button class="btn-contact" onclick="openModal('Klimaanalyse')" data-i18n="btn_req">Anfrage stellen</button>
                     </div>
                 </div>
             </div>
@@ -331,6 +349,162 @@
     </main>
 
     <script>
+        const translations = {
+            "de": {
+                "nav_back": "← Zurück",
+                "main_title": "Von Gemeinden für Gemeinden",
+                "main_subtitle": "MORO-Strategieprozess StädteRegion Aachen & Ostbelgien",
+                "tab_info": "Informationen",
+                "tab_geo": "Geoportale",
+                "tab_tool": "Immobilien-Tool",
+                "tab_contacts": "Gemeinden",
+                "tab_projects": "Projekte",
+                "link_service": "Service →",
+                "modal_title": "Projekt-Anfrage",
+                "modal_desc": "Vermittlung via StädteRegion Aachen.",
+                "modal_submit": "Anfrage absenden",
+                "modal_cancel": "Abbrechen",
+                "info_1_title": "1. Status Quo & Flächenpotenziale",
+                "info_1_text": "Das MORO-Konzept „Mehr Wohnraum schaffen“ hat gezeigt, dass die identifizierten Flächenpotenziale oft zweitrangig sind oder aufgrund schwieriger Eigentümerstrukturen kaum nutzbar bleiben...",
+                "info_highlight": "„Der Widerstand von Eigentümer:innen führt zu einer schwachen Innenentwicklung...“",
+                "info_2_title": "2. Systemvergleich: Reaktiv vs. Proaktiv",
+                "sys_de_title": "Deutschland (Reaktiv)",
+                "sys_de_text": "Fokus auf Schutz der Naturräume und Infrastruktureffizienz...",
+                "sys_be_title": "Belgien (Proaktiv)",
+                "sys_be_text": "Angebotsplanung (ZACC-Zonen), um Eigenheimbau zu forcieren...",
+                "info_3_title": "3. Strategische Vision: RegFNP & Infrastruktur",
+                "info_3_text": "Ein Transfer von Verantwortlichkeiten ist das Ziel: Die Übertragung des Flächennutzungsplans (FNP) auf die StädteRegion Aachen...",
+                "info_3_sub": "Zentrale Erkenntnis: Grenzüberschreitende Kooperation gelingt am besten über den gemeinsamen Ausbau der Infrastruktur...",
+                "info_4_title": "4. Ausblick: Innen- vor Außenentwicklung",
+                "info_4_text": "Mit Blick auf die Prognosen ab 2035 (Bevölkerungsrückgang) ist die proaktive Ansprache der Eigentümerschaft unerlässlich.",
+                "prj_col_1": "Infrastruktur & Mobilität",
+                "prj_col_2": "Wohnen & Innenentwicklung",
+                "prj_col_3": "Soziales & Wohnraum",
+                "prj_col_4": "Natur & Umwelt",
+                "badge_strat": "Strategisch",
+                "badge_pilot": "Pilot",
+                "badge_plan": "In Planung",
+                "badge_rep": "Gutachten",
+                "prj_1_title": "Interkommunale Mobilitätsachse",
+                "prj_1_desc": "Ausbau der Anbindung Aachen-Umland zur Entlastung des Wohnungsdrucks.",
+                "prj_2_title": "Eigentümeraktivierung",
+                "prj_2_desc": "Anwendung des MORO-Leitfadens zur Mobilisierung von Innenpotenzialen.",
+                "prj_3_title": "Sozialer Wohnungsbau AC",
+                "prj_3_desc": "Bündelung von Fördermitteln für grenznahe Sozialprojekte.",
+                "prj_4_title": "Klimaanalyse Rurtal",
+                "prj_4_desc": "Grenzüberschreitende Analyse von Kaltluftströmen.",
+                "btn_req": "Anfrage stellen"
+            },
+            "en": {
+                "nav_back": "← Back",
+                "main_title": "From Municipalities for Municipalities",
+                "main_subtitle": "MORO Strategy Process StädteRegion Aachen & East Belgium",
+                "tab_info": "Information",
+                "tab_geo": "Geoportals",
+                "tab_tool": "Real Estate Tool",
+                "tab_contacts": "Municipalities",
+                "tab_projects": "Projects",
+                "link_service": "Service →",
+                "modal_title": "Project Inquiry",
+                "modal_desc": "Mediation via StädteRegion Aachen.",
+                "modal_submit": "Send Inquiry",
+                "modal_cancel": "Cancel",
+                "info_1_title": "1. Status Quo & Land Potential",
+                "info_1_text": "The MORO concept 'Creating more living space' has shown that identified potential remains secondary or unusable due to ownership structures...",
+                "info_highlight": "“Owner resistance leads to weak interior development...”",
+                "info_2_title": "2. System Comparison: Reactive vs. Proactive",
+                "sys_de_title": "Germany (Reactive)",
+                "sys_de_text": "Focus on nature protection and infrastructure efficiency...",
+                "sys_be_title": "Belgium (Proactive)",
+                "sys_be_text": "Supply planning (ZACC zones) to boost home ownership...",
+                "info_3_title": "3. Strategic Vision: RegFNP & Infrastructure",
+                "info_3_text": "Responsibility transfer: Shifting the FNP to the StädteRegion Aachen...",
+                "info_3_sub": "Key finding: Cross-border cooperation works best through joint infrastructure expansion...",
+                "info_4_title": "4. Outlook: Interior over Exterior Development",
+                "info_4_text": "Considering 2035 forecasts (demographic decline), proactive owner engagement is essential.",
+                "prj_col_1": "Infrastructure & Mobility",
+                "prj_col_2": "Housing & Interior Dev.",
+                "prj_col_3": "Social & Housing",
+                "prj_col_4": "Nature & Environment",
+                "badge_strat": "Strategic",
+                "badge_pilot": "Pilot",
+                "badge_plan": "In Planning",
+                "badge_rep": "Report",
+                "prj_1_title": "Inter-municipal Mobility Axis",
+                "prj_1_desc": "Expanding Aachen-surrounding connections to relieve housing pressure.",
+                "prj_2_title": "Owner Activation",
+                "prj_2_desc": "Using the MORO guide to mobilize interior potential.",
+                "prj_3_title": "Social Housing AC",
+                "prj_3_desc": "Pooling subsidies for cross-border social projects.",
+                "prj_4_title": "Rur Valley Climate Analysis",
+                "prj_4_desc": "Cross-border analysis of cold air flows.",
+                "btn_req": "Send Inquiry"
+            },
+            "fr": {
+                "nav_back": "← Retour",
+                "main_title": "Des Communes pour les Communes",
+                "main_subtitle": "Processus MORO StädteRegion Aachen & Belgique de l'Est",
+                "tab_info": "Informations",
+                "tab_geo": "Géoportails",
+                "tab_tool": "Outil Immobilier",
+                "tab_contacts": "Communes",
+                "tab_projects": "Projets",
+                "link_service": "Service →",
+                "modal_title": "Demande de Projet",
+                "modal_desc": "Médiation via StädteRegion Aachen.",
+                "modal_submit": "Envoyer",
+                "modal_cancel": "Annuler",
+                "info_1_title": "1. État des Lieux & Potentiel Foncier",
+                "info_1_text": "Le concept MORO 'Créer plus d'espace de vie' a montré que le potentiel identifié reste secondaire...",
+                "info_highlight": "« La résistance des propriétaires freine le développement interne... »",
+                "info_2_title": "2. Comparaison : Réactif vs Proactif",
+                "sys_de_title": "Allemagne (Réactif)",
+                "sys_de_text": "Focus sur la protection de la nature et l'efficacité des infrastructures...",
+                "sys_be_title": "Belgique (Proactif)",
+                "sys_be_text": "Planification de l'offre (zones ZACC) pour favoriser l'accession...",
+                "info_3_title": "3. Vision Stratégique : RegFNP & Infrastructure",
+                "info_3_text": "Transfert de responsabilités : déplacer le FNP vers la StädteRegion Aachen...",
+                "info_3_sub": "Constat clé : La coopération transfrontalière réussit mieux via l'expansion des infrastructures communes...",
+                "info_4_title": "4. Perspectives : Priorité au Développement Interne",
+                "info_4_text": "Vu les prévisions 2035 (déclin démographique), l'engagement proactif des propriétaires est vital.",
+                "prj_col_1": "Infrastructure & Mobilité",
+                "prj_col_2": "Logement & Dév. Interne",
+                "prj_col_3": "Social & Logement",
+                "prj_col_4": "Nature & Environnement",
+                "badge_strat": "Stratégique",
+                "badge_pilot": "Pilote",
+                "badge_plan": "En Planification",
+                "badge_rep": "Expertise",
+                "prj_1_title": "Axe de Mobilité Intercommunal",
+                "prj_1_desc": "Expansion des connexions pour alléger la pression immobilière.",
+                "prj_2_title": "Activation des Propriétaires",
+                "prj_2_desc": "Application du guide MORO pour mobiliser le potentiel interne.",
+                "prj_3_title": "Logement Social AC",
+                "prj_3_desc": "Mutualisation des aides pour projets sociaux transfrontaliers.",
+                "prj_4_title": "Analyse Climatique Rurtal",
+                "prj_4_desc": "Analyse transfrontalière des flux d'air froid.",
+                "btn_req": "Demander"
+            }
+        };
+
+        function changeLanguage(lang) {
+            localStorage.setItem('baukompass_lang', lang);
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                if(translations[lang] && translations[lang][key]) {
+                    el.innerText = translations[lang][key];
+                }
+            });
+        }
+
+        window.addEventListener('load', () => {
+            const savedLang = localStorage.getItem('baukompass_lang') || 'de';
+            changeLanguage(savedLang);
+        });
+
         function openTab(evt, tabName) {
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tab-content");
@@ -364,12 +538,5 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
 
 
