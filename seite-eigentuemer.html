@@ -295,9 +295,9 @@
 
             <div class="service-card">
                 <h3 data-i18n="craft_title">🛠️ Handwerker in der Nähe</h3>
-                <p style="font-size:0.9rem; margin-bottom:20px;" data-i18n="craft_desc">Finden Sie verfügbare Experten im Umkreis von 10km.</p>
+               <p data-i18n="craft_desc">Experten im Umkreis von 10km.</p>
                 <div class="craftsman-search">
-                    <input type="text" placeholder="PLZ oder Gewerk (z.B. Dachdecker)" data-i18n="craft_placeholder">
+                    <input type="text" data-i18n="craft_placeholder" placeholder="PLZ oder Gewerk">
                     <button style="background:#ddd; border:none; padding:0 15px; border-radius:4px;">🔍</button>
                 </div>
                 <ul class="craftsman-list">
@@ -345,7 +345,7 @@
                 </div>
 
         </div> 
-        <h2 style="text-align: center; margin-bottom: 30px;" data-i18n="legal_title">Rechtssicher Eigentum halten</h2>
+     <h2 data-i18n="legal_title">Rechtssicher Eigentum halten</h2>
         <section class="service-card" style="border-top-color: #c0392b; margin-bottom: 60px;">
             <h3 data-i18n="rights_title">⚖️ Rechte, Pflichten & Fristen</h3>
             <p style="margin-bottom: 20px;" data-i18n="rights_desc">Vermeiden Sie Bußgelder und Haftungsrisiken. Hier sind die wichtigsten Punkte, die Sie als Eigentümer beachten müssen.</p>
@@ -359,8 +359,7 @@
                     <p style="font-size: 0.9rem; margin-top: 10px;" data-i18n="duty_energy_desc">Bei Eigentümerwechsel greifen oft Pflichten binnen 2 Jahren. <br><strong>Pflicht:</strong> Dämmung oberste Geschossdecke, Austausch 30+ Jahre alter Standardkessel.</p>
                 </details>
                 <details style="background: #fff5f5; padding: 15px; border-radius: 8px; cursor: pointer;">
-                    <summary style="font-weight: bold; color: #c0392b;" data-i18n="duty_turbo_title">
-                    Bau-Turbo & Mobilisierung (§ 246e BauGB) 
+                   <summary data-i18n="duty_turbo_title">Bau-Turbo (§ 246e BauGB)
                     </summary>
                     <p style="font-size: 0.9rem; margin-top: 10px;">
                     In Gebieten mit angespanntem Wohnungsmarkt können Abweichungen von Bebauungsplänen den Wohnungsbau beschleunigen.
@@ -591,11 +590,12 @@ const translations = {
         "duty_safe_title": "Verkehrssicherungspflicht", "duty_energy_title": "Nachrüstpflichten (GEG)", "duty_clean_title": "Straßenreinigung", "duty_turbo_title": "Bau-Turbo (§ 246e BauGB)",
         "legal_disclaimer": "Keine Rechtsberatung. Lokale Satzung prüfen.",
         "practice_title": "Better Practice: Von Nachbarn lernen",
-        "ex_1_title": "Scheune zu Loft-Wohnen", "ex_2_title": "Energetische Kernsanierung",
-        "kpi_cost": "Gesamtkosten", "kpi_fund": "Förderanteil", "kpi_amort": "Amortisation",
-        "comments_title": "Fragen & Kommentare:", "placeholder_ask": "Frage stellen...", "btn_send": "Senden",
+        "ex_1_title": "Scheune zu Loft-Wohnen", "ex_1_desc": "Die alte Scheune stand 10 Jahre leer. Durch die Umnutzung entstanden zwei moderne Mietwohnungen.", "ex_2_title": "Energetische Kernsanierung", "ex_2_desc": "Baujahr 1970. Durch Wärmepumpe und Dämmung haben wir die Nebenkosten um 70% gesenkt.",
+        "kpi_cost": "Gesamtkosten", "kpi_fund": "Förderanteil", "kpi_amort": "Amortisation", "kpi_invest": "Investition", "kpi_quota": "Förderquote", "kpi_rent": "Rentabilität",
+        "comments_title": "Fragen & Kommentare:", "placeholder_ask": "Frage stellen...", "btn_send": "Senden", "comment_1": "Gibt es Probleme mit dem Denkmalschutz bei den großen Fenstern?", "comment_2": "Welchen Energieberater hatten Sie? Wir suchen auch noch.",
         "alarm_title": "🔔 Bau-Alarm", "alarm_desc": "Benachrichtigung bei neuen Projekten.",
-        "ph_address": "Ihre Adresse", "ph_email": "Ihre E-Mail", "btn_activate": "Aktivieren"
+        "ph_address": "Ihre Adresse", "ph_email": "Ihre E-Mail", "btn_activate": "Aktivieren",
+        "badge_done": "Abgeschlossen 2024", "badge_ongoing": "Laufend"
     },
     "en": {
         "sidebar_toggle": "ℹ️ WHY COOPERATE?",
@@ -649,11 +649,12 @@ const translations = {
         "duty_safe_title": "Public Safety", "duty_energy_title": "Retrofitting", "duty_clean_title": "Cleaning", "duty_turbo_title": "Building Turbo",
         "legal_disclaimer": "No legal advice.",
         "practice_title": "Better Practice",
-        "ex_1_title": "Barn to Loft", "ex_2_title": "Energy Renovation",
-        "kpi_cost": "Total Cost", "kpi_fund": "Grant Share", "kpi_amort": "Amortization",
-        "comments_title": "Comments:", "placeholder_ask": "Ask...", "btn_send": "Send",
+        "ex_1_title": "Barn to Loft", "ex_1_desc": "The old barn was empty for 10 years. Conversion created two modern apartments.", "ex_2_title": "Energy Renovation", "ex_2_desc": "Built in 1970. Heat pump and insulation reduced utility costs by 70%.",
+        "kpi_cost": "Total Cost", "kpi_fund": "Grant Share", "kpi_amort": "Amortization", "kpi_invest": "Investment", "kpi_quota": "Grant Quota", "kpi_rent": "Profitability",
+        "comments_title": "Comments:", "placeholder_ask": "Ask...", "btn_send": "Send", "comment_1": "Are there heritage protection issues with the large windows?", "comment_2": "Which energy consultant did you have? We are looking too.",
         "alarm_title": "🔔 Alarm", "alarm_desc": "Project alerts.",
-        "ph_address": "Address", "ph_email": "Email", "btn_activate": "Activate"
+        "ph_address": "Address", "ph_email": "Email", "btn_activate": "Activate",
+        "badge_done": "Completed 2024", "badge_ongoing": "Ongoing"
     },
     "fr": {
         "sidebar_toggle": "ℹ️ POURQUOI COOPÉRER ?",
@@ -701,20 +702,20 @@ const translations = {
         "craft_placeholder": "Code postal", "link_call": "Appeler", "tag_insulation": "Isolation", "tag_renovation": "Rénovation", "craft_footer": "Partenaires vérifiés",
         "vacancy_title": "🏚️ Vacance", "vacancy_desc": "Signalez un bien.",
         "lbl_prop_type": "Type de bien", "opt_vacant_home": "Résidentiel", "opt_commercial": "Commercial", "btn_submit_confidential": "Envoyer",
-        "coop_title": "🤝 Modèles", "coop_desc": "Modèles pour vous :",
+        "coop_title": "🤝 Modèles", "coop_desc": "Modèles für Sie :",
         "cross_border_title": "🌍 Expertise", "cross_border_desc": "Opportunités transfrontalières.",
         "legal_title": "Sécurité juridique", "rights_title": "⚖️ Droits & Devoirs", "rights_desc": "Évitez les risques.",
         "duty_safe_title": "Sécurité", "duty_energy_title": "Énergie", "duty_clean_title": "Nettoyage", "duty_turbo_title": "Turbo-construction",
         "legal_disclaimer": "Pas de conseil juridique.",
         "practice_title": "Better Practice",
-        "ex_1_title": "Grange en Loft", "ex_2_title": "Rénovation",
-        "kpi_cost": "Coût total", "kpi_fund": "Part prime", "kpi_amort": "Amortissement",
-        "comments_title": "Commentaires:", "placeholder_ask": "Question...", "btn_send": "Envoyer",
+        "ex_1_title": "Grange en Loft", "ex_1_desc": "L'ancienne grange était vide depuis 10 ans. La conversion a créé deux appartements modernes.", "ex_2_title": "Rénovation", "ex_2_desc": "Construit en 1970. La pompe à chaleur et l'isolation ont réduit les frais de 70%.",
+        "kpi_cost": "Coût total", "kpi_fund": "Part prime", "kpi_amort": "Amortissement", "kpi_invest": "Investissement", "kpi_quota": "Aide quote-part", "kpi_rent": "Rentabilité",
+        "comments_title": "Commentaires:", "placeholder_ask": "Question...", "btn_send": "Envoyer", "comment_1": "Y a-t-il des problèmes de protection du patrimoine avec les grandes fenêtres?", "comment_2": "Quel consultant en énergie aviez-vous? Nous cherchons aussi.",
         "alarm_title": "🔔 Alarme", "alarm_desc": "Nouveaux projets.",
-        "ph_address": "Adresse", "ph_email": "Email", "btn_activate": "Activer"
+        "ph_address": "Adresse", "ph_email": "Email", "btn_activate": "Activer",
+        "badge_done": "Terminé 2024", "badge_ongoing": "En cours"
     }
 };
-
 const plzDatabase = {
     "DE": { "52152": "Simmerath", "52062": "Aachen", "52159": "Roetgen" },
     "BE": { "4730": "Raeren", "4731": "Raeren-Eynatten", "4720": "Kelmis" },
@@ -765,7 +766,7 @@ function changeLanguage(lang) {
     });
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.dataset.i18n;
-        if(translations[lang][key]) {
+        if(translations[lang] && translations[lang][key]) {
             el.innerHTML = translations[lang][key];
         }
     });
@@ -800,6 +801,20 @@ function showStrategy(type) {
     container.style.display = 'block';
 }
 
+function calculateRenovation() {
+    const year = document.getElementById('inp-year').value;
+    if (!year) return alert("Bitte Jahr eingeben");
+    document.getElementById('simulation-result').style.display = 'block';
+    document.getElementById('energy-bar').style.width = "80%";
+}
+
+function addComment(id) {
+    const input = document.getElementById('input-' + id);
+    if (input.value.trim() === "") return;
+    alert("Kommentar gespeichert.");
+    input.value = "";
+}
+
 window.addEventListener('load', () => {
     changeLanguage(localStorage.getItem('baukompass_lang') || 'de');
     const city = localStorage.getItem('baukompass_location_city');
@@ -813,6 +828,7 @@ window.addEventListener('load', () => {
     </script>
 </body>
 </html>
+
 
 
 
