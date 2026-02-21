@@ -115,8 +115,28 @@
     border-right: 1px solid #eee;
 }
 
-/* Button-Positionen */
-.sidebar-toggle { z-index: 2000; transition: right 0.4s; }
+/* Button-Positionen & Basis-Design */
+.sidebar-toggle { 
+    position: fixed;
+    top: 50%;
+    right: 0; /* Standardposition am rechten Rand */
+    transform: translateY(-50%);
+    background: var(--accent-color);
+    color: #fff;
+    border: none;
+    padding: 25px 15px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    z-index: 2000; /* Muss über der Sidebar liegen */
+    border-radius: 8px 0 0 8px;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    font-weight: bold;
+    box-shadow: -4px 0px 15px rgba(0,0,0,0.2);
+    transition: right 0.4s ease-in-out; /* Weicher Übergang beim Mitwandern */
+}
+
+/* Dynamische Positionen, wenn die Sidebar-Stufen öffnen */
 .sidebar-toggle.open { right: 400px; }
 .sidebar-toggle.step-1 { right: 800px; }
 .sidebar-toggle.step-2 { right: 1200px; }
@@ -738,6 +758,7 @@
     </script>
 </body>
 </html>
+
 
 
 
