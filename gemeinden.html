@@ -42,13 +42,14 @@
         .info-section h2 { color: var(--accent-color); border-left: 5px solid var(--active-tab); padding-left: 15px; margin-top: 0; }
         .highlight-box { background: #fdf6e3; border-left: 4px solid #b58900; padding: 20px; margin: 20px 0; font-style: italic; }
         
-        /* Projekt-Tabelle (Board) */
-        .project-board-table { width: 100%; border-collapse: separate; border-spacing: 15px 0; table-layout: fixed; }
-        .project-board-table th { color: white; padding: 15px; border-radius: 8px 8px 0 0; font-size: 1.1rem; text-align: center; }
-        .project-board-table td { vertical-align: top; background: rgba(255,255,255,0.3); border-radius: 0 0 8px 8px; padding: 15px 0; }
+        /* Projektbörse: Spalten-Layout */
+        .project-board { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px; align-items: flex-start; }
+        .project-column { flex: 1; min-width: 300px; background: rgba(255,255,255,0.5); border-radius: 8px; padding: 15px; }
+        .project-column h2 { font-size: 1.1rem; color: white; padding: 10px; border-radius: 4px; margin-top: 0; text-align: center; }
         
-        /* Cards in der Tabelle */
-        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); position: relative; display: flex; flex-direction: column; margin: 0 10px 20px 10px; transition: transform 0.2s; }
+        /* Cards */
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); position: relative; display: flex; flex-direction: column; margin-bottom: 15px; transition: transform 0.2s; }
         .card:hover { transform: translateY(-3px); }
         .card h3 { margin: 0 0 10px 0; font-size: 1rem; color: var(--accent-color); border-bottom: 1px solid #eee; padding-bottom: 5px; }
         .card p { font-size: 0.85rem; margin-bottom: 15px; }
@@ -74,7 +75,7 @@
     <div id="contactModal" class="modal">
         <div class="modal-content">
             <h2>Projekt-Anfrage</h2>
-            <p style="font-size: 0.8rem; color: #666;">Vermittlung durch die StädteRegion Aachen.</p>
+            <p style="font-size: 0.8rem; color: #666;">Weitervermittlung durch die StädteRegion Aachen.</p>
             <form id="projectForm">
                 <input type="text" placeholder="Organisation / Gemeinde" required>
                 <input type="email" placeholder="E-Mail" required>
@@ -101,7 +102,7 @@
         <button class="tab-button" onclick="openTab(event, 'Geoportale')">Geoportale</button>
         <button class="tab-button" onclick="openTab(event, 'Tool')">Immobilien-Tool</button>
         <button class="tab-button" onclick="openTab(event, 'Kontakte')">Gemeinden</button>
-        <button class="tab-button" onclick="openTab(event, 'Projekte')">Projekte</button>
+        <button class="tab-button" onclick="openTab(event, 'Projekte')">Projektbörse</button>
     </div>
 
     <main class="content-wrapper">
@@ -143,53 +144,48 @@
         </div>
 
         <div id="Projekte" class="tab-content">
-            <div style="overflow-x: auto;">
-                <table class="project-board-table">
-                    <thead>
-                        <tr>
-                            <th class="bg-infra">Infrastruktur & Mobilität</th>
-                            <th class="bg-wohnen">Wohnen & Innenentwicklung</th>
-                            <th class="bg-sozial">Soziales</th>
-                            <th class="bg-natur">Natur</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <div class="card">
-                                    <span class="badge bg-infra">Strategisch</span>
-                                    <h3>Interkommunale Mobilitätsachse</h3>
-                                    <p>Gemeinsamer Ausbau Aachen-Umland zur Entlastung des Wohnungsmarktes.</p>
-                                    <button class="btn-contact" onclick="openModal('Infrastruktur: Mobilitätsachse')">Interesse</button>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="card">
-                                    <span class="badge bg-wohnen">Pilot</span>
-                                    <h3>Eigentümeraktivierung</h3>
-                                    <p>Proaktive Ansprache zur Nutzung von Innenpotenzialen laut MORO-Leitfaden.</p>
-                                    <button class="btn-contact" onclick="openModal('Wohnen: Eigentümeraktivierung')">Interesse</button>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="card">
-                                    <span class="badge bg-sozial">Aktiv</span>
-                                    <h3>Senioren-Campus</h3>
-                                    <p>Barrierefreier Wohnraum im ländlichen Raum der StädteRegion Aachen.</p>
-                                    <button class="btn-contact" onclick="openModal('Soziales: Senioren-Campus')">Interesse</button>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="card">
-                                    <span class="badge bg-natur">Gutachten</span>
-                                    <h3>Klima-Analyse Eifel</h3>
-                                    <p>Grenzüberschreitendes Gutachten zu Kaltluftströmen in der Nord-Eifel.</p>
-                                    <button class="btn-contact" onclick="openModal('Natur: Klima-Analyse')">Interesse</button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="project-board">
+                
+                <div class="project-column">
+                    <h2 class="bg-infra">Infrastruktur</h2>
+                    <div class="card">
+                        <span class="badge bg-infra">Strategisch</span>
+                        <h3>Regio-Tram Ausbau</h3>
+                        <p>Anbindung Aachen-Nord zur Entlastung des Wohnungsmarktes.</p>
+                        <button class="btn-contact" onclick="openModal('Infrastruktur: Regio-Tram')">Interesse</button>
+                    </div>
+                </div>
+
+                <div class="project-column">
+                    <h2 class="bg-wohnen">Wohnen</h2>
+                    <div class="card">
+                        <span class="badge bg-wohnen">Pilot</span>
+                        <h3>Eigentümer-Aktivierung</h3>
+                        <p>Proaktive Ansprache zur Nutzung von Innenpotenzialen.</p>
+                        <button class="btn-contact" onclick="openModal('Wohnen: Aktivierung')">Interesse</button>
+                    </div>
+                </div>
+
+                <div class="project-column">
+                    <h2 class="bg-sozial">Soziales</h2>
+                    <div class="card">
+                        <span class="badge bg-sozial">Aktiv</span>
+                        <h3>Senioren-Campus</h3>
+                        <p>Barrierefreies Wohnen im ländlichen Raum Aachen.</p>
+                        <button class="btn-contact" onclick="openModal('Soziales: Senioren-Campus')">Interesse</button>
+                    </div>
+                </div>
+
+                <div class="project-column">
+                    <h2 class="bg-natur">Natur</h2>
+                    <div class="card">
+                        <span class="badge bg-natur">Gutachten</span>
+                        <h3>Klima-Analyse Eifel</h3>
+                        <p>Grenzüberschreitendes Gutachten zu Kaltluftströmen.</p>
+                        <button class="btn-contact" onclick="openModal('Natur: Klima-Analyse')">Interesse</button>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -220,6 +216,7 @@
             closeModal();
         }
 
+        // Iframe Resize Logic (Originaler Stand)
         window.addEventListener('message', function(e) {
             if (e.data && e.data.type === 'resize-iframe') {
                 const iframe = document.getElementById('seamless-tool');
