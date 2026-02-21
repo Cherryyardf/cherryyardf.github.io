@@ -83,60 +83,6 @@
         .modal-content { background: white; border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); max-width: 28rem; width: 100%; padding: 2rem; border-top: 4px solid var(--alert-color); position: relative; }
         .hidden { display: none !important; }
 
-/* --- INFO-SIDEBAR --- */
-.info-sidebar {
-    position: fixed;
-    top: 0;
-    right: -400px; /* Versteckt außerhalb des Bildschirms */
-    width: 400px;  /* Etwas breiter für besseren Lesefluss */
-    height: 100vh;
-    background: #fff;
-    box-shadow: -5px 0 15px rgba(0,0,0,0.1);
-    transition: right 0.3s ease-in-out;
-    z-index: 1000;
-    padding: 40px;
-    box-sizing: border-box;
-    overflow-y: auto;
-    border-left: 5px solid var(--accent-color);
-}
-.info-sidebar.open {
-    right: 0;
-}
-
-/* Der senkrechte Button in einer Box */
-.sidebar-toggle {
-    position: fixed;
-    top: 50%; /* Vertikal zentriert */
-    right: 0;
-    transform: translateY(-50%); /* Exakt mittig ausrichten */
-    background: var(--accent-color);
-    color: #fff;
-    border: none;
-    padding: 25px 15px; /* Box-Form (viel padding oben/unten) */
-    font-size: 1.2rem; /* Größere Schrift */
-    cursor: pointer;
-    z-index: 1001;
-    border-radius: 8px 0 0 8px; /* Runde Ecken nur links */
-    writing-mode: vertical-rl; /* Senkrechte Schrift */
-    text-orientation: mixed;
-    transition: right 0.3s ease-in-out;
-    font-weight: bold;
-    box-shadow: -4px 0px 15px rgba(0,0,0,0.2);
-    letter-spacing: 1px;
-}
-.sidebar-toggle.open {
-    right: 400px; /* Schiebt den Button mit der Sidebar nach links */
-}
-
-.info-sidebar ul {
-    padding-left: 20px;
-    color: #555;
-    line-height: 1.6;
-}
-.info-sidebar li {
-    margin-bottom: 20px;
-}
-        
         /* Mobile */
         @media (max-width: 768px) {
             .nav-links a { font-size: 0.7rem !important; }
@@ -248,7 +194,7 @@
             </div>
         </section>
 
-              <div class="grid-2">
+        <div class="grid-2">
             <div class="service-card" style="border-top-color: var(--highlight-color);">
                 <h3 data-i18n="fund_title">💰 Verfügbare Fördergelder</h3>
                 <p style="font-size:0.9rem; margin-bottom:20px;" data-i18n="fund_desc">Aktuelle Programme für Ihre Region:</p>
@@ -265,6 +211,48 @@
                     <button class="btn-fund" onclick="alert('Formular wird heruntergeladen...')" data-i18n="btn_apply">Antrag</button>
                 </div>
             </div>
+
+            <div class="service-card">
+                <h3 data-i18n="craft_title">🛠️ Handwerker in der Nähe</h3>
+                <p style="font-size:0.9rem; margin-bottom:20px;" data-i18n="craft_desc">Finden Sie verfügbare Experten im Umkreis von 10km.</p>
+                <div class="craftsman-search">
+                    <input type="text" placeholder="PLZ oder Gewerk (z.B. Dachdecker)" data-i18n="craft_placeholder">
+                    <button style="background:#ddd; border:none; padding:0 15px; border-radius:4px;">🔍</button>
+                </div>
+                <ul class="craftsman-list">
+                    <li class="craftsman-li">
+                        <div><strong>Elektro Müller GmbH</strong><br><span class="craftsman-tag">Photovoltaik</span> <span class="craftsman-tag">Smart Home</span></div>
+                        <a href="#" style="color:var(--accent-color); font-weight:bold;" data-i18n="link_call">Anrufen</a>
+                    </li>
+                    <li class="craftsman-li">
+                        <div><strong>Dachdeckerei Schmidt</strong><br><span class="craftsman-tag" data-i18n="tag_insulation">Dämmung</span> <span class="craftsman-tag" data-i18n="tag_renovation">Sanierung</span></div>
+                        <a href="#" style="color:var(--accent-color); font-weight:bold;" data-i18n="link_call">Anrufen</a>
+                    </li>
+                </ul>
+                <p style="text-align:center; font-size:0.8rem; color:#888; margin-top:10px;" data-i18n="craft_footer">Geprüfte Partner der Kommune</p>
+            </div>
+
+            <div class="service-card">
+                <h3 data-i18n="vacancy_title">🏚️ Leerstand & Umnutzung</h3>
+                <p style="font-size:0.9rem; margin-bottom:20px;" data-i18n="vacancy_desc">Haben Sie eine ungenutzte Immobilie? Melden Sie sie freiwillig für Förder-Programme.</p>
+                <form class="vacancy-form" onsubmit="event.preventDefault(); alert('Vielen Dank!');">
+                    <label data-i18n="lbl_prop_type">Art der Immobilie</label>
+                    <select><option data-i18n="opt_vacant_home">Wohnhaus</option><option data-i18n="opt_commercial">Gewerbe</option></select>
+                    <button type="submit" class="btn-submit" data-i18n="btn_submit_confidential">Vertraulich absenden</button>
+                </form>
+            </div>
+
+            <div class="service-card" style="background: #fdfdfd;">
+                <h3 data-i18n="coop_title">🤝 Kooperation mit der Kommune</h3>
+                <p data-i18n="coop_desc">Wir unterstützen Sie nicht nur finanziell, sondern auch planerisch.</p>
+                <ul style="padding-left:20px; color:#555;">
+                    <li style="margin-bottom:10px;" data-i18n="coop_li_1">Kostenlose Erstberatung durch Stadtarchitekten</li>
+                    <li style="margin-bottom:10px;" data-i18n="coop_li_2">Hilfe bei Bauanträgen & Genehmigungen</li>
+                    <li style="margin-bottom:10px;" data-i18n="coop_li_3">Vermittlung an Investoren oder Baugruppen</li>
+                </ul>
+                <button class="btn-submit" style="background-color: #2c3e50; margin-top:10px;" onclick="alert('Terminbuchungssystem öffnet sich...')" data-i18n="btn_book">Beratungstermin buchen</button>
+            </div>
+        </div>
 
         <h2 style="text-align: center; margin-bottom: 30px;" data-i18n="legal_title">Rechtssicher Eigentum halten</h2>
         <section class="service-card" style="border-top-color: #c0392b; margin-bottom: 60px;">
@@ -437,7 +425,6 @@
                 localStorage.setItem('baukompass_location_city', foundCity);
                 localStorage.setItem('baukompass_location_plz', plz);
                 localStorage.setItem('baukompass_location_country', country);
-                updateLocalResources(country, foundCity);
             } else {
                 errorBox.classList.remove('hidden');
                 errorBox.innerText = translations[currentLang].modal_error || "PLZ nicht gefunden.";
@@ -518,7 +505,6 @@
         window.addEventListener('load', () => {
             const savedLang = localStorage.getItem('baukompass_lang') || 'de';
             changeLanguage(savedLang);
-            updateLocalResources(localStorage.getItem('baukompass_location_country'), savedCity);
 
             // Check for saved location
             const savedCity = localStorage.getItem('baukompass_location_city');
@@ -528,43 +514,8 @@
                 document.getElementById('main-body').style.overflow = 'auto';
             }
         });
-// --- SIDEBAR LOGIC ---
-function toggleSidebar() {
-    const sidebar = document.getElementById('info-sidebar');
-    const btn = document.getElementById('sidebar-btn');
-    sidebar.classList.toggle('open');
-    btn.classList.toggle('open');
-}
 
-// --- LOKALE RESSOURCEN LOGIC ---
-function updateLocalResources(country, city) {
-    const resDiv = document.getElementById('local-resources');
-    let content = `<h3 style="color: #3498db;">📍 Lokale Daten für ${city}</h3>`;
-    
-    if (country === 'DE' && city === 'Simmerath') {
-        resDiv.classList.remove('hidden');
-        content += '<p style="font-size: 0.9rem;">Prüfen Sie Bebauungspläne und offizielle Bodenwerte:</p><ul style="padding-left:20px; color:#555; font-size: 0.9rem;">';
-        content += '<li style="margin-bottom:5px;"><a href="https://geoportal.staedteregion-aachen.de/" target="_blank" style="color:var(--accent-color); font-weight:bold;">Geoportal StädteRegion Aachen</a></li>';
-        content += '<li style="margin-bottom:5px;"><a href="https://www.boris.nrw.de/" target="_blank" style="color:var(--accent-color); font-weight:bold;">BORIS.NRW (Bodenrichtwerte)</a></li>';
-        content += '</ul>';
-    } else if (country === 'BE' && city.includes('Raeren')) {
-        resDiv.classList.remove('hidden');
-        content += '<p style="font-size: 0.9rem;">Prüfen Sie den Sektorenplan und Marktdaten:</p><ul style="padding-left:20px; color:#555; font-size: 0.9rem;">';
-        content += '<li style="margin-bottom:5px;"><a href="https://geoportail.wallonie.be/walonmap" target="_blank" style="color:var(--accent-color); font-weight:bold;">WalOnMap (Plan de Secteur)</a></li>';
-        content += '<li style="margin-bottom:5px;"><a href="https://www.wfg.be/" target="_blank" style="color:var(--accent-color); font-weight:bold;">WFG Ostbelgien (Strukturdaten)</a></li>';
-        content += '</ul>';
-    } else {
-        // Verstecken, wenn keine spezifischen Ressourcen vorhanden sind
-        resDiv.classList.add('hidden');
-    }
-    
-    if (!resDiv.classList.contains('hidden')) {
-        resDiv.innerHTML = content;
-    }
-}
     </script>
 </body>
 </html>
-
-
 
