@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Für Gemeinden - BAUKOMPASS</title>
     <style>
+        /* --- GRUNDEINSTELLUNGEN --- */
         :root {
             --bg-color: #f8f1d9;
             --text-color: #222;
@@ -15,187 +16,207 @@
             --cat-sozial: #27ae60;
             --cat-natur: #2ecc71;
         }
-        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; }
+        body { 
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+            margin: 0; padding: 0; 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            line-height: 1.6; 
+        }
         
         /* Navigation */
         nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: white; border-bottom: 1px solid #e0e0e0; }
         .nav-links a { text-decoration: none; color: var(--text-color); font-weight: bold; font-size: 0.9rem; text-transform: uppercase; }
         .logo { font-weight: 900; font-size: 1.5rem; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; color: black; }
 
+        .lang-switch { display: flex; gap: 10px; }
+        .lang-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; opacity: 0.5; transition: opacity 0.2s; padding: 0; }
+        .lang-btn:hover, .lang-btn.active { opacity: 1; transform: scale(1.1); }
+
         /* Tabs */
-        .tab-container { display: flex; justify-content: center; border-bottom: 2px solid #ccc; margin-bottom: 30px; background: white; padding-top: 20px; flex-wrap: wrap; }
+        .tab-container { display: flex; justify-content: center; border-bottom: 2px solid #ccc; margin-bottom: 40px; background: white; padding-top: 20px; flex-wrap: wrap; }
         .tab-button { background-color: transparent; border: none; cursor: pointer; padding: 14px 25px; font-size: 1rem; font-weight: bold; color: #666; border-bottom: 4px solid transparent; transition: 0.3s; }
+        .tab-button:hover { color: var(--accent-color); background: #f9f9f9; }
         .tab-button.active { color: var(--accent-color); border-bottom: 4px solid var(--active-tab); }
-        .tab-content { display: none; animation: fadeEffect 0.5s; padding: 20px; }
+        .tab-content { display: none; animation: fadeEffect 0.5s; padding: 0 20px 40px 20px; }
 
-        /* Grid & Cards */
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; max-width: 1400px; margin: 0 auto; }
-        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); position: relative; display: flex; flex-direction: column; }
-        .card h3 { margin: 0 0 15px 0; color: var(--accent-color); font-size: 1.3rem; border-bottom: 2px solid var(--bg-color); padding-bottom: 8px; }
-        .card p { margin: 8px 0; font-size: 0.95rem; }
-        .card strong { color: #555; font-size: 0.85rem; text-transform: uppercase; display: block; margin-top: 10px; }
+        /* Layout & Cards */
+        .content-wrapper { width: 100%; max-width: 1400px; margin: 0 auto; }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); position: relative; display: flex; flex-direction: column; transition: transform 0.2s; }
+        .card:hover { transform: translateY(-5px); }
+        .card h3 { margin: 0 0 10px 0; color: var(--accent-color); border-bottom: 2px solid var(--bg-color); padding-bottom: 8px; }
         
-        .contact-link { margin-top: auto; padding-top: 15px; color: var(--active-tab); text-decoration: none; font-weight: bold; font-size: 0.9rem; }
-        .contact-link:hover { text-decoration: underline; }
-
-        /* Projekt Kategorien */
-        .category-header { width: 100%; grid-column: 1 / -1; margin-top: 40px; margin-bottom: 15px; padding-left: 10px; border-left: 5px solid var(--active-tab); }
-        .category-header h2 { margin: 0; font-size: 1.5rem; color: var(--accent-color); }
-        
+        /* Badges & Categories */
         .badge { position: absolute; top: 15px; right: 15px; padding: 4px 10px; border-radius: 4px; color: white; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
+        .category-header { width: 100%; grid-column: 1 / -1; margin-top: 40px; margin-bottom: 15px; padding-left: 10px; border-left: 5px solid var(--active-tab); }
         .bg-infra { background: var(--cat-infra); }
         .bg-wohnen { background: var(--cat-wohnen); }
         .bg-sozial { background: var(--cat-sozial); }
         .bg-natur { background: var(--cat-natur); }
+
+        /* Table Style */
+        .info-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+        .info-table th, .info-table td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        .info-table th { background: var(--accent-color); color: white; }
+
+        .btn-contact { background: var(--active-tab); color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: auto; text-align: center; text-decoration: none; }
+        .btn-contact:hover { background: #d35400; }
+
+        .contact-link { margin-top: auto; padding-top: 15px; color: var(--active-tab); text-decoration: none; font-weight: bold; }
+        .tool-wrapper { width: 100%; background: white; border-radius: 8px; overflow: hidden; min-height: 800px; }
+
+        /* Modal / Formular Style */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
+        .modal-content { background-color: white; margin: 5% auto; padding: 30px; border-radius: 8px; width: 90%; max-width: 500px; }
+        .modal-content h2 { margin-top: 0; color: var(--accent-color); }
+        .modal-content input, .modal-content textarea, .modal-content select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
 
         @keyframes fadeEffect { from {opacity: 0;} to {opacity: 1;} }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="nav-links"><a href="index.html">← Zurück zur Übersicht</a></div>
-        <a href="index.html" class="logo">BAUKOMPASS</a>
-        <div style="width: 100px;"></div> </nav>
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <h2>Projekt-Anfrage</h2>
+            <p style="font-size: 0.8rem; color: #666;">Ihre Nachricht wird an die zentrale Vermittlungsstelle der StädteRegion Aachen gesendet.</p>
+            <form id="projectForm">
+                <input type="text" id="gemeindeName" placeholder="Ihre Gemeinde / Organisation" required>
+                <input type="email" placeholder="Ihre E-Mail-Adresse" required>
+                <select id="projektAuswahl">
+                    <option value="allgemein">Allgemeine Anfrage</option>
+                    <option value="infra">Infrastruktur & Straßenbau</option>
+                    <option value="wohnen">Wohnen & Projektentwicklung</option>
+                    <option value="sozial">Soziales / Sozialer Wohnraum</option>
+                    <option value="natur">Natur & Umweltgutachten</option>
+                </select>
+                <textarea rows="5" placeholder="Ihre Nachricht an die StädteRegion Aachen..." required></textarea>
+                <button type="submit" class="btn-contact" style="width: 100%;">Anfrage absenden</button>
+                <button type="button" onclick="closeModal()" style="background: none; border: none; color: #888; width: 100%; margin-top: 10px; cursor: pointer;">Abbrechen</button>
+            </form>
+        </div>
+    </div>
 
-    <div class="header-section" style="text-align: center; margin: 40px 0;">
-        <h1 style="font-size: 2.5rem; color: #2c3e50;">StädteRegion Aachen</h1>
-        <p>Interkommunale Zusammenarbeit & Projektbörse</p>
+    <nav>
+        <div class="nav-links"><a href="index.html">&larr; Zurück</a></div>
+        <a href="index.html" class="logo">BAUKOMPASS</a>
+        <div class="lang-switch">
+            <button onclick="changeLanguage('de')" class="lang-btn active" data-lang="de">🇩🇪</button>
+            <button onclick="changeLanguage('en')" class="lang-btn" data-lang="en">🇬🇧</button>
+        </div>
+    </nav>
+
+    <div style="text-align: center; margin: 40px 0;">
+        <h1>Von Gemeinden für Gemeinden</h1>
+        <p>Kooperations-Dashboard StädteRegion Aachen</p>
     </div>
 
     <div class="tab-container">
         <button class="tab-button active" onclick="openTab(event, 'Info')">Informationen</button>
+        <button class="tab-button" onclick="openTab(event, 'Geoportale')">Geoportale & Karten</button>
         <button class="tab-button" onclick="openTab(event, 'Tool')">Immobilien-Tool</button>
-        <button class="tab-button" onclick="openTab(event, 'Kontakte')">Gemeinden & Bauämter</button>
+        <button class="tab-button" onclick="openTab(event, 'Kontakte')">Gemeinden Aachen</button>
         <button class="tab-button" onclick="openTab(event, 'Projekte')">Projektbörse</button>
     </div>
 
     <main class="content-wrapper">
+        
         <div id="Info" class="tab-content" style="display: block;">
-            <div style="max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 4px;">
-                <h2>Netzwerk StädteRegion Aachen</h2>
-                <p>Die StädteRegion Aachen ist ein Vorreiter in der interkommunalen Kooperation. Hier bündeln 10 Kommunen ihre Kräfte in den Bereichen Bauaufsicht, Wohnraumförderung und Klimaschutz.</p>
+            <div style="background: white; padding: 30px; border-radius: 8px; margin-bottom: 20px;">
+                <h2>Grenzüberschreitende Planungshilfen</h2>
+                <p>Besonderheiten im Vergleich zwischen <strong>Simmerath (DE)</strong> und <strong>Raeren (BE)</strong>:</p>
+                <table class="info-table">
+                    <tr><th>Bereich</th><th>Simmerath (DE)</th><th>Raeren (BE)</th></tr>
+                    <tr><td><strong>Geoportal</strong></td><td>Geoportal StädteRegion AC</td><td>WalOnMap (Wallonien)</td></tr>
+                    <tr><td><strong>Bodenrichtwerte</strong></td><td>BORIS.NRW (offiziell)</td><td>Orientierung an Marktpreisen</td></tr>
+                    <tr><td><strong>Digitaler Zugang</strong></td><td>Beteiligung.NRW / Bauportal</td><td>Raeren.be / PDF-Aushänge</td></tr>
+                    <tr><td><strong>Risikoanalyse</strong></td><td>Starkregen-Gefahrenkarten</td><td>Carte d'aléas d'inondation</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <div id="Geoportale" class="tab-content">
+            <div class="grid-container">
+                <div class="card" style="border-top: 5px solid #00549f;">
+                    <h3>Geoportal StädteRegion</h3>
+                    <p>Bebauungspläne und Kataster der Aachener Region.</p>
+                    <a href="https://geoportal.staedteregion-aachen.de" target="_blank" class="contact-link">Portal öffnen &rarr;</a>
+                </div>
+                <div class="card" style="border-top: 5px solid #d32f2f;">
+                    <h3>BORIS.NRW</h3>
+                    <p>Bodenrichtwerte und Grundstücksmarktberichte NRW.</p>
+                    <a href="https://www.boris.nrw.de" target="_blank" class="contact-link">Werte prüfen &rarr;</a>
+                </div>
+                <div class="card" style="border-top: 5px solid #ffcc00;">
+                    <h3>WalOnMap</h3>
+                    <p>Offizielle Karten für das wallonische Gebiet (z.B. Raeren).</p>
+                    <a href="https://geoportail.wallonie.be/walonmap" target="_blank" class="contact-link">Belgische Karte &rarr;</a>
+                </div>
             </div>
         </div>
 
         <div id="Tool" class="tab-content">
-            <div style="width: 96%; margin: 0 auto; background: white; min-height: 800px;">
+            <div class="tool-wrapper">
                 <iframe id="seamless-tool" src="tool/index.html" style="width: 100%; border: none; min-height: 800px;"></iframe>
             </div>
         </div>
 
         <div id="Kontakte" class="tab-content">
             <div class="grid-container">
-                <div class="card">
-                    <h3>Stadt Aachen</h3>
-                    <strong>Bauaufsicht & Wohnen</strong>
-                    <p>Zollernstraße 10, 52070 Aachen</p>
-                    <p>E-Mail: bauordnungsamt@staedteregion-aachen.de</p>
-                    <a href="https://www.aachen.de" target="_blank" class="contact-link">Serviceportal Aachen →</a>
-                </div>
-                <div class="card">
-                    <h3>Stadt Alsdorf</h3>
-                    <strong>Bauamt</strong>
-                    <p>Hubertusstraße 17, 52477 Alsdorf</p>
-                    <p>Telefon: 02404 / 50-0</p>
-                    <a href="https://www.alsdorf.de" target="_blank" class="contact-link">Stadt Alsdorf →</a>
-                </div>
-                <div class="card">
-                    <h3>Stadt Baesweiler</h3>
-                    <strong>Stadtplanung</strong>
-                    <p>Mariastraße 2, 52499 Baesweiler</p>
-                    <a href="https://www.baesweiler.de" target="_blank" class="contact-link">Stadt Baesweiler →</a>
-                </div>
-                <div class="card">
-                    <h3>Stadt Eschweiler</h3>
-                    <strong>Bauen & Planen</strong>
-                    <p>Johannes-Rau-Platz 1, 52249 Eschweiler</p>
-                    <a href="https://www.eschweiler.de" target="_blank" class="contact-link">Stadt Eschweiler →</a>
-                </div>
-                <div class="card">
-                    <h3>Stadt Herzogenrath</h3>
-                    <strong>Technisches Rathaus</strong>
-                    <p>Rathausplatz 1, 52134 Herzogenrath</p>
-                    <a href="https://www.herzogenrath.de" target="_blank" class="contact-link">Stadt Herzogenrath →</a>
-                </div>
-                <div class="card">
-                    <h3>Stadt Monschau</h3>
-                    <strong>Liegenschaften (Zentralisiert)</strong>
-                    <p>Laufenstraße 84, 52156 Monschau</p>
-                    <p>Bauaufsicht via StädteRegion AC</p>
-                    <a href="https://www.monschau.de" target="_blank" class="contact-link">Stadt Monschau →</a>
-                </div>
-                <div class="card">
-                    <h3>Gemeinde Roetgen</h3>
-                    <strong>Bauamt</strong>
-                    <p>Hauptstraße 95, 52159 Roetgen</p>
-                    <a href="https://www.roetgen.de" target="_blank" class="contact-link">Gemeinde Roetgen →</a>
-                </div>
-                <div class="card">
-                    <h3>Gemeinde Simmerath</h3>
-                    <strong>Hoch- & Tiefbauamt</strong>
-                    <p>Rathausplatz 1, 52152 Simmerath</p>
-                    <a href="https://www.simmerath.de" target="_blank" class="contact-link">Gemeinde Simmerath →</a>
-                </div>
-                <div class="card">
-                    <h3>Stadt Stolberg</h3>
-                    <strong>Abteilung Stadtentwicklung</strong>
-                    <p>Rathausstraße 11-13, 52222 Stolberg</p>
-                    <a href="https://www.stolberg.de" target="_blank" class="contact-link">Stadt Stolberg →</a>
-                </div>
-                <div class="card">
-                    <h3>Stadt Würselen</h3>
-                    <strong>Fachdienst 4.1 Bauaufsicht</strong>
-                    <p>Morlaixplatz 1, 52146 Würselen</p>
-                    <a href="https://www.wuerselen.de" target="_blank" class="contact-link">Stadt Würselen →</a>
-                </div>
+                <div class="card"><h3>Stadt Aachen</h3><p>Bauordnungsamt</p><a href="https://www.aachen.de" target="_blank" class="contact-link">Serviceportal &rarr;</a></div>
+                <div class="card"><h3>Stadt Alsdorf</h3><p>Stadtplanung</p><a href="https://www.alsdorf.de" target="_blank" class="contact-link">Serviceportal &rarr;</a></div>
+                <div class="card"><h3>Stadt Stolberg</h3><p>Stadtentwicklung</p><a href="https://www.stolberg.de" target="_blank" class="contact-link">Serviceportal &rarr;</a></div>
+                <div class="card"><h3>Gemeinde Simmerath</h3><p>Bauamt</p><a href="https://www.simmerath.de" target="_blank" class="contact-link">Serviceportal &rarr;</a></div>
+                <div class="card"><h3>Stadt Monschau</h3><p>Bauaufsicht (AC)</p><a href="https://www.monschau.de" target="_blank" class="contact-link">Serviceportal &rarr;</a></div>
+                <div class="card"><h3>Stadt Eschweiler</h3><p>Planungsamt</p><a href="https://www.eschweiler.de" target="_blank" class="contact-link">Serviceportal &rarr;</a></div>
+                <div class="card"><h3>Stadt Würselen</h3><p>Bauaufsicht</p><a href="https://www.wuerselen.de" target="_blank" class="contact-link">Serviceportal &rarr;</a></div>
+                <div class="card"><h3>Herzogenrath</h3><p>Stadtplanung</p><a href="https://www.herzogenrath.de" target="_blank" class="contact-link">Serviceportal &rarr;</a></div>
+                <div class="card"><h3>Gemeinde Roetgen</h3><p>Bauamt</p><a href="https://www.roetgen.de" target="_blank" class="contact-link">Serviceportal &rarr;</a></div>
+                <div class="card"><h3>Stadt Baesweiler</h3><p>Stadtplanung</p><a href="https://www.baesweiler.de" target="_blank" class="contact-link">Serviceportal &rarr;</a></div>
             </div>
         </div>
 
         <div id="Projekte" class="tab-content">
             <div class="grid-container">
-                
-                <div class="category-header"><h2>🚧 Infrastruktur & Straßenbau</h2></div>
+                <div class="category-header"><h2>🚧 Infrastruktur (Straßenbau)</h2></div>
                 <div class="card">
                     <span class="badge bg-infra">In Planung</span>
-                    <h3>Regio-Tram Ausbau</h3>
-                    <p>Interkommunale Verkehrsverbindung zwischen Aachen, Würselen und Alsdorf.</p>
-                    <strong>Beteiligte:</strong> AC, WÜ, AL
-                    <a href="#" class="contact-link">Projektunterlagen →</a>
+                    <h3>Regio-Tram</h3>
+                    <p>Verbindung Aachen-Würselen-Alsdorf.</p>
+                    <button class="btn-contact" onclick="openModal('Infrastruktur: Regio-Tram')">Interesse bekunden</button>
                 </div>
-
-                <div class="category-header"><h2>🏠 Wohnen & Projektentwicklung</h2></div>
+                
+                <div class="category-header"><h2>🏠 Wohnen (Projektentwicklung)</h2></div>
                 <div class="card">
                     <span class="badge bg-wohnen">Partner gesucht</span>
-                    <h3>Quartiersentwicklung Nord</h3>
-                    <p>Nachnutzung brachliegender Industrieflächen für modernes Wohnen.</p>
-                    <strong>Fokus:</strong> KFW-Standard 40
-                    <a href="#" class="contact-link">Exposé anfordern →</a>
+                    <h3>Wohnquartier Stolberg</h3>
+                    <p>Nachnutzung ehemaliger Gewerbeflächen.</p>
+                    <button class="btn-contact" onclick="openModal('Wohnen: Quartier Stolberg')">Interesse bekunden</button>
                 </div>
-
-                <div class="category-header"><h2>🤝 Soziales & Wohnraumförderung</h2></div>
+                
+                <div class="category-header"><h2>🤝 Soziales (Sozialer Wohnraum)</h2></div>
                 <div class="card">
-                    <span class="badge bg-sozial">Aktiv</span>
-                    <h3>Senioren-Campus Simmerath</h3>
-                    <p>Barrierefreier Wohnraum im ländlichen Raum mit Anbindung an Pflege.</p>
-                    <strong>Förderung:</strong> Landesmittel NRW
-                    <a href="#" class="contact-link">Förderantrag →</a>
+                    <span class="badge bg-sozial">Ausschreibung</span>
+                    <h3>Senioren-Wohnen Simmerath</h3>
+                    <p>Barrierefreies Bauen im ländlichen Raum.</p>
+                    <button class="btn-contact" onclick="openModal('Soziales: Senioren-Wohnen')">Interesse bekunden</button>
                 </div>
-
-                <div class="category-header"><h2>🌿 Natur & Umweltgutachten</h2></div>
+                
+                <div class="category-header"><h2>🌿 Natur (Umweltgutachten)</h2></div>
                 <div class="card">
-                    <span class="badge bg-natur">Gutachten</span>
-                    <h3>Klimaanalyse Rurtal</h3>
-                    <p>Erstellung eines interkommunalen Gutachtens zur Kaltluftentstehung.</p>
-                    <strong>Beteiligte:</strong> Simmerath, Monschau
-                    <a href="#" class="contact-link">Zum Download →</a>
+                    <span class="badge bg-natur">Offen</span>
+                    <h3>Klima-Analyse Nord-Eifel</h3>
+                    <p>Interkommunales Gutachten Kaltluftströme.</p>
+                    <button class="btn-contact" onclick="openModal('Natur: Klima-Analyse')">Interesse bekunden</button>
                 </div>
-
             </div>
         </div>
+
     </main>
 
     <script>
+        // --- TAB LOGIC ---
         function openTab(evt, tabName) {
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tab-content");
@@ -205,7 +226,39 @@
             document.getElementById(tabName).style.display = "block";
             evt.currentTarget.className += " active";
         }
+
+        // --- MODAL LOGIC ---
+        const modal = document.getElementById("contactModal");
+        function openModal(projectTitle) {
+            modal.style.display = "block";
+            if(projectTitle) {
+                document.getElementById("projektAuswahl").value = "allgemein"; 
+                // Man könnte hier den Titel automatisch ins Textfeld setzen:
+                document.querySelector("textarea").value = "Betreff: Interesse am Projekt " + projectTitle + "\n\nSehr geehrte Damen und Herren,\n\nwir interessieren uns für eine Zusammenarbeit...";
+            }
+        }
+        function closeModal() { modal.style.display = "none"; }
+        window.onclick = function(event) { if (event.target == modal) closeModal(); }
+
+        document.getElementById("projectForm").onsubmit = function(e) {
+            e.preventDefault();
+            alert("Vielen Dank! Ihre Anfrage wurde an die zentrale Koordinierungsstelle der StädteRegion Aachen übermittelt.");
+            closeModal();
+        }
+
+        // --- IFRAME RESIZE (Original erhalten) ---
+        window.addEventListener('message', function(e) {
+            if (e.data && e.data.type === 'resize-iframe') {
+                const iframe = document.getElementById('seamless-tool');
+                if (iframe) { iframe.style.height = e.data.height + 'px'; }
+            }
+        });
+
+        function changeLanguage(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+        }
     </script>
 </body>
 </html>
-
