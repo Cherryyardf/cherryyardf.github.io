@@ -462,88 +462,76 @@
 <div class="info-sidebar" id="info-sidebar">
     <div class="sidebar-panel">
         <button onclick="toggleSidebar()" style="float:right; border:none; background:none; font-size:2rem; cursor:pointer;">&times;</button>
-        <h2 style="color:var(--accent-color); border-bottom: 2px solid var(--highlight-color); padding-bottom: 10px;">Stufe 0: Kooperation</h2>
-        <p style="font-size: 0.95rem; line-height: 1.4;"><strong>Priorität der Freiwilligkeit:</strong> Bevor hoheitliche Maßnahmen greifen, setzt die Kommune auf aktivierende Beratung und Entlastung von administrativen Risiken[cite: 561, 562, 857].</p>
+        <h2 style="color:var(--accent-color); border-bottom: 3px solid var(--highlight-color); padding-bottom: 10px;" data-i18n="st0_title">Stufe 0: Kooperation</h2>
+        <p data-i18n="st0_desc">Priorität der Freiwilligkeit: Beratung und Entlastung.</p>
         
-        <div style="background:#f0f7ff; padding:15px; border-radius:8px; margin: 15px 0; border: 1px solid #d1e3f8;">
-            <strong style="display:block; margin-bottom:5px; color:#2980b9;">💡 Beschleunigungs-Vorteile:</strong>
-            <ul style="font-size:0.85rem; padding-left:18px; margin:0; color: #34495e;">
-                <li style="margin-bottom:8px;"><strong>DE:</strong> Verfahren nach § 13a BauGB ermöglichen Innenentwicklung ohne langwierige Umweltprüfungen[cite: 820, 947].</li>
-                <li><strong>BE:</strong> Reduzierter MwSt-Satz von 6% (statt 21%) für Renovierungsprojekte bei Gebäuden älter als 10 Jahre.</li>
+        <div style="background:#f0f7ff; padding:15px; border-radius:10px; margin: 20px 0; border: 1px solid #d1e3f8;">
+            <strong style="display:block; margin-bottom:10px; color:#2980b9;" data-i18n="st0_benefits_title">💡 Vorteile:</strong>
+            <ul style="font-size:0.9rem; padding-left:20px; color: #2c3e50;">
+                <li style="margin-bottom:10px;" data-i18n="st0_ben_de"><strong>DE:</strong> § 13a BauGB (Beschleunigte Verfahren).</li>
+                <li data-i18n="st0_ben_be"><strong>BE:</strong> 6% MwSt für Renovierungen (>10 J.).</li>
             </ul>
         </div>
         
-        <div id="contact-section" style="margin-top: 20px;">
-            <p id="contact-intro" style="font-weight:bold; color: var(--accent-color);">Ihr direkter Kontakt vor Ort:</p>
-            <div id="contact-details" class="hidden" style="background:#fff; border:1px solid #eee; padding:12px; border-radius:8px;">
-                <p style="font-size:0.9rem; margin:0 0 10px 0;">📞 <span id="contact-phone" style="font-family: monospace;"></span><br>
-                📧 <a id="contact-email" href="#" style="color:var(--highlight-color);"></a></p>
-                <a id="contact-link" href="#" target="_blank" class="btn-submit" style="display:block; text-align:center; text-decoration:none; background: var(--accent-color); padding: 8px;">Zum Gemeinde-Portal</a>
+        <div id="contact-section">
+            <p id="contact-intro" style="font-weight:bold;" data-i18n="contact_title">Ihr Kontakt vor Ort:</p>
+            <div id="contact-details" class="hidden">
+                <p>📞 <span id="contact-phone"></span><br>
+                📧 <a id="contact-email" href="#"></a></p>
+                <a id="contact-link" href="#" target="_blank" class="btn-submit" data-i18n="btn_portal">Gemeinde-Portal</a>
             </div>
         </div>
-        <button class="btn-submit" onclick="changeFold(1)" style="background:var(--alert-color); width:100%; margin-top:25px; padding: 15px; font-size: 0.9rem;">⚠️ STUFE 1: FINANZIELLE HEBEL</button>
+        <button class="btn-submit" onclick="changeFold(1)" style="background:var(--alert-color);" data-i18n="btn_st1">⚠️ STUFE 1: FINANZEN</button>
     </div>
 
     <div class="sidebar-panel" style="background:#fffcf5;">
-        <h2 style="color:#e67e22; border-bottom: 2px solid #f39c12; padding-bottom: 10px;">Stufe 1: Finanzen</h2>
-        <p style="font-size: 0.9rem;">Erhöhung der wirtschaftlichen Haltekosten für ungenutzte Flächen zur Mobilisierung[cite: 899].</p>
-        
-        <div style="display:grid; gap:15px; margin-top:15px;">
-            <div style="background:white; padding:12px; border-left:5px solid #e67e22; border-radius:4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                <strong style="color:#d35400;">Deutschland (DE)</strong>
-                <p style="font-size:0.85rem; margin:5px 0;"><strong>Grundsteuer C:</strong> Gezielte Besteuerung baureifer Grundstücke gegen Bodenspekulation[cite: 823, 869, 1007].</p>
-                <p style="font-size:0.85rem; margin:0;"><strong>Sanierungs-AfA:</strong> Steuerliche Absetzbarkeit von 100% der Kosten über 12 Jahre (§ 7h/7i EStG).</p>
+        <h2 style="color:#e67e22; border-bottom: 3px solid #f39c12; padding-bottom: 10px;" data-i18n="st1_title">Stufe 1: Finanzen</h2>
+        <p data-i18n="st1_desc">Erhöhung der Haltekosten ungenutzter Flächen.</p>
+        <div style="display:grid; gap:15px; margin-top:20px; font-size:0.9rem;">
+            <div style="background:white; padding:12px; border-left:6px solid #e67e22;">
+                <strong data-i18n="st1_de_label">Deutschland (DE)</strong>
+                <p data-i18n="st1_de_text">Grundsteuer C & Sanierungs-AfA.</p>
             </div>
-            <div style="background:white; padding:12px; border-left:5px solid #3498db; border-radius:4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                <strong style="color:#2980b9;">Belgien (BE)</strong>
-                <p style="font-size:0.85rem; margin:5px 0;"><strong>Leerstandsabgabe:</strong> Jährliche Steuer auf ungenutzten Wohnraum zur Vermeidung von Verwahrlosung[cite: 899].</p>
-                <p style="font-size:0.85rem; margin:0;"><strong>Planungswertabgabe:</strong> Teilweise Abführung von Gewinnen bei Planänderungen (Art. D.VI.48 CoDT)[cite: 757, 758].</p>
+            <div style="background:white; padding:12px; border-left:6px solid #3498db;">
+                <strong data-i18n="st1_be_label">Belgien (BE)</strong>
+                <p data-i18n="st1_be_text">Leerstandsabgabe & Planungswertabgabe.</p>
             </div>
         </div>
-        <button class="btn-submit" onclick="changeFold(2)" style="background:#c0392b; width:100%; margin-top:25px; padding: 15px;">⚖️ STUFE 2: ORDNUNGSRECHT</button>
-        <button onclick="changeFold(0)" style="border:none; background:none; color:#7f8c8d; cursor:pointer; margin-top:15px; font-size: 0.85rem; width: 100%;">&larr; Zurück zur Beratung</button>
+        <button class="btn-submit" onclick="changeFold(2)" style="background:#c0392b;" data-i18n="btn_st2">⚖️ STUFE 2: RECHT</button>
+        <button onclick="changeFold(0)" class="btn-back" data-i18n="btn_back_coop">← Zurück</button>
     </div>
 
     <div class="sidebar-panel" style="background:#fff5f5;">
-        <h2 style="color:#c0392b; border-bottom: 2px solid #e74c3c; padding-bottom: 10px;">Stufe 2: Ordnungsrecht</h2>
-        <p style="font-size: 0.9rem;">Sicherung städtebaulicher Ziele durch gesetzliche Verpflichtungen[cite: 624, 845].</p>
-        
-        <div style="display:grid; gap:15px; margin-top:15px;">
-            <div style="background:white; padding:12px; border-left:5px solid #c0392b; border-radius:4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                <strong style="color:#a93226;">Deutschland (DE)</strong>
-                <p style="font-size:0.85rem; margin:5px 0;"><strong>Baugebot (§ 176 BauGB):</strong> Fristsetzung zur Bebauung im Rahmen der Pläne[cite: 624, 869, 900].</p>
-                <p style="font-size:0.85rem; margin:0;"><strong>Modernisierungsgebot:</strong> Verpflichtung zur Beseitigung städtebaulicher Missstände.</p>
+        <h2 style="color:#c0392b; border-bottom: 3px solid #e74c3c; padding-bottom: 10px;" data-i18n="st2_title">Stufe 2: Ordnungsrecht</h2>
+        <p data-i18n="st2_desc">Gesetzliche Gebote zur Sicherung des Gemeinwohls.</p>
+        <div style="display:grid; gap:15px; margin-top:20px; font-size:0.9rem;">
+            <div style="background:white; padding:12px; border-left:6px solid #c0392b;">
+                <strong data-i18n="st2_de_label">Deutschland (DE)</strong>
+                <p data-i18n="st2_de_text">Baugebot (§ 176 BauGB) & Modernisierung.</p>
             </div>
-            <div style="background:white; padding:12px; border-left:5px solid #3498db; border-radius:4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                <strong style="color:#2980b9;">Belgien (BE)</strong>
-                <p style="font-size:0.85rem; margin:5px 0;"><strong>Injonction urbanistique:</strong> Behördliche Anordnungen zur Behebung von Mängeln am Erscheinungsbild[cite: 900].</p>
-                <p style="font-size:0.85rem; margin:0;"><strong>Vorkaufsrecht:</strong> Vorrang der Gemeinde bei Verkäufen in strategischen Zonen (Droit de préemption)[cite: 1006].</p>
+            <div style="background:white; padding:12px; border-left:6px solid #3498db;">
+                <strong data-i18n="st2_be_label">Belgien (BE)</strong>
+                <p data-i18n="st2_be_text">Injonction urbanistique & Vorkaufsrecht.</p>
             </div>
         </div>
-        <button class="btn-submit" onclick="changeFold(3)" style="background:#222; width:100%; margin-top:25px; padding: 15px;">🚫 STUFE 3: HOHEITLICHER ZUGRIFF</button>
-        <button onclick="changeFold(1)" style="border:none; background:none; color:#7f8c8d; cursor:pointer; margin-top:15px; font-size: 0.85rem; width: 100%;">&larr; Zurück</button>
+        <button class="btn-submit" onclick="changeFold(3)" style="background:#222;" data-i18n="btn_st3">🚫 STUFE 3: ZUGRIFF</button>
+        <button onclick="changeFold(1)" class="btn-back" data-i18n="btn_back">← Zurück</button>
     </div>
 
     <div class="sidebar-panel" style="background:#f8f9fa;">
-        <h2 style="color:#222; border-bottom: 2px solid #333; padding-bottom: 10px;">Stufe 3: Ultima Ratio</h2>
-        <p style="font-size: 0.9rem;">Finaler Zugriff zur Sicherung des Gemeinwohls bei strategischer Blockade[cite: 902].</p>
-        
-        <div style="display:grid; gap:15px; margin-top:15px;">
-            <div style="background:white; padding:12px; border:1px solid #333; border-left:5px solid #222; border-radius:4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                <strong style="color:#000;">Belgien (BE)</strong>
-                <p style="font-size:0.85rem; margin:5px 0;"><strong>Droit de Gestion Publique:</strong> Zeitweise Übernahme der Verwaltung durch die Gemeinde zur sozialen Reaktivierung von Wohnraum[cite: 901].</p>
+        <h2 style="color:#222; border-bottom: 3px solid #333; padding-bottom: 10px;" data-i18n="st3_title">Stufe 3: Ultima Ratio</h2>
+        <p data-i18n="st3_desc">Stärkste Eingriffe bei dauerhafter Blockade.</p>
+        <div style="display:grid; gap:15px; margin-top:20px; font-size:0.9rem;">
+            <div style="background:white; padding:12px; border-left:8px solid #222;">
+                <strong data-i18n="st3_be_label">Belgien (BE)</strong>
+                <p data-i18n="st3_be_text">Droit de Gestion Publique (Öffentl. Verwaltung).</p>
             </div>
-            <div style="background:white; padding:12px; border:1px solid #eee; border-left:5px solid #e74c3c; border-radius:4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                <strong style="color:#c0392b;">Grenzüberschreitend</strong>
-                <p style="font-size:0.85rem; margin:5px 0;"><strong>Enteignung (Expropriation):</strong> Das letzte Mittel zur Baulandmobilisierung, wenn alle anderen Stufen gescheitert sind[cite: 902].</p>
+            <div style="background:white; padding:12px; border-left:8px solid #e74c3c;">
+                <strong data-i18n="st3_cross_label">Grenzüberschreitend</strong>
+                <p data-i18n="st3_cross_text">Enteignung (Expropriation) als letztes Mittel.</p>
             </div>
         </div>
-        
-        <div style="margin-top:25px; padding:10px; border-top: 1px dashed #ccc; font-size:0.75rem; color:#7f8c8d; font-style:italic;">
-            Hinweis: Diese Stufen werden erst nach intensiver rechtlicher Prüfung und dem Scheitern kooperativer Angebote beschritten[cite: 903, 980].
-        </div>
-        
-        <button onclick="changeFold(2)" style="border:none; background:none; color:#7f8c8d; cursor:pointer; margin-top:20px; font-size: 0.85rem; width: 100%;">&larr; Zurück</button>
+        <button onclick="changeFold(2)" class="btn-back" style="margin-top:20px;" data-i18n="btn_back">← Zurück</button>
     </div>
 </div>
 </div>
@@ -578,6 +566,41 @@ const translations = {
         "comments_title": "Fragen & Kommentare:", "placeholder_ask": "Frage stellen...", "btn_send": "Senden",
         "alarm_title": "🔔 Bau-Alarm: Nichts verpassen!", "alarm_desc": "Werden Sie benachrichtigt, wenn in Ihrem Umfeld neue Projekte starten.",
         "ph_address": "Ihre Adresse", "ph_email": "Ihre E-Mail", "btn_activate": "Aktivieren"
+        "sidebar_toggle": "ℹ️ WARUM KOOPERATION?",
+        "st0_title": "Stufe 0: Kooperation",
+        "st0_desc": "Priorität der Freiwilligkeit: Fokus auf Beratung und Unterstützung.",
+        "st0_benefits_title": "💡 Ihre Vorteile:",
+        "st0_ben_de": "<strong>Deutschland:</strong> Beschleunigte Verfahren (§ 13a BauGB) für Innenentwicklung.",
+        "st0_ben_be": "<strong>Belgien:</strong> Reduzierter MwSt-Satz von 6% bei Renovierung (> 10 Jahre).",
+        "btn_portal": "Gemeinde-Portal",
+        "btn_st1": "⚠️ STUFE 1: FINANZIELLE HEBEL",
+        "st1_title": "Stufe 1: Finanzen",
+        "st1_desc": "Erhöhung der wirtschaftlichen Kosten für ungenutzte Flächen.",
+        "st1_de_label": "Deutschland (DE)",
+        "st1_de_text": "Grundsteuer C & Sanierungs-AfA (§ 7h/7i EStG).",
+        "st1_be_label": "Belgien (BE)",
+        "st1_be_text": "Leerstandsabgabe & Planungswertabgabe (Art. D.VI.48 CoDT).",
+        "btn_st2": "⚖️ STUFE 2: ORDNUNGSRECHT",
+        "st2_title": "Stufe 2: Ordnungsrecht",
+        "st2_desc": "Gesetzliche Gebote zur Sicherung städtebaulicher Ziele.",
+        "st2_de_label": "Deutschland (DE)",
+        "st2_de_text": "Baugebot (§ 176 BauGB) & Modernisierungsgebot.",
+        "st2_be_label": "Belgien (BE)",
+        "st2_be_text": "Injonction urbanistique & Vorkaufsrecht (Droit de préemption).",
+        "btn_st3": "🚫 STUFE 3: HOHEITLICHER ZUGRIFF",
+        "st3_title": "Stufe 3: Ultima Ratio",
+        "st3_desc": "Stärkste Eingriffe bei dauerhafter Blockade der Ortsentwicklung.",
+        "st3_be_label": "Belgien (BE)",
+        "st3_be_text": "Droit de Gestion Publique: Öffentliche Verwaltung zur Reaktivierung.",
+        "st3_cross_label": "Grenzüberschreitend",
+        "st3_cross_text": "Enteignung (Expropriation) als letztes Mittel.",
+        "btn_back": "← Zurück",
+        "btn_back_coop": "← Zurück zur Beratung",
+        "contact_title": "Ihr Kontakt vor Ort:",
+        "modal_title": "Willkommen!", "modal_desc": "Bitte wählen Sie Ihre Region.", "lbl_country": "Land", "lbl_zip": "PLZ", "modal_error": "PLZ nicht im Pilotgebiet.", "btn_enter": "Zum Bereich",
+        "nav_back": "← ZURÜCK", "header_title": "Werte erhalten, Zukunft sichern", "header_sub": "Portal für Sanierung und Förderung",
+        "calc_title": "🌱 Sanierungs-Rechner", "calc_desc": "Gebäudedaten eingeben für Potenzial-Analyse.",
+        "type_title": "🔍 Welcher Eigentümer-Typ sind Sie?", "type_desc": "Passgenaue Strategien für Ihre Lebenslage."
     },
     "en": {
         "sidebar_toggle": "ℹ️ WHY COOPERATE?",
@@ -606,6 +629,41 @@ const translations = {
         "comments_title": "Questions & Comments:", "placeholder_ask": "Ask a question...", "btn_send": "Send",
         "alarm_title": "🔔 Construction Alarm", "alarm_desc": "Get notified when new projects start in your area.",
         "ph_address": "Your Address", "ph_email": "Your E-Mail", "btn_activate": "Activate"
+        "sidebar_toggle": "ℹ️ WHY COOPERATE?",
+        "st0_title": "Level 0: Cooperation",
+        "st0_desc": "Voluntary priority: Focus on advice and support.",
+        "st0_benefits_title": "💡 Your Benefits:",
+        "st0_ben_de": "<strong>Germany:</strong> Accelerated procedures (§ 13a BauGB) for internal development.",
+        "st0_ben_be": "<strong>Belgium:</strong> Reduced VAT rate of 6% for renovations (> 10 years).",
+        "btn_portal": "Municipal Portal",
+        "btn_st1": "⚠️ LEVEL 1: FINANCIAL LEVERAGE",
+        "st1_title": "Level 1: Finances",
+        "st1_desc": "Increasing economic costs for unused areas.",
+        "st1_de_label": "Germany (DE)",
+        "st1_de_text": "Property Tax C & Renovation Tax Depreciation (§ 7h/7i EStG).",
+        "st1_be_label": "Belgium (BE)",
+        "st1_be_text": "Vacancy tax & planning value levy (Art. D.VI.48 CoDT).",
+        "btn_st2": "⚖️ LEVEL 2: REGULATORY LAW",
+        "st2_title": "Level 2: Regulatory Law",
+        "st2_desc": "Legal mandates to secure urban development goals.",
+        "st2_de_label": "Germany (DE)",
+        "st2_de_text": "Building order (§ 176 BauGB) & modernization order.",
+        "st2_be_label": "Belgium (BE)",
+        "st2_be_text": "Urban injunction & Right of pre-emption (Droit de préemption).",
+        "btn_st3": "🚫 LEVEL 3: SOVEREIGN ACCESS",
+        "st3_title": "Level 3: Ultima Ratio",
+        "st3_desc": "Strongest interventions in case of permanent blockade.",
+        "st3_be_label": "Belgium (BE)",
+        "st3_be_text": "Public management right (Droit de Gestion Publique) for reactivation.",
+        "st3_cross_label": "Cross-border",
+        "st3_cross_text": "Expropriation as a last resort.",
+        "btn_back": "← Back",
+        "btn_back_coop": "← Back to advice",
+        "contact_title": "Your local contact:",
+        "modal_title": "Welcome!", "modal_desc": "Please select your region.", "lbl_country": "Country", "lbl_zip": "Zip", "modal_error": "Zip code not in pilot area.", "btn_enter": "Enter Area",
+        "nav_back": "← BACK", "header_title": "Preserve Value, Secure Future", "header_sub": "Portal for Renovation and Funding",
+        "calc_title": "🌱 Renovation Calculator", "calc_desc": "Enter building data for potential analysis.",
+        "type_title": "🔍 What type of owner are you?", "type_desc": "Tailored strategies for your situation."
     },
     "fr": {
         "sidebar_toggle": "ℹ️ POURQUOI COOPÉRER ?",
@@ -634,6 +692,41 @@ const translations = {
         "comments_title": "Questions & commentaires :", "placeholder_ask": "Poser eine Frage...", "btn_send": "Envoyer",
         "alarm_title": "🔔 Alarme chantier", "alarm_desc": "Soyez notifié du lancement de nouveaux projekte dans votre quartier.",
         "ph_address": "Votre adresse", "ph_email": "Votre e-mail", "btn_activate": "Activer"
+        "sidebar_toggle": "ℹ️ POURQUOI COOPÉRER ?",
+        "st0_title": "Niveau 0 : Coopération",
+        "st0_desc": "Priorité au volontariat : conseil et accompagnement.",
+        "st0_benefits_title": "💡 Vos avantages :",
+        "st0_ben_de": "<strong>Allemagne :</strong> Procédures accélérées (§ 13a BauGB) pour le développement intérieur.",
+        "st0_ben_be": "<strong>Belgique :</strong> Taux de TVA réduit de 6% pour les rénovations (> 10 ans).",
+        "btn_portal": "Portail communal",
+        "btn_st1": "⚠️ NIVEAU 1 : LEVIER FINANCIER",
+        "st1_title": "Niveau 1 : Finances",
+        "st1_desc": "Augmentation des coûts économiques pour les surfaces non utilisées.",
+        "st1_be_label": "Belgique (BE)",
+        "st1_be_text": "Taxe sur les logements inoccupés & taxe sur la plus-value (CoDT).",
+        "st1_de_label": "Allemagne (DE)",
+        "st1_de_text": "Taxe foncière C & amortissement fiscal pour rénovation.",
+        "btn_st2": "⚖️ NIVEAU 2 : DROIT RÉGLEMENTAIRE",
+        "st2_title": "Niveau 2 : Droit réglementaire",
+        "st2_desc": "Mandats légaux pour sécuriser les objectifs d'urbanisme.",
+        "st2_be_label": "Belgique (BE)",
+        "st2_be_text": "Injonction urbanistique & Droit de préemption.",
+        "st2_de_label": "Allemagne (DE)",
+        "st2_de_text": "Ordre de construire (§ 176 BauGB) & ordre de modernisation.",
+        "btn_st3": "🚫 NIVEAU 3 : ACCÈS SOUVERAIN",
+        "st3_title": "Niveau 3 : Ultima Ratio",
+        "st3_desc": "Interventions les plus fortes en cas de blocage permanent.",
+        "st3_be_label": "Belgique (BE)",
+        "st3_be_text": "Droit de Gestion Publique : gestion publique pour la réactivation.",
+        "st3_cross_label": "Transfrontalier",
+        "st3_cross_text": "Expropriation en dernier recours.",
+        "btn_back": "← Retour",
+        "btn_back_coop": "← Retour au conseil",
+        "contact_title": "Votre contact local :",
+        "modal_title": "Bienvenue !", "modal_desc": "Veuillez choisir votre région.", "lbl_country": "Pays", "lbl_zip": "Code postal", "modal_error": "Code postal hors zone pilote.", "btn_enter": "Accéder",
+        "nav_back": "← RETOUR", "header_title": "Préserver la valeur", "header_sub": "Portail pour rénovation et aides",
+        "calc_title": "🌱 Calculateur de rénovation", "calc_desc": "Entrez les données pour l'analyse du potentiel.",
+        "type_title": "🔍 Quel type de propriétaire êtes-vous ?", "type_desc": "Stratégies adaptées à votre situation."
     }
 };
 
@@ -817,6 +910,7 @@ window.addEventListener('load', () => {
     </script>
 </body>
 </html>
+
 
 
 
