@@ -87,24 +87,29 @@
 .info-sidebar {
     position: fixed;
     top: 0;
-    right: -800px; /* Weiter raus, da sie breiter wird */
-    width: 400px;  
+    right: -850px; /* Ganz aus dem Bild schieben */
+    width: 400px;  /* Startbreite */
     height: 100vh;
     background: #fff;
     box-shadow: -5px 0 15px rgba(0,0,0,0.1);
     transition: right 0.3s ease-in-out, width 0.3s ease-in-out; 
     z-index: 1000;
-    padding: 0; /* Padding entfernen, wir nutzen innere Container */
-    box-sizing: border-box;
     display: flex; /* Panels nebeneinander */
     overflow: hidden; 
     border-left: 5px solid var(--accent-color);
 }
 
-.info-sidebar.open { right: 0; }
-.info-sidebar.folded { width: 800px; } /* Verdoppelt die Größe */
+/* Wenn die Sidebar mit dem Info-Button geöffnet wird */
+.info-sidebar.open {
+    right: 0 !important;
+}
 
-/* Die einzelnen Falt-Segmente */
+/* Wenn das zweite Blatt (Eskalation) ausgeklappt wird */
+.info-sidebar.folded {
+    width: 800px !important;
+}
+
+/* Die Panele (Blätter) des Faltblatts */
 .sidebar-panel {
     width: 400px;
     height: 100vh;
@@ -112,6 +117,17 @@
     box-sizing: border-box;
     overflow-y: auto;
     flex-shrink: 0;
+}
+
+/* Der blaue Button am Rand muss mitwandern */
+.sidebar-toggle {
+    transition: right 0.3s ease-in-out;
+}
+.sidebar-toggle.open {
+    right: 400px;
+}
+.sidebar-toggle.folded {
+    right: 800px;
 }
 
 /* Der Button muss bei 800px stehen bleiben */
@@ -436,50 +452,48 @@
 
     <div class="info-sidebar" id="info-sidebar">
     <div class="sidebar-panel">
-        <button onclick="toggleSidebar()" style="float: right; border: none; background: none; font-size: 2rem; cursor: pointer; color: var(--accent-color);">&times;</button>
+        <button onclick="toggleSidebar()" style="float: right; border: none; background: none; font-size: 2rem; cursor: pointer;">&times;</button>
         <h2 style="color: var(--accent-color); margin-top: 0;" data-i18n="sidebar_title">Gemeinsam für unsere Region</h2>
-        <p style="font-weight: bold;" data-i18n="sidebar_subtitle">Warum wir Sie als Eigentümer:in brauchen:</p>
         
         <ul>
-            [cite_start]<li data-i18n="sidebar_li_1"><strong>Natur & Ortsbild schützen:</strong> Innenentwicklung schont wertvolle Grünflächen[cite: 89, 191].</li>
-            [cite_start]<li data-i18n="sidebar_li_2"><strong>Infrastrukturkosten sparen:</strong> Die Nutzung von Bestand ist effizienter als Neuerschließungen[cite: 102, 105].</li>
-            [cite_start]<li data-i18n="sidebar_li_3"><strong>Fördern vor Fordern:</strong> Kooperative Ansätze haben Vorrang vor restriktiven Maßnahmen[cite: 31, 376].</li>
+            <li data-i18n="sidebar_li_1"><strong>Natur schützen:</strong> Innenentwicklung schont Grünflächen[cite: 89, 191].</li>
+            <li data-i18n="sidebar_li_2"><strong>Kosten sparen:</strong> Bestand nutzen ist effizienter[cite: 102, 105].</li>
+            <li data-i18n="sidebar_li_3"><strong>Fördern vor Fordern:</strong> Kooperation hat Vorrang[cite: 31, 376].</li>
         </ul>
 
-        <div id="contact-section" style="background: #f9f9f9; padding: 20px; border-radius: 8px; border-left: 4px solid var(--highlight-color); margin-top: 20px;">
-            <h4 style="margin-top: 0; color: var(--accent-color);" data-i18n="contact_title">Ihr direkter Draht:</h4>
-            <p id="contact-intro" style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">Wählen Sie oben Ihren Standort aus, um Ihren lokalen Ansprechpartner zu sehen.</p>
+        <div id="contact-section" style="background: #f9f9f9; padding: 20px; border-radius: 8px; border-left: 4px solid var(--highlight-color);">
+            <h4 data-i18n="contact_title">Ihr direkter Draht:</h4>
+            <p id="contact-intro" style="font-size: 0.9rem;">Wählen Sie einen Standort für Ihren Ansprechpartner[cite: 184].</p>
             <div id="contact-details" class="hidden">
-                <p style="font-size: 0.9rem; margin-bottom: 8px;"><strong>📞 Telefon:</strong> <span id="contact-phone"></span></p>
-                <p style="font-size: 0.9rem; margin-bottom: 15px;"><strong>📧 E-Mail:</strong> <a id="contact-email" href="#" style="color: var(--accent-color); text-decoration: underline;"></a></p>
-                <a id="contact-link" href="#" target="_blank" style="display: block; background: var(--accent-color); color: white; text-align: center; padding: 10px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 0.85rem;">🌐 Zur Website der Gemeinde</a>
+                <p><strong>📞:</strong> <span id="contact-phone"></span></p>
+                <p><strong>📧:</strong> <a id="contact-email" href="#"></a></p>
+                <a id="contact-link" href="#" target="_blank" style="display:block; background:var(--accent-color); color:white; text-align:center; padding:10px; text-decoration:none; margin-top:10px;">Zur Gemeinde-Webseite</a>
             </div>
         </div>
 
-        <button id="escalation-fold-btn" onclick="toggleFold()" style="width: 100%; background: var(--alert-color); color: white; border: none; padding: 15px; margin-top: 20px; cursor: pointer; font-weight: bold; border-radius: 4px;">
+        <button id="escalation-fold-btn" onclick="toggleFold()" style="width: 100%; background: var(--alert-color); color: white; border: none; padding: 15px; margin-top: 20px; cursor: pointer; font-weight: bold;">
             ⚠️ WENN KOOPERATION NICHT REICHT...
         </button>
     </div>
 
     <div class="sidebar-panel" style="background: #fdf2f2; border-left: 1px solid #ddd;">
         <h2 style="color: #c0392b;">Konfrontative Maßnahmen</h2>
-        [cite_start]<p style="font-size: 0.9rem;">Erfolgreiche Aktivierung erfordert einen Paradigmenwechsel: Kooperative Ansätze sind effektiver, aber ordnungsrechtliche Rückfalloptionen sichern die Gemeinwohlziele[cite: 30, 314].</p>
+        <p style="font-size: 0.9rem;">Hoheitliche Maßnahmen sichern die Gemeinwohlziele[cite: 30, 314].</p>
         
-        <div style="display: flex; flex-direction: column; gap: 20px; margin-top: 25px;">
-            <div style="background: white; padding: 15px; border-left: 5px solid #e67e22; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-                <strong style="text-transform: uppercase; font-size: 0.8rem; color: #e67e22;">Stufe 1: Finanzen</strong>
-                [cite_start]<p style="font-size: 0.85rem; margin-top: 5px;">Erhöhung des wirtschaftlichen Drucks durch die <strong>Grundsteuer C</strong> oder Leerstandsabgaben[cite: 292, 368].</p>
+        <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+            <div style="background: white; padding: 15px; border-left: 5px solid #e67e22;">
+                <strong>Stufe 1: Finanzen</strong>
+                <p style="font-size: 0.8rem;">Grundsteuer C oder Leerstandsabgaben[cite: 292, 368].</p>
             </div>
-            <div style="background: white; padding: 15px; border-left: 5px solid #c0392b; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-                <strong style="text-transform: uppercase; font-size: 0.8rem; color: #c0392b;">Stufe 2: Ordnungsrecht</strong>
-                [cite_start]<p style="font-size: 0.85rem; margin-top: 5px;">Anwendung von <strong>Baugeboten</strong> (§ 176 BauGB) oder Geldbußen bei anhaltender Nichtnutzung[cite: 93, 369].</p>
+            <div style="background: white; padding: 15px; border-left: 5px solid #c0392b;">
+                <strong>Stufe 2: Ordnungsrecht</strong>
+                <p style="font-size: 0.8rem;">Baugebote oder Geldbußen[cite: 93, 369].</p>
             </div>
-            <div style="background: white; padding: 15px; border-left: 5px solid #000; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-                <strong style="text-transform: uppercase; font-size: 0.8rem; color: #000;">Stufe 3: Ultima Ratio</strong>
-                [cite_start]<p style="font-size: 0.85rem; margin-top: 5px;">Zeitweise <strong>öffentliche Verwaltung</strong> oder Enteignung (Expropriation) zur Sicherung der Ziele[cite: 370, 371].</p>
+            <div style="background: white; padding: 15px; border-left: 5px solid #000;">
+                <strong>Stufe 3: Ultima Ratio</strong>
+                <p style="font-size: 0.8rem;">Öffentliche Verwaltung oder Enteignung[cite: 370, 371].</p>
             </div>
         </div>
-        [cite_start]<p style="font-size: 0.8rem; color: #666; margin-top: 30px; font-style: italic;">Diese Stufen werden erst nach ausbleibender Wirkung kooperativer Angebote beschritten[cite: 367, 449].</p>
     </div>
 </div>
 </div>
@@ -607,24 +621,24 @@ function checkRangeNL(plz) {
 function toggleSidebar() {
     const sidebar = document.getElementById('info-sidebar');
     const btn = document.getElementById('sidebar-btn');
+    
     sidebar.classList.toggle('open');
     btn.classList.toggle('open');
     
+    // Falls zu, alles zurücksetzen
     if (!sidebar.classList.contains('open')) {
         sidebar.classList.remove('folded');
         btn.classList.remove('folded');
-        const foldBtn = document.getElementById('escalation-fold-btn');
-        if(foldBtn) foldBtn.innerText = '⚠️ WENN KOOPERATION NICHT REICHT...';
     }
 }
 
 function toggleFold() {
     const sidebar = document.getElementById('info-sidebar');
-    const toggleBtn = document.getElementById('sidebar-btn');
+    const btn = document.getElementById('sidebar-btn');
     const foldBtn = document.getElementById('escalation-fold-btn');
 
     sidebar.classList.toggle('folded');
-    toggleBtn.classList.toggle('folded');
+    btn.classList.toggle('folded');
 
     if (sidebar.classList.contains('folded')) {
         foldBtn.innerText = '⬅️ ZURÜCK ZUR KOOPERATION';
@@ -812,6 +826,7 @@ window.addEventListener('load', () => {
     </script>
 </body>
 </html>
+
 
 
 
