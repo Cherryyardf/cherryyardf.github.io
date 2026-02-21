@@ -369,7 +369,7 @@
                 }
             });
 
-            // WICHTIG: Überschreibt die Standard-Texte wieder mit der gewählten Stadt
+            // Stadtnamen beibehalten
             const savedCity = localStorage.getItem('baukompass_city');
             if(savedCity) {
                 const headerLoc = document.getElementById('header-location');
@@ -378,7 +378,7 @@
                 if(heroCity) heroCity.innerText = savedCity;
             }
         }
-        
+
         const plzDatabase = {
             "DE": { "52062": "Aachen", "52064": "Aachen", "52066": "Aachen", "52068": "Aachen", "52070": "Aachen", "52072": "Aachen", "52074": "Aachen", "52076": "Aachen", "52078": "Aachen", "52080": "Aachen", "52477": "Alsdorf", "52499": "Baesweiler", "52249": "Eschweiler", "52134": "Herzogenrath", "52156": "Monschau", "52159": "Roetgen", "52152": "Simmerath", "52222": "Stolberg", "52146": "Würselen" },
             "BE": { "4720": "Kelmis", "4850": "Plombières", "4730": "Raeren" },
@@ -409,40 +409,61 @@
 
         let chartInstance = null;
         function initChart() {
-            const ctx = document.getElementById('sentimentChart').getContext('2d');
+            const canvas = document.getElementById('sentimentChart');
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
             const gradient = ctx.createLinearGradient(0, 0, 400, 0);
-            gradient.addColorStop(0, '#ef4444'); gradient.addColorStop(0.5, '#eab308'); gradient.addColorStop(1, '#10b981');
+            gradient.addColorStop(0, '#ef4444'); 
+            gradient.addColorStop(0.5, '#eab308'); 
+            gradient.addColorStop(1, '#10b981');
 
             chartInstance = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
                     datasets: [{
-                        data: [72, 28], backgroundColor: [gradient, '#f1f5f9'], borderWidth: 0
+                        data: [72, 28], 
+                        backgroundColor: [gradient, '#f1f5f9'], 
+                        borderWidth: 0
                     }]
                 },
                 options: {
-                    rotation: -90, circumference: 180, cutout: '75%',
-                    plugins: { legend: { display: false }, tooltip: { enabled: false } }
+                    rotation: -90, 
+                    circumference: 180, 
+                    cutout: '75%',
+                    aspectRatio: 2, /* Fixt das Verrutschen des Halbkreises */
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                    layout: { padding: 0 }
                 }
             });
         }
 
+        /* Aktiviert das Klicken beim Barometer */
         function voteSentiment(type) {
             const msg = document.getElementById('vote-msg');
-            msg.style.opacity = '1';
-            setTimeout(() => { msg.style.opacity = '0'; }, 2000);
+            if(msg) {
+                msg.style.opacity = '1';
+                setTimeout(() => { msg.style.opacity = '0'; }, 2000);
+            }
         }
 
-        function togglePrio(element) { element.classList.toggle('selected'); }
+        /* Aktiviert die Kacheln "Worauf sollen wir uns fokussieren" */
+        function togglePrio(element) { 
+            element.classList.toggle('selected'); 
+        }
 
+        /* Initiiert alles beim Laden der Seite */
         window.addEventListener('load', () => {
             initChart();
             const savedLang = localStorage.getItem('baukompass_lang') || 'de';
             changeLanguage(savedLang);
+            
             const savedCity = localStorage.getItem('baukompass_city');
             if (savedCity) {
-                document.getElementById('header-location').innerText = savedCity;
-                document.getElementById('hero-city-name').innerText = savedCity;
+                const headerLoc = document.getElementById('header-location');
+                const heroCity = document.getElementById('hero-city-name');
+                if(headerLoc) headerLoc.innerText = savedCity;
+                if(heroCity) heroCity.innerText = savedCity;
                 document.getElementById('location-modal').classList.add('hidden');
                 document.getElementById('main-body').classList.remove('overflow-hidden');
             }
@@ -450,6 +471,7 @@
     </script>
 </body>
 </html>
+
 
 
 
