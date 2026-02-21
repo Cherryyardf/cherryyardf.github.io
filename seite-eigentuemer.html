@@ -237,12 +237,22 @@
             </div>
 
 <section class="service-card" style="border-top-color: var(--alert-color); background: #fffcf5;">
-    <h3 data-i18n="type_title">🔍 Welcher Eigentümer-Typ sind Sie?</h3>
-    <p style="font-size: 0.9rem; margin-bottom: 15px;">Erhalten Sie auf Ihre Lebenslage zugeschnittene Strategien[cite: 27, 145].</p>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-        <button class="btn-fund" onclick="alert('Strategie für Senioren: Fokus auf Immobilienverrentung & Barrierefreiheit [cite: 357].')" style="padding: 15px; height: auto;">Senioren / Inaktive [cite: 324]</button>
-        <button class="btn-fund" onclick="alert('Strategie für Erben: Unterstützung bei der Entscheidungsfindung & Wertermittlung [cite: 321, 322].')" style="padding: 15px; height: auto;">Erbengemeinschaften [cite: 321]</button>
-        <button class="btn-fund" onclick="alert('Strategie für Anleger: Renditeoptimierung durch geförderte Innenentwicklung [cite: 323].')" style="padding: 15px; height: auto;">Kapitalanleger [cite: 323]</button>
+    <h3 style="color: var(--accent-color); justify-content: center;">
+        <span data-i18n="type_title">🔍 Welcher Eigentümer-Typ sind Sie?</span>
+    </h3>
+    <p style="font-size: 0.9rem; text-align: center; color: #555; margin-bottom: 20px;" data-i18n="type_desc">
+        Erhalten Sie auf Ihre Lebenslage zugeschnittene Strategien. [cite: 27, 145]
+    </p>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+        <button class="btn-fund" onclick="alert('Strategie für Senioren: Fokus auf Immobilienverrentung & Barrierefreiheit. [cite: 324, 357]')" style="padding: 15px; height: auto;">
+            Senioren / Inaktive [cite: 324]
+        </button>
+        <button class="btn-fund" onclick="alert('Strategie für Erben: Unterstützung bei der Entscheidungsfindung & Wertermittlung. [cite: 321, 322]')" style="padding: 15px; height: auto;">
+            Erbengemeinschaften [cite: 321]
+        </button>
+        <button class="btn-fund" onclick="alert('Strategie für Anleger: Renditeoptimierung durch geförderte Innenentwicklung. [cite: 323]')" style="padding: 15px; height: auto;">
+            Kapitalanleger [cite: 323]
+        </button>
     </div>
 </section>
             
@@ -341,9 +351,14 @@
                     <summary style="font-weight: bold; color: #c0392b;" data-i18n="duty_energy_title">Energetische Nachrüstpflichten (GEG)</summary>
                     <p style="font-size: 0.9rem; margin-top: 10px;" data-i18n="duty_energy_desc">Bei Eigentümerwechsel greifen oft Pflichten binnen 2 Jahren. <br><strong>Pflicht:</strong> Dämmung oberste Geschossdecke, Austausch 30+ Jahre alter Standardkessel.</p>
                 </details>
-                <details style="background: #f0f7ff; padding: 15px; border-radius: 8px; cursor: pointer;">
-                    <summary style="font-weight: bold; color: #2980b9;" data-i18n="duty_turbo_title">Bau-Turbo & Mobilisierung (§ 246e BauGB)</summary>
-                    <p style="font-size: 0.9rem; margin-top: 10px;">In Gebieten mit angespanntem Wohnungsmarkt können Abweichungen von Bebauungsplänen den Wohnungsbau beschleunigen[cite: 289]. <br><strong>Hinweis:</strong> In Deutschland wird zudem die Grundsteuer C für baureife, ungenutzte Grundstücke als Lenkungsmittel diskutiert[cite: 292, 338].</p>
+                <details style="background: #fff5f5; padding: 15px; border-radius: 8px; cursor: pointer;">
+                    <summary style="font-weight: bold; color: #c0392b;" data-i18n="duty_turbo_title">
+                    Bau-Turbo & Mobilisierung (§ 246e BauGB) 
+                    </summary>
+                    <p style="font-size: 0.9rem; margin-top: 10px;">
+                    In Gebieten mit angespanntem Wohnungsmarkt können Abweichungen von Bebauungsplänen den Wohnungsbau beschleunigen.
+                    <br><strong>Hinweis:</strong> In Deutschland wird zudem die Grundsteuer C für baureife, ungenutzte Grundstücke als Lenkungsmittel eingesetzt.
+                    </p>
                 </details>
                 <details style="background: #fff5f5; padding: 15px; border-radius: 8px; cursor: pointer;">
                     <summary style="font-weight: bold; color: #c0392b;" data-i18n="duty_clean_title">Straßenreinigung & Rückschnitt</summary>
@@ -408,20 +423,19 @@
             </div>
         </section>
 
-<section class="service-card" style="border-top-color: #34495e;">
-    <h3 data-i18n="cross_border_title">🌍 Grenzüberschreitendes Fachwissen</h3>
-    <p style="font-size: 0.9rem;">Unterschiede verstehen – Chancen nutzen im Grenzraum Aachen-Belgien[cite: 25, 196].</p>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 0.85rem;">
-        <div style="padding: 10px; border-left: 3px solid #de2110;">
-            <strong>Deutschland (BauGB):</strong><br>
-            Fokus auf kommunale Planungshoheit und reaktive Instrumente wie den vorhabenbezogenen B-Plan[cite: 201, 474].
+<section class="service-card" style="border-top-color: #34495e; margin-top: 30px;">
+    <h3 data-i18n="cross_border_title">🌍 Grenzüberschreitendes Fachwissen </h3>
+    <p style="font-size: 0.9rem;" data-i18n="cross_border_desc">Unterschiede verstehen – Chancen nutzen im Grenzraum Aachen-Belgien.</p>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; font-size: 0.85rem; margin-top: 15px;">
+        <div style="padding: 15px; border-left: 4px solid #de2110; background: #fdfdfd;">
+            <strong style="color: #de2110;">Deutschland (BauGB):</strong><br>
+            Dezentrale Struktur mit kommunaler Planungshoheit. Fokus auf reaktive Instrumente wie vorhabenbezogene Bebauungspläne.
         </div>
-        <div style="padding: 10px; border-left: 3px solid #ffce00;">
-            <strong>Belgien (CoDT):</strong><br>
-            Zentralisierterer Sektorenplan, aber hohe Flexibilität durch das Prinzip der „guten räumlichen Ordnung“[cite: 204, 218].
+        <div style="padding: 15px; border-left: 4px solid #ffce00; background: #fdfdfd;">
+            <strong style="color: #d4ac0d;">Belgien (CoDT):</strong><br>
+            Zentralisierter Sektorenplan der Region Wallonie[cite: 204, 205]. Hohe Flexibilität bei konkreten Genehmigungen durch das Prinzip der „guten räumlichen Ordnung“.
         </div>
     </div>
-    <p style="font-size: 0.8rem; color: #777; margin-top: 10px;">[cite: 199, 212] – Vergleichende Analyse der rechtlichen Rahmenbedingungen.</p>
 </section>
         
         <section class="alert-section">
@@ -749,6 +763,7 @@
     </script>
 </body>
 </html>
+
 
 
 
