@@ -236,6 +236,16 @@
                 <button class="energy-btn" style="width:100%; margin-top:20px;" onclick="calculateRenovation()" data-i18n="btn_analyze">Analyse starten</button>
             </div>
 
+<section class="service-card" style="border-top-color: var(--alert-color); background: #fffcf5;">
+    <h3 data-i18n="type_title">🔍 Welcher Eigentümer-Typ sind Sie?</h3>
+    <p style="font-size: 0.9rem; margin-bottom: 15px;">Erhalten Sie auf Ihre Lebenslage zugeschnittene Strategien[cite: 27, 145].</p>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+        <button class="btn-fund" onclick="alert('Strategie für Senioren: Fokus auf Immobilienverrentung & Barrierefreiheit [cite: 357].')" style="padding: 15px; height: auto;">Senioren / Inaktive [cite: 324]</button>
+        <button class="btn-fund" onclick="alert('Strategie für Erben: Unterstützung bei der Entscheidungsfindung & Wertermittlung [cite: 321, 322].')" style="padding: 15px; height: auto;">Erbengemeinschaften [cite: 321]</button>
+        <button class="btn-fund" onclick="alert('Strategie für Anleger: Renditeoptimierung durch geförderte Innenentwicklung [cite: 323].')" style="padding: 15px; height: auto;">Kapitalanleger [cite: 323]</button>
+    </div>
+</section>
+            
             <div id="simulation-result" style="display:none; margin-top:30px; border-top:1px solid rgba(255,255,255,0.3); padding-top:20px; animation: fadeEffect 1s;">
                 <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 5px;"><span data-i18n="res_prefix">Ergebnis für Ihr</span> <span id="res-type">Haus</span> (Bj. <span id="res-year"></span>):</p>
                 <div class="energy-meter">
@@ -308,6 +318,8 @@
                     <li style="margin-bottom:8px;"><strong>Verrentung (Viager):</strong> Lebenslange Rente und barrierefreie Ersatzwohnung.</li>
                     <li style="margin-bottom:8px;"><strong>Verpachtung:</strong> Sie behalten das Eigentum, profitieren aber von gesicherten Erträgen.</li>
                     <li style="margin-bottom:8px;"><strong>Genossenschaften:</strong> Unterstützung beim gemeinschaftlichen Erwerb.</li>
+                    <li style="margin-bottom:8px;"><strong>Zwischennutzung (Occupation précaire):</strong> Kurzfristige Belebung zur Vermeidung von Vandalismus und Senkung laufender Kosten[cite: 359].</li>
+                    <li style="margin-bottom:8px;"><strong>Öffentlich-Private Partnerschaft:</strong> Entlastung von baulichen und administrativen Risiken durch die Kommune[cite: 31, 358].</li>
                 </ul>
                 <button class="btn-submit" style="background-color: #2c3e50; margin-top:10px;" onclick="alert('Terminbuchungssystem öffnet sich...')">Beratung buchen</button>
             </div>
@@ -328,6 +340,10 @@
                 <details style="background: #fff5f5; padding: 15px; border-radius: 8px; cursor: pointer;">
                     <summary style="font-weight: bold; color: #c0392b;" data-i18n="duty_energy_title">Energetische Nachrüstpflichten (GEG)</summary>
                     <p style="font-size: 0.9rem; margin-top: 10px;" data-i18n="duty_energy_desc">Bei Eigentümerwechsel greifen oft Pflichten binnen 2 Jahren. <br><strong>Pflicht:</strong> Dämmung oberste Geschossdecke, Austausch 30+ Jahre alter Standardkessel.</p>
+                </details>
+                <details style="background: #f0f7ff; padding: 15px; border-radius: 8px; cursor: pointer;">
+                    <summary style="font-weight: bold; color: #2980b9;" data-i18n="duty_turbo_title">Bau-Turbo & Mobilisierung (§ 246e BauGB)</summary>
+                    <p style="font-size: 0.9rem; margin-top: 10px;">In Gebieten mit angespanntem Wohnungsmarkt können Abweichungen von Bebauungsplänen den Wohnungsbau beschleunigen[cite: 289]. <br><strong>Hinweis:</strong> In Deutschland wird zudem die Grundsteuer C für baureife, ungenutzte Grundstücke als Lenkungsmittel diskutiert[cite: 292, 338].</p>
                 </details>
                 <details style="background: #fff5f5; padding: 15px; border-radius: 8px; cursor: pointer;">
                     <summary style="font-weight: bold; color: #c0392b;" data-i18n="duty_clean_title">Straßenreinigung & Rückschnitt</summary>
@@ -392,6 +408,22 @@
             </div>
         </section>
 
+<section class="service-card" style="border-top-color: #34495e;">
+    <h3 data-i18n="cross_border_title">🌍 Grenzüberschreitendes Fachwissen</h3>
+    <p style="font-size: 0.9rem;">Unterschiede verstehen – Chancen nutzen im Grenzraum Aachen-Belgien[cite: 25, 196].</p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 0.85rem;">
+        <div style="padding: 10px; border-left: 3px solid #de2110;">
+            <strong>Deutschland (BauGB):</strong><br>
+            Fokus auf kommunale Planungshoheit und reaktive Instrumente wie den vorhabenbezogenen B-Plan[cite: 201, 474].
+        </div>
+        <div style="padding: 10px; border-left: 3px solid #ffce00;">
+            <strong>Belgien (CoDT):</strong><br>
+            Zentralisierterer Sektorenplan, aber hohe Flexibilität durch das Prinzip der „guten räumlichen Ordnung“[cite: 204, 218].
+        </div>
+    </div>
+    <p style="font-size: 0.8rem; color: #777; margin-top: 10px;">[cite: 199, 212] – Vergleichende Analyse der rechtlichen Rahmenbedingungen.</p>
+</section>
+        
         <section class="alert-section">
             <h3 style="color: var(--alert-color);" data-i18n="alarm_title">🔔 Bau-Alarm: Nichts verpassen!</h3>
             <p data-i18n="alarm_desc">Werden Sie benachrichtigt, wenn in Ihrem direkten Umfeld (Radius 200m) neue Bauprojekte in die Offenlage gehen oder Bebauungspläne geändert werden.</p>
@@ -714,5 +746,6 @@
     </script>
 </body>
 </html>
+
 
 
