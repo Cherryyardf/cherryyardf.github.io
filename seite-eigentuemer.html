@@ -157,6 +157,8 @@
             .energy-form > div { grid-template-columns: 1fr !important; }
             .service-card > div[style*="height: 200px"] { height: 150px !important; }
         }
+        .hidden { display: none !important; }
+        
     </style>
 </head>
 <body id="main-body" style="overflow: hidden;">
@@ -482,6 +484,29 @@
     </div>
 </div>
     </ul>
+    <button id="escalation-fold-btn" onclick="toggleFold()" style="width: 100%; background: #e67e22; color: white; border: none; padding: 15px; margin-top: 20px; cursor: pointer; font-weight: bold; border-radius: 4px;">
+    ⚠️ WENN KOOPERATION NICHT REICHT...
+</button>
+
+<div id="escalation-fold" class="hidden" style="margin-top: 20px; padding-top: 20px; border-top: 2px dashed #e67e22;">
+    <h3 style="color: #c0392b;">Konfrontative Maßnahmen</h3>
+    <p style="font-size: 0.85rem; color: #666;">Führt die Kooperation zu einer dauerhaften Blockade, sieht das Modell folgende Stufen vor[cite: 367]:</p>
+    
+    <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
+        <div style="background: #fff5f5; padding: 12px; border-left: 4px solid #e67e22;">
+            <strong style="font-size: 0.8rem; text-transform: uppercase;">Stufe 1: Finanzielle Steuerung</strong>
+            <p style="font-size: 0.85rem; margin: 5px 0 0;">Erhöhung des wirtschaftlichen Drucks durch Instrumente wie die <strong>Grundsteuer C</strong>[cite: 368].</p>
+        </div>
+        <div style="background: #fff5f5; padding: 12px; border-left: 4px solid #c0392b;">
+            <strong style="font-size: 0.8rem; text-transform: uppercase;">Stufe 2: Ordnungsrecht</strong>
+            <p style="font-size: 0.85rem; margin: 5px 0 0;">Durchsetzung von <strong>Baugeboten</strong> oder Verhängung von Geldbußen.</p>
+        </div>
+        <div style="background: #fdf2f2; padding: 12px; border: 1px solid #c0392b;">
+            <strong style="font-size: 0.8rem; text-transform: uppercase;">Stufe 3: Ultima Ratio</strong>
+            <p style="font-size: 0.85rem; margin: 5px 0 0;">Zeitweise <strong>öffentliche Verwaltung</strong> oder Enteignung zur Sicherung der Gemeinwohlziele[cite: 370, 371].</p>
+        </div>
+    </div>
+</div>
 </div>
 
     <script>
@@ -830,6 +855,7 @@ function toggleFold() {
     </script>
 </body>
 </html>
+
 
 
 
