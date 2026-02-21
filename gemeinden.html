@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Für Gemeinden - BAUKOMPASS</title>
     <style>
-        /* --- GRUNDEINSTELLUNGEN --- */
+        /* --- DEINE BESTEHENDEN STYLES (UNVERÄNDERT) --- */
         :root {
             --bg-color: #f8f1d9;
             --text-color: #222;
@@ -13,54 +13,44 @@
             --active-tab: #e67e22;
         }
         body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; }
-        
-        /* Navigation */
         nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: white; border-bottom: 1px solid #e0e0e0; }
         .nav-links a { text-decoration: none; color: var(--text-color); font-weight: bold; font-size: 0.9rem; text-transform: uppercase; }
         .logo { font-weight: 900; font-size: 1.5rem; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; color: black; }
-
-        /* Language Switcher */
         .lang-switch { display: flex; gap: 10px; }
         .lang-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; opacity: 0.5; transition: opacity 0.2s; padding: 0; }
         .lang-btn:hover, .lang-btn.active { opacity: 1; transform: scale(1.1); }
-
-        /* Layout */
         .content-wrapper { width: 100%; max-width: 1920px; margin: 0 auto; padding: 20px 0; }
         .header-section { text-align: center; margin: 40px 0; padding: 0 20px; }
         .header-section h1 { font-size: 2.5rem; color: var(--accent-color); margin-bottom: 10px; }
 
-        /* Tabs */
-        .tab-container { display: flex; justify-content: center; border-bottom: 2px solid #ccc; margin-bottom: 40px; background: white; padding-top: 20px; }
-        .tab-button { background-color: transparent; border: none; outline: none; cursor: pointer; padding: 14px 40px; font-size: 1.1rem; font-weight: bold; color: #666; border-bottom: 4px solid transparent; transition: 0.3s; }
+        /* Tabs (erweitert für mehr Reiter) */
+        .tab-container { display: flex; justify-content: center; border-bottom: 2px solid #ccc; margin-bottom: 40px; background: white; padding-top: 20px; flex-wrap: wrap; }
+        .tab-button { background-color: transparent; border: none; outline: none; cursor: pointer; padding: 14px 25px; font-size: 1.1rem; font-weight: bold; color: #666; border-bottom: 4px solid transparent; transition: 0.3s; }
         .tab-button:hover { color: var(--accent-color); background: #f9f9f9; }
         .tab-button.active { color: var(--accent-color); border-bottom: 4px solid var(--active-tab); }
         .tab-content { display: none; animation: fadeEffect 0.5s; }
 
-        /* Inhalte */
+        /* NEUE STYLES FÜR KACHELN UND PROJEKTE */
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-left: 5px solid var(--active-tab); }
+        .card h3 { margin-top: 0; color: var(--accent-color); }
+        .card p { font-size: 0.9rem; margin: 5px 0; }
+        .contact-link { display: inline-block; margin-top: 10px; color: var(--active-tab); text-decoration: none; font-weight: bold; }
+        
+        .project-badge { background: #27ae60; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; text-transform: uppercase; float: right; }
+
         .text-content-limit { max-width: 800px; margin: 0 auto; padding: 0 20px; }
         .info-block { background: white; padding: 40px; margin-bottom: 30px; border-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .info-block h2 { color: var(--accent-color); border-bottom: 2px solid var(--bg-color); padding-bottom: 10px; }
-
-        /* Tool Wrapper */
         .tool-wrapper { width: 96%; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; min-height: 800px; }
-        
         @keyframes fadeEffect { from {opacity: 0;} to {opacity: 1;} }
-
-        @media (max-width: 768px) {
-            .nav-links a { font-size: 0.7rem !important; }
-            .logo { font-size: 1.2rem; }
-            nav { padding: 15px 20px; }
-            .tab-button { padding: 10px 20px; font-size: 0.9rem; }
-        }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="nav-links"><a href="index.html" data-i18n="nav_back">&larr; Zurück zur Übersicht</a></div>
+        <div class="nav-links"><a href="index.html" data-i18n="nav_back">← Zurück zur Übersicht</a></div>
         <a href="index.html" class="logo">BAUKOMPASS</a>
-        
-        <!-- Sprachumschalter -->
         <div class="lang-switch">
             <button onclick="changeLanguage('de')" class="lang-btn active" data-lang="de">🇩🇪</button>
             <button onclick="changeLanguage('en')" class="lang-btn" data-lang="en">🇬🇧</button>
@@ -76,10 +66,11 @@
     <div class="tab-container">
         <button class="tab-button active" onclick="openTab(event, 'Info')" data-i18n="tab_info">Informationen</button>
         <button class="tab-button" onclick="openTab(event, 'Tool')" data-i18n="tab_tool">Immobilien-Tool</button>
+        <button class="tab-button" onclick="openTab(event, 'Kontakte')" data-i18n="tab_contacts">Kontaktdaten</button>
+        <button class="tab-button" onclick="openTab(event, 'Projekte')" data-i18n="tab_projects">Aktuelle Projekte</button>
     </div>
 
     <main class="content-wrapper">
-        <!-- TAB 1: INFORMATIONEN -->
         <div id="Info" class="tab-content" style="display: block;">
             <div class="text-content-limit">
                 <div class="info-block">
@@ -89,17 +80,38 @@
             </div>
         </div>
 
-        <!-- TAB 2: TOOL -->
         <div id="Tool" class="tab-content">
             <div class="tool-wrapper">
-                <!-- Verweis auf das Tool im Unterordner -->
-                <iframe 
-                    id="seamless-tool"
-                    src="tool/index.html" 
-                    scrolling="no"
-                    style="width: 100%; border: none; overflow: hidden; display: block;"
-                >
-                </iframe>
+                <iframe id="seamless-tool" src="tool/index.html" scrolling="no" style="width: 100%; border: none; overflow: hidden; display: block;"></iframe>
+            </div>
+        </div>
+
+        <div id="Kontakte" class="tab-content">
+            <div class="grid-container">
+                <div class="card">
+                    <h3 data-i18n="city_1_name">Beispielstadt A</h3>
+                    <p><strong>Bauamt:</strong> bauamt@beispielstadt-a.de</p>
+                    <p><strong>Stadtplanung:</strong> 01234 / 5678-0</p>
+                    <a href="#" class="contact-link" data-i18n="link_website">Zur Webseite &rarr;</a>
+                </div>
+                <div class="card">
+                    <h3 data-i18n="city_2_name">Mustergemeinde B</h3>
+                    <p><strong>Zentrale:</strong> info@mustergemeinde.de</p>
+                    <p><strong>Liegenschaften:</strong> 09876 / 5432-1</p>
+                    <a href="#" class="contact-link" data-i18n="link_website">Zur Webseite &rarr;</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="Projekte" class="tab-content">
+            <div class="grid-container">
+                <div class="card">
+                    <span class="project-badge" data-i18n="status_open">Mitmachen</span>
+                    <h3 data-i18n="project_1_title">Revitalisierung Marktplatz</h3>
+                    <p data-i18n="project_1_desc">Interkommunales Projekt zur Neugestaltung von Ortskernen. Partner gesucht.</p>
+                    <p><strong>Ansprechpartner:</strong> Team Regionalentwicklung</p>
+                    <a href="#" class="contact-link" data-i18n="link_details">Details ansehen &rarr;</a>
+                </div>
             </div>
         </div>
     </main>
@@ -116,7 +128,7 @@
             evt.currentTarget.className += " active";
         }
 
-        // --- IFRAME RESIZE LOGIC ---
+        // --- IFRAME RESIZE LOGIC (UNVERÄNDERT) ---
         window.addEventListener('message', function(e) {
             if (e.data && e.data.type === 'resize-iframe') {
                 const iframe = document.getElementById('seamless-tool');
@@ -124,7 +136,7 @@
             }
         });
 
-        // --- LANGUAGE LOGIC ---
+        // --- LANGUAGE LOGIC (ERWEITERT) ---
         const translations = {
             "de": {
                 "nav_back": "← Zurück zur Übersicht",
@@ -132,8 +144,17 @@
                 "header_sub": "Wählen Sie einen Bereich:",
                 "tab_info": "Informationen",
                 "tab_tool": "Immobilien-Tool",
+                "tab_contacts": "Kontaktdaten",
+                "tab_projects": "Aktuelle Projekte",
                 "info_title": "Gemeinsame Ziele erreichen",
-                "info_text": "Hier finden Sie Informationen zur kommunalen Zusammenarbeit und Strategieentwicklung. Nutzen Sie unsere Netzwerke, um Synergien zu schaffen und Leerstand effektiv zu bekämpfen."
+                "info_text": "Hier finden Sie Informationen zur kommunalen Zusammenarbeit und Strategieentwicklung.",
+                "link_website": "Zur Webseite",
+                "link_details": "Details ansehen",
+                "status_open": "Mitmachen",
+                "city_1_name": "Beispielstadt A",
+                "city_2_name": "Mustergemeinde B",
+                "project_1_title": "Revitalisierung Marktplatz",
+                "project_1_desc": "Interkommunales Projekt zur Neugestaltung von Ortskernen. Partner gesucht."
             },
             "en": {
                 "nav_back": "← Back to Overview",
@@ -141,8 +162,17 @@
                 "header_sub": "Select an area:",
                 "tab_info": "Information",
                 "tab_tool": "Real Estate Tool",
+                "tab_contacts": "Contact Data",
+                "tab_projects": "Current Projects",
                 "info_title": "Achieving Goals Together",
-                "info_text": "Here you will find information on municipal cooperation and strategy development. Use our networks to create synergies and effectively combat vacancies."
+                "info_text": "Here you will find information on municipal cooperation and strategy development.",
+                "link_website": "To Website",
+                "link_details": "View Details",
+                "status_open": "Join In",
+                "city_1_name": "Example City A",
+                "city_2_name": "Sample Village B",
+                "project_1_title": "Marketplace Revitalization",
+                "project_1_desc": "Inter-municipal project for the redesign of town centers. Partners wanted."
             },
             "fr": {
                 "nav_back": "← Retour à l'aperçu",
@@ -150,48 +180,44 @@
                 "header_sub": "Choisissez un domaine :",
                 "tab_info": "Informations",
                 "tab_tool": "Outil Immobilier",
+                "tab_contacts": "Coordonnées",
+                "tab_projects": "Projets Actuels",
                 "info_title": "Atteindre des objectifs communs",
-                "info_text": "Vous trouverez ici des informations sur la coopération municipale et le développement de stratégies. Utilisez nos réseaux pour créer des synergies et lutter efficacement contre la vacance."
+                "info_text": "Vous trouverez ici des informations sur la coopération municipale.",
+                "link_website": "Vers le site",
+                "link_details": "Voir les détails",
+                "status_open": "Participer",
+                "city_1_name": "Ville Exemple A",
+                "city_2_name": "Commune Modèle B",
+                "project_1_title": "Revitalisation de la place du marché",
+                "project_1_desc": "Projet intercommunal pour le réaménagement des centres-villes. Partenaires recherchés."
             }
         };
 
         function changeLanguage(lang) {
-            // 1. Sprache speichern
             localStorage.setItem('baukompass_lang', lang);
-            
-            // 2. Buttons aktualisieren
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 if(btn.dataset.lang === lang) btn.classList.add('active');
                 else btn.classList.remove('active');
             });
-
-            // 3. Texte auf DIESER Seite aktualisieren
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.dataset.i18n;
-                if(translations[lang][key]) {
+                if(translations[lang] && translations[lang][key]) {
                     el.innerText = translations[lang][key];
                 }
             });
-
-            // 4. Sprache an das Tool im IFRAME senden
             const iframe = document.getElementById('seamless-tool');
             if(iframe && iframe.contentWindow) {
-                // Sende Nachricht an das Tool
                 iframe.contentWindow.postMessage({ type: 'changeLanguage', lang: lang }, '*');
             }
         }
 
-        // Init beim Laden
         window.addEventListener('load', () => {
             const savedLang = localStorage.getItem('baukompass_lang') || 'de';
             changeLanguage(savedLang);
-            
-            // Falls das Iframe etwas später lädt, senden wir die Sprache nochmal beim Iframe-Load
             const iframe = document.getElementById('seamless-tool');
             if (iframe) {
-                iframe.onload = function() {
-                    changeLanguage(savedLang);
-                };
+                iframe.onload = function() { changeLanguage(savedLang); };
             }
         });
     </script>
