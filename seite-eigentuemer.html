@@ -550,7 +550,7 @@
 
     <script>
 // --- TRANSLATION LOGIC ---
-      const translations = {
+const translations = {
     "de": {
         "sidebar_toggle": "ℹ️ WARUM KOOPERATION?",
         "sidebar_title": "Gemeinsam für unsere Region",
@@ -582,7 +582,8 @@
         "kpi_cost": "Gesamtkosten", "kpi_fund": "Förderanteil", "kpi_amort": "Amortisation",
         "comments_title": "Fragen & Kommentare:", "placeholder_ask": "Frage stellen...", "btn_send": "Senden",
         "alarm_title": "🔔 Bau-Alarm: Nichts verpassen!", "alarm_desc": "Werden Sie benachrichtigt, wenn in Ihrem Umfeld neue Projekte starten.",
-        "ph_address": "Ihre Adresse", "ph_email": "Ihre E-Mail", "btn_activate": "Aktivieren"
+        "ph_address": "Ihre Adresse", "ph_email": "Ihre E-Mail", "btn_activate": "Aktivieren",
+        "contact_title": "Ihr direkter Draht:"
     },
     "en": {
         "sidebar_toggle": "ℹ️ WHY COOPERATE?",
@@ -615,7 +616,8 @@
         "kpi_cost": "Total Cost", "kpi_fund": "Funding Share", "kpi_amort": "Amortization",
         "comments_title": "Questions & Comments:", "placeholder_ask": "Ask a question...", "btn_send": "Send",
         "alarm_title": "🔔 Construction Alarm", "alarm_desc": "Get notified when new projects start in your area.",
-        "ph_address": "Your Address", "ph_email": "Your E-Mail", "btn_activate": "Activate"
+        "ph_address": "Your Address", "ph_email": "Your E-Mail", "btn_activate": "Activate",
+        "contact_title": "Direct Contact:"
     },
     "fr": {
         "sidebar_toggle": "ℹ️ POURQUOI COOPÉRER ?",
@@ -625,7 +627,7 @@
         "sidebar_li_2": "<strong>Économiser l'infrastructure :</strong> <br>Les nouveaux quartiers coûtent cher. Réhabiliter l'existant est plus efficace.",
         "sidebar_li_3": "<strong>Soutenir avant de contraindre :</strong> <br>Nous proposons des alternatives volontaires avant d'imposer des mesures fermes.",
         "modal_title": "Bienvenue !", "modal_desc": "Veuillez choisir votre région pour les programmes d'aide locaux.", "lbl_country": "Pays", "lbl_zip": "Code postal", "modal_error": "Ce code postal est hors de notre zone pilote.", "btn_enter": "Accéder",
-        "nav_back": "← RETOUR À L'APERÇU", "header_title": "Préserver la valeur, assurer l'avenir", "header_sub": "Votre portail central pour la rénovation et le financement",
+        "nav_back": "← RETOUR À L'APERÇU", "header_title": "Préserver la valeur, assurer l'avenir", "header_sub": "Votre portail central für die Sanierung und Förderung",
         "calc_title": "🌱 Calculateur de rénovation", "calc_desc": "Entrez les données du bâtiment pour déterminer le potentiel de plus-value.",
         "type_title": "🔍 Quel type de propriétaire êtes-vous ?", "type_desc": "Obtenez des stratégies adaptées à votre situation de vie.",
         "lbl_year": "Année de construction", "lbl_type": "Type de bâtiment", "opt_house": "Maison individuelle", "opt_row": "Maison mitoyenne", "opt_multi": "Immeuble collectif", "opt_timber": "Maison à colombages",
@@ -646,168 +648,205 @@
         "practice_title": "Better Practice : Apprendre des voisins",
         "ex_1_title": "De la grange au loft", "ex_2_title": "Rénovation énergétique",
         "kpi_cost": "Coût total", "kpi_fund": "Part d'aide", "kpi_amort": "Amortissement",
-        "comments_title": "Questions & commentaires :", "placeholder_ask": "Poser une question...", "btn_send": "Envoyer",
+        "comments_title": "Questions & commentaires :", "placeholder_ask": "Poser eine Frage...", "btn_send": "Envoyer",
         "alarm_title": "🔔 Alarme chantier", "alarm_desc": "Soyez notifié du lancement de nouveaux projets dans votre quartier.",
-        "ph_address": "Votre adresse", "ph_email": "Votre e-mail", "btn_activate": "Activer"
+        "ph_address": "Votre adresse", "ph_email": "Votre e-mail", "btn_activate": "Activer",
+        "contact_title": "Contact direct :"
     }
 };
 
-      // --- PLZ DATENBANK ---
-        const plzDatabase = {
-            "DE": { "52062": "Aachen", "52064": "Aachen", "52066": "Aachen", "52068": "Aachen", "52070": "Aachen", "52072": "Aachen", "52074": "Aachen", "52076": "Aachen", "52078": "Aachen", "52080": "Aachen", "52477": "Alsdorf", "52499": "Baesweiler", "52249": "Eschweiler", "52134": "Herzogenrath", "52156": "Monschau", "52159": "Roetgen", "52152": "Simmerath", "52222": "Stolberg", "52223": "Stolberg", "52224": "Stolberg", "52146": "Würselen", "52457": "Aldenhoven", "52459": "Inden", "52379": "Langerwehe", "52393": "Hürtgenwald", "52396": "Heimbach", "52385": "Nideggen", "52531": "Übach-Palenberg", "52511": "Geilenkirchen", "53937": "Schleiden", "53940": "Hellenthal" },
-            "BE": { "4720": "Kelmis", "4850": "Plombières", "4730": "Raeren", "4731": "Raeren-Eynatten", "4700": "Eupen", "4750": "Bütgenbach" },
-            "NL": { "6291": "Vaals", "6369": "Simpelveld" }
-        };
+// --- PLZ DATENBANK ---
+const plzDatabase = {
+    "DE": { "52062": "Aachen", "52064": "Aachen", "52066": "Aachen", "52068": "Aachen", "52070": "Aachen", "52072": "Aachen", "52074": "Aachen", "52076": "Aachen", "52078": "Aachen", "52080": "Aachen", "52477": "Alsdorf", "52499": "Baesweiler", "52249": "Eschweiler", "52134": "Herzogenrath", "52156": "Monschau", "52159": "Roetgen", "52152": "Simmerath", "52222": "Stolberg", "52223": "Stolberg", "52224": "Stolberg", "52146": "Würselen", "52457": "Aldenhoven", "52459": "Inden", "52379": "Langerwehe", "52393": "Hürtgenwald", "52396": "Heimbach", "52385": "Nideggen", "52531": "Übach-Palenberg", "52511": "Geilenkirchen", "53937": "Schleiden", "53940": "Hellenthal" },
+    "BE": { "4720": "Kelmis", "4850": "Plombières", "4730": "Raeren", "4731": "Raeren-Eynatten", "4700": "Eupen", "4750": "Bütgenbach" },
+    "NL": { "6291": "Vaals", "6369": "Simpelveld" }
+};
 
-        function checkRangeNL(plz) {
-            const p = parseInt(plz);
-            if (p >= 6460 && p <= 6471) return "Kerkrade";
-            if (p >= 6370 && p <= 6374) return "Landgraaf";
-            if (p >= 6400 && p <= 6433) return "Heerlen";
-            return null;
-        }
+function checkRangeNL(plz) {
+    const p = parseInt(plz);
+    if (p >= 6460 && p <= 6471) return "Kerkrade";
+    if (p >= 6370 && p <= 6374) return "Landgraaf";
+    if (p >= 6400 && p <= 6433) return "Heerlen";
+    return null;
+}
 
-        // --- SIDEBAR & LEPORELLO LOGIK ---
-        function toggleSidebar() {
-            const sidebar = document.getElementById('info-sidebar');
-            const btn = document.getElementById('sidebar-btn');
-            sidebar.classList.toggle('open');
-            btn.classList.toggle('open');
-            
-            if (!sidebar.classList.contains('open')) {
-                changeFold(0); // Reset auf Kooperation beim Schließen
-            }
-        }
+// --- SIDEBAR & LEPORELLO LOGIK ---
+function toggleSidebar() {
+    const sidebar = document.getElementById('info-sidebar');
+    const btn = document.getElementById('sidebar-btn');
+    sidebar.classList.toggle('open');
+    btn.classList.toggle('open');
+    
+    if (!sidebar.classList.contains('open')) {
+        changeFold(0); // Reset auf Kooperation beim Schließen
+    }
+}
 
-        function changeFold(level) {
-            const sidebar = document.getElementById('info-sidebar');
-            const btn = document.getElementById('sidebar-btn');
-            
-            // Bestehende Stufen-Klassen entfernen
-            sidebar.classList.remove('step-1', 'step-2', 'step-3');
-            btn.classList.remove('step-1', 'step-2', 'step-3');
+function changeFold(level) {
+    const sidebar = document.getElementById('info-sidebar');
+    const btn = document.getElementById('sidebar-btn');
+    
+    // Alle Stufen-Klassen entfernen
+    sidebar.classList.remove('step-1', 'step-2', 'step-3');
+    btn.classList.remove('step-1', 'step-2', 'step-3');
 
-            // Neue Stufe hinzufügen
-            if (level > 0) {
-                sidebar.classList.add('step-' + level);
-                btn.classList.add('step-' + level);
-            }
-        }
+    // Neue Stufe hinzufügen
+    if (level > 0) {
+        sidebar.classList.add('step-' + level);
+        btn.classList.add('step-' + level);
+    }
+}
 
-        // --- LOKALE RESSOURCEN & KONTAKT ---
-        function updateLocalResources(country, city) {
-            const resDiv = document.getElementById('local-resources');
-            let content = `<h3 style="color: #3498db;">📍 Lokale Daten für ${city}</h3>`;
-            
-            if (country === 'DE' && city === 'Simmerath') {
-                resDiv.classList.remove('hidden');
-                content += '<p style="font-size: 0.9rem;">Prüfen Sie Bebauungspläne und offizielle Bodenwerte:</p><ul style="padding-left:20px; color:#555; font-size: 0.9rem;">';
-                content += '<li style="margin-bottom:5px;"><a href="https://geoportal.staedteregion-aachen.de/" target="_blank" style="color:var(--accent-color); font-weight:bold;">Geoportal StädteRegion Aachen</a></li>';
-                content += '<li style="margin-bottom:5px;"><a href="https://www.boris.nrw.de/" target="_blank" style="color:var(--accent-color); font-weight:bold;">BORIS.NRW (Bodenrichtwerte)</a></li>';
-                content += '</ul>';
-            } else if (country === 'BE' && city.includes('Raeren')) {
-                resDiv.classList.remove('hidden');
-                content += '<p style="font-size: 0.9rem;">Prüfen Sie den Sektorenplan und Marktdaten:</p><ul style="padding-left:20px; color:#555; font-size: 0.9rem;">';
-                content += '<li style="margin-bottom:5px;"><a href="https://geoportail.wallonie.be/walonmap" target="_blank" style="color:var(--accent-color); font-weight:bold;">WalOnMap (Plan de Secteur)</a></li>';
-                content += '<li style="margin-bottom:5px;"><a href="https://www.wfg.be/" target="_blank" style="color:var(--accent-color); font-weight:bold;">WFG Ostbelgien (Strukturdaten)</a></li>';
-                content += '</ul>';
+// --- LOKALE RESSOURCEN & KONTAKT ---
+function updateLocalResources(country, city) {
+    const resDiv = document.getElementById('local-resources');
+    let content = `<h3 style="color: #3498db;">📍 Lokale Daten für ${city}</h3>`;
+    
+    if (country === 'DE' && city === 'Simmerath') {
+        resDiv.classList.remove('hidden');
+        content += '<p style="font-size: 0.9rem;">Prüfen Sie Bebauungspläne und offizielle Bodenwerte:</p><ul style="padding-left:20px; color:#555; font-size: 0.9rem;">';
+        content += '<li style="margin-bottom:5px;"><a href="https://geoportal.staedteregion-aachen.de/" target="_blank" style="color:var(--accent-color); font-weight:bold;">Geoportal StädteRegion Aachen</a></li>';
+        content += '<li style="margin-bottom:5px;"><a href="https://www.boris.nrw.de/" target="_blank" style="color:var(--accent-color); font-weight:bold;">BORIS.NRW (Bodenrichtwerte)</a></li>';
+        content += '</ul>';
+    } else if (country === 'BE' && city.includes('Raeren')) {
+        resDiv.classList.remove('hidden');
+        content += '<p style="font-size: 0.9rem;">Prüfen Sie den Sektorenplan und Marktdaten:</p><ul style="padding-left:20px; color:#555; font-size: 0.9rem;">';
+        content += '<li style="margin-bottom:5px;"><a href="https://geoportail.wallonie.be/walonmap" target="_blank" style="color:var(--accent-color); font-weight:bold;">WalOnMap (Plan de Secteur)</a></li>';
+        content += '<li style="margin-bottom:5px;"><a href="https://www.wfg.be/" target="_blank" style="color:var(--accent-color); font-weight:bold;">WFG Ostbelgien (Strukturdaten)</a></li>';
+        content += '</ul>';
+    } else {
+        resDiv.classList.add('hidden');
+    }
+    
+    if (!resDiv.classList.contains('hidden')) {
+        resDiv.innerHTML = content;
+    }
+
+    // Kontakt-Update
+    const contacts = {
+        "Raeren": { phone: "+32 87 85 89 40", email: "urbanisme@raeren.be", url: "https://www.raeren.be" },
+        "Simmerath": { phone: "+49 2473 607-0", email: "info@simmerath.de", url: "https://www.simmerath.de" }
+    };
+    const cityKey = city.includes('Raeren') ? "Raeren" : city;
+    if (contacts[cityKey]) {
+        document.getElementById('contact-intro').innerText = `Ihre Experten in ${city}:`;
+        document.getElementById('contact-phone').innerText = contacts[cityKey].phone;
+        document.getElementById('contact-email').innerText = contacts[cityKey].email;
+        document.getElementById('contact-email').href = `mailto:${contacts[cityKey].email}`;
+        document.getElementById('contact-link').href = contacts[cityKey].url;
+        document.getElementById('contact-details').classList.remove('hidden');
+    }
+}
+
+// --- LANGUAGE & LOCATION LOGIC ---
+let currentLang = 'de';
+
+function changeLanguage(lang) {
+    currentLang = lang;
+    localStorage.setItem('baukompass_lang', lang);
+    
+    // Visual Update Buttons
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        if(btn.dataset.lang === lang) btn.classList.add('active');
+        else btn.classList.remove('active');
+    });
+
+    // Update Text
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if(translations[lang] && translations[lang][key]) {
+            if(el.tagName === 'INPUT' && el.hasAttribute('placeholder')) {
+                el.placeholder = translations[lang][key];
             } else {
-                resDiv.classList.add('hidden');
-            }
-            
-            if (!resDiv.classList.contains('hidden')) {
-                resDiv.innerHTML = content;
-            }
-
-            // Kontakt-Update
-            const contacts = {
-                "Raeren": { phone: "+32 87 85 89 40", email: "urbanisme@raeren.be", url: "https://www.raeren.be" },
-                "Simmerath": { phone: "+49 2473 607-0", email: "info@simmerath.de", url: "https://www.simmerath.de" }
-            };
-            const cityKey = city.includes('Raeren') ? "Raeren" : city;
-            if (contacts[cityKey]) {
-                document.getElementById('contact-intro').innerText = `Ihre Experten in ${city}:`;
-                document.getElementById('contact-phone').innerText = contacts[cityKey].phone;
-                document.getElementById('contact-email').innerText = contacts[cityKey].email;
-                document.getElementById('contact-email').href = `mailto:${contacts[cityKey].email}`;
-                document.getElementById('contact-link').href = contacts[cityKey].url;
-                document.getElementById('contact-details').classList.remove('hidden');
+                el.innerHTML = translations[lang][key];
             }
         }
+    });
+}
 
-        // --- WILLKOMMENS MODUL (Location Logic) ---
-        function handleLocationSubmit(event) {
-            event.preventDefault();
-            const country = document.getElementById('country-select').value;
-            const plz = document.getElementById('plz-input').value.trim();
-            const errorBox = document.getElementById('location-error');
-            const modal = document.getElementById('location-modal');
-            
-            let foundCity = null;
-            if (plzDatabase[country] && plzDatabase[country][plz]) foundCity = plzDatabase[country][plz];
-            else if (country === 'NL') foundCity = checkRangeNL(plz);
+function handleLocationSubmit(event) {
+    event.preventDefault();
+    const country = document.getElementById('country-select').value;
+    const plz = document.getElementById('plz-input').value.trim();
+    const errorBox = document.getElementById('location-error');
+    const modal = document.getElementById('location-modal');
+    
+    let foundCity = null;
+    if (plzDatabase[country] && plzDatabase[country][plz]) foundCity = plzDatabase[country][plz];
+    else if (country === 'NL') foundCity = checkRangeNL(plz);
 
-            if (foundCity) {
-                document.getElementById('header-location-display').innerText = `in ${foundCity}`;
-                modal.classList.add('hidden');
-                document.getElementById('main-body').style.overflow = 'auto';
-                localStorage.setItem('baukompass_location_city', foundCity);
-                localStorage.setItem('baukompass_location_country', country);
-                updateLocalResources(country, foundCity);
-            } else {
-                errorBox.classList.remove('hidden');
-                errorBox.innerText = "PLZ nicht gefunden.";
-            }
+    if (foundCity) {
+        document.getElementById('header-location-display').innerText = `in ${foundCity}`;
+        modal.classList.add('hidden');
+        document.getElementById('main-body').style.overflow = 'auto';
+        localStorage.setItem('baukompass_location_city', foundCity);
+        localStorage.setItem('baukompass_location_country', country);
+        updateLocalResources(country, foundCity);
+    } else {
+        errorBox.classList.remove('hidden');
+        errorBox.innerText = translations[currentLang].modal_error || "PLZ nicht gefunden.";
+    }
+}
+
+// --- TYP-STRATEGIEN ---
+function showStrategy(type) {
+    const container = document.getElementById('strategy-content');
+    const title = document.getElementById('strategy-title');
+    const text = document.getElementById('strategy-text');
+    
+    const content = {
+        'senioren': { 
+            title: 'Strategie für Senioren', 
+            [cite_start]text: '<ul><li>Immobilienverrentung (Viager) [cite: 535][cite_start]</li><li>Unterstützung durch die Kommune [cite: 561]</li></ul>' 
+        },
+        'erben': { 
+            title: 'Erbengemeinschaften', 
+            [cite_start]text: '<ul><li>Moderation durch die Gemeinde [cite: 562][cite_start]</li><li>Beratung zur Reaktivierung [cite: 562]</li></ul>' 
+        },
+        'anleger': { 
+            title: 'Strategie für Anleger', 
+            [cite_start]text: '<ul><li>Förderanreize für Innenentwicklung [cite: 820][cite_start]</li><li>Baugebot als letzte Instanz [cite: 823]</li></ul>' 
         }
+    };
+    
+    title.innerText = content[type].title;
+    text.innerHTML = content[type].text;
+    container.style.display = 'block';
+    container.scrollIntoView({ behavior: 'smooth' });
+}
 
-        // --- TYP-STRATEGIEN ---
-        function showStrategy(type) {
-            const container = document.getElementById('strategy-content');
-            const title = document.getElementById('strategy-title');
-            const text = document.getElementById('strategy-text');
-            const content = {
-                'senioren': { title: 'Strategie für Senioren', text: '<ul><li>Immobilienverrentung (Viager)</li><li>Unterstützung durch die Kommune</li></ul>' },
-                'erben': { title: 'Erbengemeinschaften', text: '<ul><li>Moderation durch die Gemeinde</li><li>Beratung zur Reaktivierung</li></ul>' },
-                'anleger': { title: 'Strategie für Anleger', text: '<ul><li>Förderanreize für Innenentwicklung</li><li>Baugebot als letzte Instanz</li></ul>' }
-            };
-            title.innerText = content[type].title;
-            text.innerHTML = content[type].text;
-            container.style.display = 'block';
-            container.scrollIntoView({ behavior: 'smooth' });
-        }
+function calculateRenovation() {
+    const year = document.getElementById('inp-year').value;
+    if (!year) return alert("Bitte Jahr eingeben");
+    document.getElementById('simulation-result').style.display = 'block';
+    document.getElementById('energy-bar').style.width = "80%";
+}
 
-        // --- WEITERE FUNKTIONEN ---
-        function changeLanguage(lang) {
-            // Sprach-Logik hier lassen
-        }
+function addComment(id) {
+    const input = document.getElementById('input-' + id);
+    if (input.value.trim() === "") return;
+    alert("Kommentar gespeichert: " + input.value);
+    input.value = "";
+}
 
-        function calculateRenovation() {
-            const year = document.getElementById('inp-year').value;
-            if (!year) return alert("Bitte Jahr eingeben");
-            document.getElementById('simulation-result').style.display = 'block';
-            document.getElementById('energy-bar').style.width = "80%";
-        }
-
-        function addComment(id) {
-            const input = document.getElementById('input-' + id);
-            alert("Kommentar gespeichert: " + input.value);
-            input.value = "";
-        }
-
-        window.addEventListener('load', () => {
-            const savedCity = localStorage.getItem('baukompass_location_city');
-            const savedCountry = localStorage.getItem('baukompass_location_country');
-            if (savedCity) {
-                document.getElementById('header-location-display').innerText = `in ${savedCity}`;
-                document.getElementById('location-modal').classList.add('hidden');
-                document.getElementById('main-body').style.overflow = 'auto';
-                updateLocalResources(savedCountry, savedCity);
-            }
-        });
+window.addEventListener('load', () => {
+    const savedLang = localStorage.getItem('baukompass_lang') || 'de';
+    changeLanguage(savedLang);
+    
+    const savedCity = localStorage.getItem('baukompass_location_city');
+    const savedCountry = localStorage.getItem('baukompass_location_country');
+    if (savedCity) {
+        document.getElementById('header-location-display').innerText = `in ${savedCity}`;
+        document.getElementById('location-modal').classList.add('hidden');
+        document.getElementById('main-body').style.overflow = 'auto';
+        updateLocalResources(savedCountry, savedCity);
+    }
+});
         
     </script>
 </body>
 </html>
+
 
 
 
