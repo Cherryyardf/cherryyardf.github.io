@@ -368,7 +368,17 @@
                     }
                 }
             });
+
+            // WICHTIG: Überschreibt die Standard-Texte wieder mit der gewählten Stadt
+            const savedCity = localStorage.getItem('baukompass_city');
+            if(savedCity) {
+                const headerLoc = document.getElementById('header-location');
+                const heroCity = document.getElementById('hero-city-name');
+                if(headerLoc) headerLoc.innerText = savedCity;
+                if(heroCity) heroCity.innerText = savedCity;
+            }
         }
+        
         const plzDatabase = {
             "DE": { "52062": "Aachen", "52064": "Aachen", "52066": "Aachen", "52068": "Aachen", "52070": "Aachen", "52072": "Aachen", "52074": "Aachen", "52076": "Aachen", "52078": "Aachen", "52080": "Aachen", "52477": "Alsdorf", "52499": "Baesweiler", "52249": "Eschweiler", "52134": "Herzogenrath", "52156": "Monschau", "52159": "Roetgen", "52152": "Simmerath", "52222": "Stolberg", "52146": "Würselen" },
             "BE": { "4720": "Kelmis", "4850": "Plombières", "4730": "Raeren" },
@@ -440,6 +450,7 @@
     </script>
 </body>
 </html>
+
 
 
 
