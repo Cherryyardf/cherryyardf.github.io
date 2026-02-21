@@ -36,10 +36,20 @@
 
         /* Flag Button Styles */
         .lang-btn {
-            background: none; border: none; font-size: 1.5rem; cursor: pointer;
-            opacity: 0.5; transition: opacity 0.2s, transform 0.2s; padding: 0 5px;
-            filter: grayscale(0.5);
-        }
+    background: none; 
+    border: none; 
+    font-size: 0.85rem; /* Etwas kleiner für Text */
+    font-weight: bold;
+    cursor: pointer;
+    opacity: 0.5; 
+    transition: all 0.2s; 
+    padding: 0 8px;
+    color: #1e293b; /* Passend zum Slate-Blau des Designs */
+}
+.lang-btn.active { 
+    opacity: 1; 
+    color: #f97316; /* Baukompass Orange für die aktive Sprache */
+}
         .lang-btn:hover { opacity: 1; transform: scale(1.1); filter: grayscale(0); }
         .lang-btn.active { opacity: 1; transform: scale(1.2); font-weight: bold; filter: grayscale(0); }
 
@@ -53,12 +63,11 @@
 <body class="flex flex-col min-h-screen overflow-hidden" id="main-body">
 
     <div id="location-modal" class="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-8 border-t-4 border-orange-500 animate-bounce-in relative">
-            <div class="absolute top-4 right-4 flex gap-2">
-                <button onclick="changeLanguage('de')" class="lang-btn active" data-lang="de">🇩🇪</button>
-                <button onclick="changeLanguage('en')" class="lang-btn" data-lang="en">🇬🇧</button>
-                <button onclick="changeLanguage('fr')" class="lang-btn" data-lang="fr">🇫🇷</button>
-            </div>
+        <div class="flex gap-1">
+            <button onclick="changeLanguage('de')" class="lang-btn active" data-lang="de">DE</button>
+            <button onclick="changeLanguage('en')" class="lang-btn" data-lang="en">EN</button>
+            <button onclick="changeLanguage('fr')" class="lang-btn" data-lang="fr">FR</button>
+        </div>
             <div class="text-center mb-6">
                 <span class="text-4xl mb-2 block">🏗️</span>
                 <h2 class="text-2xl font-bold text-slate-800" data-i18n="modal_title">Willkommen im Quartier!</h2>
@@ -469,3 +478,4 @@
     </script>
 </body>
 </html>
+
