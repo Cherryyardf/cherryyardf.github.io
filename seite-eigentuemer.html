@@ -83,6 +83,60 @@
         .modal-content { background: white; border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); max-width: 28rem; width: 100%; padding: 2rem; border-top: 4px solid var(--alert-color); position: relative; }
         .hidden { display: none !important; }
 
+        /* --- INFO-SIDEBAR --- */
+        .info-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px; /* Versteckt außerhalb des Bildschirms */
+            width: 400px;  /* Etwas breiter für besseren Lesefluss */
+            height: 100vh;
+            background: #fff;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            transition: right 0.3s ease-in-out;
+            z-index: 1000;
+            padding: 40px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            border-left: 5px solid var(--accent-color);
+        }
+        .info-sidebar.open {
+            right: 0;
+        }
+
+        /* Der senkrechte Button in einer Box */
+        .sidebar-toggle {
+            position: fixed;
+            top: 50%; /* Vertikal zentriert */
+            right: 0;
+            transform: translateY(-50%); /* Exakt mittig ausrichten */
+            background: var(--accent-color);
+            color: #fff;
+            border: none;
+            padding: 25px 15px; /* Box-Form (viel padding oben/unten) */
+            font-size: 1.2rem; /* Größere Schrift */
+            cursor: pointer;
+            z-index: 1001;
+            border-radius: 8px 0 0 8px; /* Runde Ecken nur links */
+            writing-mode: vertical-rl; /* Senkrechte Schrift */
+            text-orientation: mixed;
+            transition: right 0.3s ease-in-out;
+            font-weight: bold;
+            box-shadow: -4px 0px 15px rgba(0,0,0,0.2);
+            letter-spacing: 1px;
+        }
+        .sidebar-toggle.open {
+            right: 400px; /* Schiebt den Button mit der Sidebar nach links */
+        }
+
+        .info-sidebar ul {
+            padding-left: 20px;
+            color: #555;
+            line-height: 1.6;
+        }
+        .info-sidebar li {
+            margin-bottom: 20px;
+        }
+
         /* Mobile */
         @media (max-width: 768px) {
             .nav-links a { font-size: 0.7rem !important; }
@@ -101,7 +155,6 @@
 </head>
 <body id="main-body" style="overflow: hidden;">
 
-    <!-- LOCATION MODAL -->
     <div id="location-modal">
         <div class="modal-content">
             <div style="text-align: center; margin-bottom: 1.5rem;">
@@ -195,6 +248,7 @@
         </section>
 
         <div class="grid-2">
+            
             <div class="service-card" style="border-top-color: var(--highlight-color);">
                 <h3 data-i18n="fund_title">💰 Verfügbare Fördergelder</h3>
                 <p style="font-size:0.9rem; margin-bottom:20px;" data-i18n="fund_desc">Aktuelle Programme für Ihre Region:</p>
@@ -237,23 +291,31 @@
                 <p style="font-size:0.9rem; margin-bottom:20px;" data-i18n="vacancy_desc">Haben Sie eine ungenutzte Immobilie? Melden Sie sie freiwillig für Förder-Programme.</p>
                 <form class="vacancy-form" onsubmit="event.preventDefault(); alert('Vielen Dank!');">
                     <label data-i18n="lbl_prop_type">Art der Immobilie</label>
-                    <select><option data-i18n="opt_vacant_home">Wohnhaus</option><option data-i18n="opt_commercial">Gewerbe</option></select>
+                    <select>
+                        <option data-i18n="opt_vacant_home">Wohnhaus</option>
+                        <option data-i18n="opt_commercial">Gewerbe</option>
+                        <option>Potenzial für Zwischennutzung</option>
+                    </select>
                     <button type="submit" class="btn-submit" data-i18n="btn_submit_confidential">Vertraulich absenden</button>
                 </form>
             </div>
 
             <div class="service-card" style="background: #fdfdfd;">
-                <h3 data-i18n="coop_title">🤝 Kooperation mit der Kommune</h3>
-                <p data-i18n="coop_desc">Wir unterstützen Sie nicht nur finanziell, sondern auch planerisch.</p>
-                <ul style="padding-left:20px; color:#555;">
-                    <li style="margin-bottom:10px;" data-i18n="coop_li_1">Kostenlose Erstberatung durch Stadtarchitekten</li>
-                    <li style="margin-bottom:10px;" data-i18n="coop_li_2">Hilfe bei Bauanträgen & Genehmigungen</li>
-                    <li style="margin-bottom:10px;" data-i18n="coop_li_3">Vermittlung an Investoren oder Baugruppen</li>
+                <h3 data-i18n="coop_title">🤝 Modelle & Partnerschaft</h3>
+                <p data-i18n="coop_desc" style="font-size:0.9rem; margin-bottom:15px;">Wir bieten passgenaue Modelle für Ihre Situation:</p>
+                <ul style="padding-left:20px; color:#555; font-size: 0.85rem;">
+                    <li style="margin-bottom:8px;"><strong>Verkauf/Aktivierung:</strong> Unterstützung bei der Vermittlung an Investoren.</li>
+                    <li style="margin-bottom:8px;"><strong>Verrentung (Viager):</strong> Lebenslange Rente und barrierefreie Ersatzwohnung.</li>
+                    <li style="margin-bottom:8px;"><strong>Verpachtung:</strong> Sie behalten das Eigentum, profitieren aber von gesicherten Erträgen.</li>
+                    <li style="margin-bottom:8px;"><strong>Genossenschaften:</strong> Unterstützung beim gemeinschaftlichen Erwerb.</li>
                 </ul>
-                <button class="btn-submit" style="background-color: #2c3e50; margin-top:10px;" onclick="alert('Terminbuchungssystem öffnet sich...')" data-i18n="btn_book">Beratungstermin buchen</button>
+                <button class="btn-submit" style="background-color: #2c3e50; margin-top:10px;" onclick="alert('Terminbuchungssystem öffnet sich...')">Beratung buchen</button>
             </div>
-        </div>
 
+            <div id="local-resources" class="service-card hidden" style="border-top-color: #3498db; grid-column: 1 / -1;">
+                </div>
+
+        </div> 
         <h2 style="text-align: center; margin-bottom: 30px;" data-i18n="legal_title">Rechtssicher Eigentum halten</h2>
         <section class="service-card" style="border-top-color: #c0392b; margin-bottom: 60px;">
             <h3 data-i18n="rights_title">⚖️ Rechte, Pflichten & Fristen</h3>
@@ -342,21 +404,35 @@
 
     </div>
 
+    <button class="sidebar-toggle" id="sidebar-btn" onclick="toggleSidebar()">ℹ️ WARUM KOOPERATION?</button>
+
+    <div class="info-sidebar" id="info-sidebar">
+        <button onclick="toggleSidebar()" style="float: right; border: none; background: none; font-size: 2rem; cursor: pointer; color: var(--accent-color);">&times;</button>
+        <h2 style="color: var(--accent-color); margin-top: 0; font-size: 1.8rem;">Gemeinsam für unsere Region</h2>
+        <p style="font-size: 1rem; color: #666; font-weight: bold;">Warum wir Sie als Eigentümer:in brauchen:</p>
+        
+        <ul>
+            <li><strong>Natur & Ortsbild schützen:</strong> <br>Anstatt immer mehr Grünflächen am Ortsrand zu versiegeln, setzen wir auf "Innen- vor Außenentwicklung". So bleibt unser ländlicher Charakter erhalten.</li>
+            <li><strong>Infrastrukturkosten sparen:</strong> <br>Neue Siedlungen bedeuten neue Straßen, Kanäle und teure Anbindungen. Die Belebung von Bestandslücken ist für die Allgemeinheit wesentlich effizienter.</li>
+            <li><strong>Fördern vor Fordern:</strong> <br>Wir möchten Leerstände vermeiden und Ihnen attraktive, freiwillige Alternativen (Beratung, Förderung, Verrentung) anbieten, bevor harte formelle oder steuerliche Maßnahmen wie Baugebote nötig werden.</li>
+        </ul>
+    </div>
+
     <script>
         // --- TRANSLATION LOGIC ---
         const translations = {
             "de": {
-                "nav_back": "← ZURÜCK ZUR ÜBERSICHT", "header_title": "Werte erhalten, Zukunft sichern", "header_sub": "Ihr zentrales Portal für Sanierung, Förderung und Entwicklung Ihrer Immobilie.", "calc_title": "🌱 Sanierungs-Rechner", "calc_desc": "Geben Sie Ihre Gebäudedaten ein, um das individuelle Wertsteigerungspotenzial zu ermitteln.", "lbl_year": "Baujahr", "lbl_type": "Gebäudetyp", "opt_house": "Einfamilienhaus", "opt_row": "Reihenhaus", "opt_multi": "Mehrfamilienhaus", "opt_timber": "Fachwerkhaus", "lbl_insulation": "Aktueller Dämm-Standard", "opt_ins_none": "Unbekannt / Keine Dämmung", "opt_ins_old": "Altbestand (vor 1995)", "opt_ins_partial": "Teilgedämmt (z.B. nur Dach)", "opt_ins_good": "Gut (nach 2005)", "btn_analyze": "Analyse starten", "res_prefix": "Ergebnis für Ihr", "res_disclaimer": "*Basierend auf regionalen Durchschnittswerten.", "fund_title": "💰 Verfügbare Fördergelder", "fund_desc": "Aktuelle Programme für Ihre Region:", "fund_badge_1": "Bis zu 45% Zuschuss", "btn_info": "Info", "fund_badge_2": "Bis zu 70% Förderung", "btn_help": "Hilfe", "fund_local_title": "Kommunales Fassadenprogramm", "fund_badge_3": "Zuschuss: 5.000€", "btn_apply": "Antrag", "craft_title": "🛠️ Handwerker in der Nähe", "craft_desc": "Finden Sie verfügbare Experten im Umkreis von 10km.", "craft_placeholder": "PLZ oder Gewerk (z.B. Dachdecker)", "link_call": "Anrufen", "tag_insulation": "Dämmung", "tag_renovation": "Sanierung", "craft_footer": "Geprüfte Partner der Kommune", "vacancy_title": "🏚️ Leerstand & Umnutzung", "vacancy_desc": "Haben Sie eine ungenutzte Immobilie? Melden Sie sie freiwillig für Förder-Programme.", "lbl_prop_type": "Art der Immobilie", "opt_vacant_home": "Wohnhaus", "opt_commercial": "Gewerbe", "btn_submit_confidential": "Vertraulich absenden", "coop_title": "🤝 Kooperation mit der Kommune", "coop_desc": "Wir unterstützen Sie nicht nur finanziell, sondern auch planerisch.", "coop_li_1": "Kostenlose Erstberatung durch Stadtarchitekten", "coop_li_2": "Hilfe bei Bauanträgen & Genehmigungen", "coop_li_3": "Vermittlung an Investoren oder Baugruppen", "btn_book": "Beratungstermin buchen", "legal_title": "Rechtssicher Eigentum halten", "rights_title": "⚖️ Rechte, Pflichten & Fristen", "rights_desc": "Vermeiden Sie Bußgelder und Haftungsrisiken. Hier sind die wichtigsten Punkte, die Sie als Eigentümer beachten müssen.", "duty_safe_title": "Verkehrssicherungspflicht", "duty_safe_desc": "Sie haften für Schäden durch Glatteis oder herabfallende Ziegel. <br><strong>Pflicht:</strong> Räum- und Streupflicht (7-20 Uhr), Baumkontrolle.", "duty_energy_title": "Energetische Nachrüstpflichten (GEG)", "duty_energy_desc": "Bei Eigentümerwechsel greifen oft Pflichten binnen 2 Jahren. <br><strong>Pflicht:</strong> Dämmung oberste Geschossdecke, Austausch 30+ Jahre alter Standardkessel.", "duty_clean_title": "Straßenreinigung & Rückschnitt", "duty_clean_desc": "Pflanzen dürfen nicht in den Gehweg ragen. Gehwege sind oft vom Anlieger zu reinigen. <br><strong>Pflicht:</strong> Rückschnitt bis Grundstücksgrenze, Kehrpflicht.", "legal_disclaimer": "Keine Rechtsberatung. Bitte prüfen Sie die lokale Ortssatzung.", "practice_title": "Better Practice: Von Nachbarn lernen", "badge_done": "Abgeschlossen 2024", "ex_1_title": "Scheune zu Loft-Wohnen", "ex_1_desc": "\"Die alte Scheune stand 10 Jahre leer. Durch die Umnutzung entstanden zwei moderne Mietwohnungen.\"", "kpi_cost": "Gesamtkosten", "kpi_fund": "Förderanteil", "kpi_amort": "Amortisation", "comments_title": "Fragen & Kommentare:", "comment_1": "Gibt es Probleme mit dem Denkmalschutz bei den großen Fenstern?", "placeholder_ask": "Frage stellen...", "btn_send": "Senden", "badge_ongoing": "Laufend", "ex_2_title": "Energetische Kernsanierung", "ex_2_desc": "\"Baujahr 1970. Durch Wärmepumpe und Dämmung haben wir die Nebenkosten um 70% gesenkt.\"", "kpi_invest": "Investition", "kpi_quota": "Förderquote", "kpi_rent": "Rentabilität", "comment_2": "Welchen Energieberater hatten Sie? Wir suchen auch noch.", "alarm_title": "🔔 Bau-Alarm: Nichts verpassen!", "alarm_desc": "Werden Sie benachrichtigt, wenn in Ihrem direkten Umfeld (Radius 200m) neue Bauprojekte in die Offenlage gehen.", "ph_address": "Ihre Adresse (Straße, Nr, PLZ)", "ph_email": "Ihre E-Mail", "btn_activate": "Aktivieren", "alarm_footer": "Kostenlos & jederzeit kündbar.",
+                "nav_back": "← ZURÜCK ZUR ÜBERSICHT", "header_title": "Werte erhalten, Zukunft sichern", "header_sub": "Ihr zentrales Portal für Sanierung, Förderung und Entwicklung Ihrer Immobilie.", "calc_title": "🌱 Sanierungs-Rechner", "calc_desc": "Geben Sie Ihre Gebäudedaten ein, um das individuelle Wertsteigerungspotenzial zu ermitteln.", "lbl_year": "Baujahr", "lbl_type": "Gebäudetyp", "opt_house": "Einfamilienhaus", "opt_row": "Reihenhaus", "opt_multi": "Mehrfamilienhaus", "opt_timber": "Fachwerkhaus", "lbl_insulation": "Aktueller Dämm-Standard", "opt_ins_none": "Unbekannt / Keine Dämmung", "opt_ins_old": "Altbestand (vor 1995)", "opt_ins_partial": "Teilgedämmt (z.B. nur Dach)", "opt_ins_good": "Gut (nach 2005)", "btn_analyze": "Analyse starten", "res_prefix": "Ergebnis für Ihr", "res_disclaimer": "*Basierend auf regionalen Durchschnittswerten.", "fund_title": "💰 Verfügbare Fördergelder", "fund_desc": "Aktuelle Programme für Ihre Region:", "fund_badge_1": "Bis zu 45% Zuschuss", "btn_info": "Info", "fund_badge_2": "Bis zu 70% Förderung", "btn_help": "Hilfe", "fund_local_title": "Kommunales Fassadenprogramm", "fund_badge_3": "Zuschuss: 5.000€", "btn_apply": "Antrag", "craft_title": "🛠️ Handwerker in der Nähe", "craft_desc": "Finden Sie verfügbare Experten im Umkreis von 10km.", "craft_placeholder": "PLZ oder Gewerk (z.B. Dachdecker)", "link_call": "Anrufen", "tag_insulation": "Dämmung", "tag_renovation": "Sanierung", "craft_footer": "Geprüfte Partner der Kommune", "vacancy_title": "🏚️ Leerstand & Umnutzung", "vacancy_desc": "Haben Sie eine ungenutzte Immobilie? Melden Sie sie freiwillig für Förder-Programme.", "lbl_prop_type": "Art der Immobilie", "opt_vacant_home": "Wohnhaus", "opt_commercial": "Gewerbe", "btn_submit_confidential": "Vertraulich absenden", "coop_title": "🤝 Modelle & Partnerschaft", "coop_desc": "Wir bieten passgenaue Modelle für Ihre Situation:", "coop_li_1": "Kostenlose Erstberatung durch Stadtarchitekten", "coop_li_2": "Hilfe bei Bauanträgen & Genehmigungen", "coop_li_3": "Vermittlung an Investoren oder Baugruppen", "btn_book": "Beratung buchen", "legal_title": "Rechtssicher Eigentum halten", "rights_title": "⚖️ Rechte, Pflichten & Fristen", "rights_desc": "Vermeiden Sie Bußgelder und Haftungsrisiken. Hier sind die wichtigsten Punkte, die Sie als Eigentümer beachten müssen.", "duty_safe_title": "Verkehrssicherungspflicht", "duty_safe_desc": "Sie haften für Schäden durch Glatteis oder herabfallende Ziegel. <br><strong>Pflicht:</strong> Räum- und Streupflicht (7-20 Uhr), Baumkontrolle.", "duty_energy_title": "Energetische Nachrüstpflichten (GEG)", "duty_energy_desc": "Bei Eigentümerwechsel greifen oft Pflichten binnen 2 Jahren. <br><strong>Pflicht:</strong> Dämmung oberste Geschossdecke, Austausch 30+ Jahre alter Standardkessel.", "duty_clean_title": "Straßenreinigung & Rückschnitt", "duty_clean_desc": "Pflanzen dürfen nicht in den Gehweg ragen. Gehwege sind oft vom Anlieger zu reinigen. <br><strong>Pflicht:</strong> Rückschnitt bis Grundstücksgrenze, Kehrpflicht.", "legal_disclaimer": "Keine Rechtsberatung. Bitte prüfen Sie die lokale Ortssatzung.", "practice_title": "Better Practice: Von Nachbarn lernen", "badge_done": "Abgeschlossen 2024", "ex_1_title": "Scheune zu Loft-Wohnen", "ex_1_desc": "\"Die alte Scheune stand 10 Jahre leer. Durch die Umnutzung entstanden zwei moderne Mietwohnungen.\"", "kpi_cost": "Gesamtkosten", "kpi_fund": "Förderanteil", "kpi_amort": "Amortisation", "comments_title": "Fragen & Kommentare:", "comment_1": "Gibt es Probleme mit dem Denkmalschutz bei den großen Fenstern?", "placeholder_ask": "Frage stellen...", "btn_send": "Senden", "badge_ongoing": "Laufend", "ex_2_title": "Energetische Kernsanierung", "ex_2_desc": "\"Baujahr 1970. Durch Wärmepumpe und Dämmung haben wir die Nebenkosten um 70% gesenkt.\"", "kpi_invest": "Investition", "kpi_quota": "Förderquote", "kpi_rent": "Rentabilität", "comment_2": "Welchen Energieberater hatten Sie? Wir suchen auch noch.", "alarm_title": "🔔 Bau-Alarm: Nichts verpassen!", "alarm_desc": "Werden Sie benachrichtigt, wenn in Ihrem direkten Umfeld (Radius 200m) neue Bauprojekte in die Offenlage gehen.", "ph_address": "Ihre Adresse (Straße, Nr, PLZ)", "ph_email": "Ihre E-Mail", "btn_activate": "Aktivieren", "alarm_footer": "Kostenlos & jederzeit kündbar.",
                 "modal_title": "Willkommen!", "modal_desc": "Bitte wählen Sie Ihre Region für lokale Förderprogramme.", "lbl_country": "Land", "lbl_zip": "Postleitzahl", "modal_error": "Diese PLZ liegt leider außerhalb unseres Pilotgebiets.", "btn_enter": "Zum Bereich",
                 "lbl_address": "Adresse des Objekts", "lbl_interest": "Interesse an:", "opt_sale": "Verkauf / Sanierung", "opt_interim": "Zwischennutzung", "opt_consult": "Beratung durch die Gemeinde"
             },
             "en": {
-                "nav_back": "← BACK TO OVERVIEW", "header_title": "Preserve Value, Secure Future", "header_sub": "Your central portal for renovation, funding, and development of your property.", "calc_title": "🌱 Renovation Calculator", "calc_desc": "Enter your building data to determine the individual potential for value increase.", "lbl_year": "Year of Construction", "lbl_type": "Building Type", "opt_house": "Single Family House", "opt_row": "Terraced House", "opt_multi": "Multi-Family House", "opt_timber": "Timber-Framed House", "lbl_insulation": "Current Insulation Standard", "opt_ins_none": "Unknown / No Insulation", "opt_ins_old": "Old Stock (pre 1995)", "opt_ins_partial": "Partially Insulated (e.g., roof only)", "opt_ins_good": "Good (post 2005)", "btn_analyze": "Start Analysis", "res_prefix": "Result for your", "res_disclaimer": "*Based on regional averages.", "fund_title": "💰 Available Funding", "fund_desc": "Current programs for your region:", "fund_badge_1": "Up to 45% Subsidy", "btn_info": "Info", "fund_badge_2": "Up to 70% Funding", "btn_help": "Help", "fund_local_title": "Municipal Facade Program", "fund_badge_3": "Subsidy: €5,000", "btn_apply": "Apply", "craft_title": "🛠️ Craftsmen Nearby", "craft_desc": "Find available experts within a 10km radius.", "craft_placeholder": "Zip code or trade (e.g. roofer)", "link_call": "Call", "tag_insulation": "Insulation", "tag_renovation": "Renovation", "craft_footer": "Verified Municipal Partners", "vacancy_title": "🏚️ Vacancy & Conversion", "vacancy_desc": "Do you have an unused property? Report it voluntarily for funding programs regarding reactivation or interim use.", "lbl_prop_type": "Property Type", "opt_vacant_home": "Residential House", "opt_commercial": "Commercial", "btn_submit_confidential": "Submit Confidentially", "coop_title": "🤝 Cooperation with the Municipality", "coop_desc": "We support you not only financially but also with planning.", "coop_li_1": "Free initial consultation by city architects", "coop_li_2": "Help with building applications & permits", "coop_li_3": "Mediation to investors or building groups", "btn_book": "Book Consultation", "legal_title": "Holding Property Legally Secure", "rights_title": "⚖️ Rights, Duties & Deadlines", "rights_desc": "Avoid fines and liability risks. Here are the most important points you need to consider as an owner.", "duty_safe_title": "Traffic Safety Duty", "duty_safe_desc": "You are liable for damage caused by black ice or falling tiles. <br><strong>Duty:</strong> Clearing and gritting (7 AM - 8 PM), tree inspection.", "duty_energy_title": "Energy Retrofitting Duties (GEG)", "duty_energy_desc": "Duties often apply within 2 years of a change of ownership. <br><strong>Duty:</strong> Insulation of top floor ceiling, replacement of 30+ year old standard boilers.", "duty_clean_title": "Street Cleaning & Pruning", "duty_clean_desc": "Plants must not protrude onto the sidewalk. Sidewalks often have to be cleaned by residents. <br><strong>Duty:</strong> Pruning to property line, sweeping duty.", "legal_disclaimer": "No legal advice. Please check local bylaws.", "practice_title": "Better Practice: Learn from Neighbors", "badge_done": "Completed 2024", "ex_1_title": "Barn to Loft Living", "ex_1_desc": "\"The old barn stood empty for 10 years. Conversion created two modern rental apartments.\"", "kpi_cost": "Total Cost", "kpi_fund": "Funding Share", "kpi_amort": "Amortization", "comments_title": "Questions & Comments:", "comment_1": "Are there problems with monument protection regarding the large windows?", "placeholder_ask": "Ask a question...", "btn_send": "Send", "badge_ongoing": "Ongoing", "ex_2_title": "Energy Core Renovation", "ex_2_desc": "\"Built in 1970. Heat pump and insulation reduced ancillary costs by 70%.\"", "kpi_invest": "Investment", "kpi_quota": "Funding Quota", "kpi_rent": "Rentability", "comment_2": "Which energy consultant did you have? We are also looking.", "alarm_title": "🔔 Construction Alarm: Don't Miss Out!", "alarm_desc": "Get notified when new construction projects go into public disclosure.", "ph_address": "Your Address (Street, No, Zip)", "ph_email": "Your E-Mail", "btn_activate": "Activate", "alarm_footer": "Free & cancel anytime.",
+                "nav_back": "← BACK TO OVERVIEW", "header_title": "Preserve Value, Secure Future", "header_sub": "Your central portal for renovation, funding, and development of your property.", "calc_title": "🌱 Renovation Calculator", "calc_desc": "Enter your building data to determine the individual potential for value increase.", "lbl_year": "Year of Construction", "lbl_type": "Building Type", "opt_house": "Single Family House", "opt_row": "Terraced House", "opt_multi": "Multi-Family House", "opt_timber": "Timber-Framed House", "lbl_insulation": "Current Insulation Standard", "opt_ins_none": "Unknown / No Insulation", "opt_ins_old": "Old Stock (pre 1995)", "opt_ins_partial": "Partially Insulated (e.g., roof only)", "opt_ins_good": "Good (post 2005)", "btn_analyze": "Start Analysis", "res_prefix": "Result for your", "res_disclaimer": "*Based on regional averages.", "fund_title": "💰 Available Funding", "fund_desc": "Current programs for your region:", "fund_badge_1": "Up to 45% Subsidy", "btn_info": "Info", "fund_badge_2": "Up to 70% Funding", "btn_help": "Help", "fund_local_title": "Municipal Facade Program", "fund_badge_3": "Subsidy: €5,000", "btn_apply": "Apply", "craft_title": "🛠️ Craftsmen Nearby", "craft_desc": "Find available experts within a 10km radius.", "craft_placeholder": "Zip code or trade (e.g. roofer)", "link_call": "Call", "tag_insulation": "Insulation", "tag_renovation": "Renovation", "craft_footer": "Verified Municipal Partners", "vacancy_title": "🏚️ Vacancy & Conversion", "vacancy_desc": "Do you have an unused property? Report it voluntarily for funding programs regarding reactivation or interim use.", "lbl_prop_type": "Property Type", "opt_vacant_home": "Residential House", "opt_commercial": "Commercial", "btn_submit_confidential": "Submit Confidentially", "coop_title": "🤝 Models & Partnership", "coop_desc": "We offer tailor-made models for your situation:", "coop_li_1": "Free initial consultation by city architects", "coop_li_2": "Help with building applications & permits", "coop_li_3": "Mediation to investors or building groups", "btn_book": "Book Consultation", "legal_title": "Holding Property Legally Secure", "rights_title": "⚖️ Rights, Duties & Deadlines", "rights_desc": "Avoid fines and liability risks. Here are the most important points you need to consider as an owner.", "duty_safe_title": "Traffic Safety Duty", "duty_safe_desc": "You are liable for damage caused by black ice or falling tiles. <br><strong>Duty:</strong> Clearing and gritting (7 AM - 8 PM), tree inspection.", "duty_energy_title": "Energy Retrofitting Duties (GEG)", "duty_energy_desc": "Duties often apply within 2 years of a change of ownership. <br><strong>Duty:</strong> Insulation of top floor ceiling, replacement of 30+ year old standard boilers.", "duty_clean_title": "Street Cleaning & Pruning", "duty_clean_desc": "Plants must not protrude onto the sidewalk. Sidewalks often have to be cleaned by residents. <br><strong>Duty:</strong> Pruning to property line, sweeping duty.", "legal_disclaimer": "No legal advice. Please check local bylaws.", "practice_title": "Better Practice: Learn from Neighbors", "badge_done": "Completed 2024", "ex_1_title": "Barn to Loft Living", "ex_1_desc": "\"The old barn stood empty for 10 years. Conversion created two modern rental apartments.\"", "kpi_cost": "Total Cost", "kpi_fund": "Funding Share", "kpi_amort": "Amortization", "comments_title": "Questions & Comments:", "comment_1": "Are there problems with monument protection regarding the large windows?", "placeholder_ask": "Ask a question...", "btn_send": "Send", "badge_ongoing": "Ongoing", "ex_2_title": "Energy Core Renovation", "ex_2_desc": "\"Built in 1970. Heat pump and insulation reduced ancillary costs by 70%.\"", "kpi_invest": "Investment", "kpi_quota": "Funding Quota", "kpi_rent": "Rentability", "comment_2": "Which energy consultant did you have? We are also looking.", "alarm_title": "🔔 Construction Alarm: Don't Miss Out!", "alarm_desc": "Get notified when new construction projects go into public disclosure.", "ph_address": "Your Address (Street, No, Zip)", "ph_email": "Your E-Mail", "btn_activate": "Activate", "alarm_footer": "Free & cancel anytime.",
                 "modal_title": "Welcome!", "modal_desc": "Please select your region for local funding programs.", "lbl_country": "Country", "lbl_zip": "Zip Code", "modal_error": "This zip code is unfortunately outside our pilot area.", "btn_enter": "Go to Area",
                 "lbl_address": "Property Address", "lbl_interest": "Interested in:", "opt_sale": "Sale / Renovation", "opt_interim": "Interim Use", "opt_consult": "Consultation"
             },
             "fr": {
-                "nav_back": "← RETOUR À L'APERÇU", "header_title": "Préserver la valeur, assurer l'avenir", "header_sub": "Votre portail central pour la rénovation, le financement et le développement de votre bien immobilier.", "calc_title": "🌱 Calculateur de rénovation", "calc_desc": "Entrez les données de votre bâtiment pour déterminer le potentiel individuel de plus-value.", "lbl_year": "Année de construction", "lbl_type": "Type de bâtiment", "opt_house": "Maison individuelle", "opt_row": "Maison mitoyenne", "opt_multi": "Immeuble collectif", "opt_timber": "Maison à colombages", "lbl_insulation": "Standard d'isolation actuel", "opt_ins_none": "Inconnu / Pas d'isolation", "opt_ins_old": "Ancien (avant 1995)", "opt_ins_partial": "Partiellement isolé (ex. toit seul)", "opt_ins_good": "Bon (après 2005)", "btn_analyze": "Lancer l'analyse", "res_prefix": "Résultat pour votre", "res_disclaimer": "*Basé sur des moyennes régionales.", "fund_title": "💰 Fonds disponibles", "fund_desc": "Programmes actuels pour votre région :", "fund_badge_1": "Jusqu'à 45% de subvention", "btn_info": "Info", "fund_badge_2": "Jusqu'à 70% de financement", "btn_help": "Aide", "fund_local_title": "Programme communal façades", "fund_badge_3": "Subvention : 5 000 €", "btn_apply": "Demande", "craft_title": "🛠️ Artisans à proximité", "craft_desc": "Trouvez des experts disponibles dans un rayon de 10km.", "craft_placeholder": "Code postal ou métier (ex. couvreur)", "link_call": "Appeler", "tag_insulation": "Isolation", "tag_renovation": "Rénovation", "craft_footer": "Partenaires vérifiés de la commune", "vacancy_title": "🏚️ Vacance & Reconversion", "vacancy_desc": "Avez-vous un bien inutilisé ? Signalez-le volontairement pour des programmes de financement.", "lbl_prop_type": "Type de bien", "opt_vacant_home": "Maison d'habitation", "opt_commercial": "Unité commerciale", "btn_submit_confidential": "Envoyer confidentiellement", "coop_title": "🤝 Coopération avec la commune", "coop_desc": "Nous vous soutenons non seulement financièrement mais aussi au niveau de la planification.", "coop_li_1": "Premier conseil gratuit par des architectes municipaux", "coop_li_2": "Aide pour les permis de construire & autorisations", "coop_li_3": "Mise en relation avec des investisseurs ou groupes de construction", "btn_book": "Réserver un rendez-vous", "legal_title": "Détenir un bien en toute sécurité juridique", "rights_title": "⚖️ Droits, Devoirs & Délais", "rights_desc": "Évitez les amendes et les risques de responsabilité. Voici les points les plus importants à respecter en tant que propriétaire.", "duty_safe_title": "Obligation de sécurité routière", "duty_safe_desc": "Vous êtes responsable des dommages causés par le verglas ou la chute de tuiles. <br><strong>Devoir :</strong> Déblaiement et salage (7h-20h), contrôle des arbres.", "duty_energy_title": "Obligations de rénovation énergétique (GEG)", "duty_energy_desc": "Des obligations s'appliquent souvent dans les 2 ans suivant un changement de propriétaire. <br><strong>Devoir :</strong> Isolation du plafond du dernier étage, remplacement des chaudières standard de plus de 30 ans.", "duty_clean_title": "Nettoyage des rues & Élagage", "duty_clean_desc": "Les plantes ne doivent pas dépasser sur le trottoir. Les trottoirs doivent souvent être nettoyés par les riverains. <br><strong>Devoir :</strong> Élagage jusqu'à la limite de propriété, obligation de balayage.", "legal_disclaimer": "Pas de conseil juridique. Veuillez vérifier les statuts locaux.", "practice_title": "Better Practice : Apprendre des voisins", "badge_done": "Terminé 2024", "ex_1_title": "De la grange au loft", "ex_1_desc": "\"La vieille grange est restée vide pendant 10 ans. La reconversion a créé deux appartements locatifs modernes.\"", "kpi_cost": "Coût total", "kpi_fund": "Part subvention", "kpi_amort": "Amortissement", "comments_title": "Questions & Commentaires :", "comment_1": "Y a-t-il des problèmes avec la protection des monuments pour les grandes fenêtres ?", "placeholder_ask": "Poser une question...", "btn_send": "Envoyer", "badge_ongoing": "En cours", "ex_2_title": "Rénovation énergétique complète", "ex_2_desc": "\"Construction 1970. Grâce à la pompe à chaleur et l'isolation, nous avons réduit les charges de 70%.\"", "kpi_invest": "Investissement", "kpi_quota": "Quote-part aide", "kpi_rent": "Rentabilité", "comment_2": "Quel conseiller en énergie avez-vous eu ? Nous cherchons aussi.", "alarm_title": "🔔 Alarme chantier : Ne manquez rien !", "alarm_desc": "Soyez notifié lorsque de nouveaux projets de construction dans votre environnement direct (rayon 200m) sont mis à l'enquête publique.", "ph_address": "Votre adresse", "ph_email": "Votre E-Mail", "btn_activate": "Activer", "alarm_footer": "Gratuit & résiliable à tout moment.",
+                "nav_back": "← RETOUR À L'APERÇU", "header_title": "Préserver la valeur, assurer l'avenir", "header_sub": "Votre portail central pour la rénovation, le financement et le développement de votre bien immobilier.", "calc_title": "🌱 Calculateur de rénovation", "calc_desc": "Entrez les données de votre bâtiment pour déterminer le potentiel individuel de plus-value.", "lbl_year": "Année de construction", "lbl_type": "Type de bâtiment", "opt_house": "Maison individuelle", "opt_row": "Maison mitoyenne", "opt_multi": "Immeuble collectif", "opt_timber": "Maison à colombages", "lbl_insulation": "Standard d'isolation actuel", "opt_ins_none": "Inconnu / Pas d'isolation", "opt_ins_old": "Ancien (avant 1995)", "opt_ins_partial": "Partiellement isolé (ex. toit seul)", "opt_ins_good": "Bon (après 2005)", "btn_analyze": "Lancer l'analyse", "res_prefix": "Résultat pour votre", "res_disclaimer": "*Basé sur des moyennes régionales.", "fund_title": "💰 Fonds disponibles", "fund_desc": "Programmes actuels pour votre région :", "fund_badge_1": "Jusqu'à 45% de subvention", "btn_info": "Info", "fund_badge_2": "Jusqu'à 70% de financement", "btn_help": "Aide", "fund_local_title": "Programme communal façades", "fund_badge_3": "Subvention : 5 000 €", "btn_apply": "Demande", "craft_title": "🛠️ Artisans à proximité", "craft_desc": "Trouvez des experts disponibles dans un rayon de 10km.", "craft_placeholder": "Code postal ou métier (ex. couvreur)", "link_call": "Appeler", "tag_insulation": "Isolation", "tag_renovation": "Rénovation", "craft_footer": "Partenaires vérifiés de la commune", "vacancy_title": "🏚️ Vacance & Reconversion", "vacancy_desc": "Avez-vous un bien inutilisé ? Signalez-le volontairement pour des programmes de financement.", "lbl_prop_type": "Type de bien", "opt_vacant_home": "Maison d'habitation", "opt_commercial": "Unité commerciale", "btn_submit_confidential": "Envoyer confidentiellement", "coop_title": "🤝 Modèles & Partenariat", "coop_desc": "Nous proposons des modèles adaptés à votre situation :", "coop_li_1": "Premier conseil gratuit par des architectes municipaux", "coop_li_2": "Aide pour les permis de construire & autorisations", "coop_li_3": "Mise en relation avec des investisseurs ou groupes de construction", "btn_book": "Réserver un rendez-vous", "legal_title": "Détenir un bien en toute sécurité juridique", "rights_title": "⚖️ Droits, Devoirs & Délais", "rights_desc": "Évitez les amendes et les risques de responsabilité. Voici les points les plus importants à respecter en tant que propriétaire.", "duty_safe_title": "Obligation de sécurité routière", "duty_safe_desc": "Vous êtes responsable des dommages causés par le verglas ou la chute de tuiles. <br><strong>Devoir :</strong> Déblaiement et salage (7h-20h), contrôle des arbres.", "duty_energy_title": "Obligations de rénovation énergétique (GEG)", "duty_energy_desc": "Des obligations s'appliquent souvent dans les 2 ans suivant un changement de propriétaire. <br><strong>Devoir :</strong> Isolation du plafond du dernier étage, remplacement des chaudières standard de plus de 30 ans.", "duty_clean_title": "Nettoyage des rues & Élagage", "duty_clean_desc": "Les plantes ne doivent pas dépasser sur le trottoir. Les trottoirs doivent souvent être nettoyés par les riverains. <br><strong>Devoir :</strong> Élagage jusqu'à la limite de propriété, obligation de balayage.", "legal_disclaimer": "Pas de conseil juridique. Veuillez vérifier les statuts locaux.", "practice_title": "Better Practice : Apprendre des voisins", "badge_done": "Terminé 2024", "ex_1_title": "De la grange au loft", "ex_1_desc": "\"La vieille grange est restée vide pendant 10 ans. La reconversion a créé deux appartements locatifs modernes.\"", "kpi_cost": "Coût total", "kpi_fund": "Part subvention", "kpi_amort": "Amortissement", "comments_title": "Questions & Commentaires :", "comment_1": "Y a-t-il des problèmes avec la protection des monuments pour les grandes fenêtres ?", "placeholder_ask": "Poser une question...", "btn_send": "Envoyer", "badge_ongoing": "En cours", "ex_2_title": "Rénovation énergétique complète", "ex_2_desc": "\"Construction 1970. Grâce à la pompe à chaleur et l'isolation, nous avons réduit les charges de 70%.\"", "kpi_invest": "Investissement", "kpi_quota": "Quote-part aide", "kpi_rent": "Rentabilité", "comment_2": "Quel conseiller en énergie avez-vous eu ? Nous cherchons aussi.", "alarm_title": "🔔 Alarme chantier : Ne manquez rien !", "alarm_desc": "Soyez notifié lorsque de nouveaux projets de construction dans votre environnement direct (rayon 200m) sont mis à l'enquête publique.", "ph_address": "Votre adresse", "ph_email": "Votre E-Mail", "btn_activate": "Activer", "alarm_footer": "Gratuit & résiliable à tout moment.",
                 "modal_title": "Bienvenue !", "modal_desc": "Veuillez choisir votre région pour les programmes locaux.", "lbl_country": "Pays", "lbl_zip": "Code Postal", "modal_error": "Ce code postal est malheureusement hors de notre zone pilote.", "btn_enter": "Accéder",
                 "lbl_address": "Adresse du bien", "lbl_interest": "Intéressé par :", "opt_sale": "Vente / Rénovation", "opt_interim": "Usage intermédiaire", "opt_consult": "Conseil par la commune"
             }
@@ -375,6 +451,40 @@
             if (p >= 6370 && p <= 6374) return "Landgraaf";
             if (p >= 6400 && p <= 6433) return "Heerlen";
             return null;
+        }
+
+        // --- SIDEBAR LOGIC ---
+        function toggleSidebar() {
+            const sidebar = document.getElementById('info-sidebar');
+            const btn = document.getElementById('sidebar-btn');
+            sidebar.classList.toggle('open');
+            btn.classList.toggle('open');
+        }
+
+        // --- LOKALE RESSOURCEN LOGIC ---
+        function updateLocalResources(country, city) {
+            const resDiv = document.getElementById('local-resources');
+            let content = `<h3 style="color: #3498db;">📍 Lokale Daten für ${city}</h3>`;
+            
+            if (country === 'DE' && city === 'Simmerath') {
+                resDiv.classList.remove('hidden');
+                content += '<p style="font-size: 0.9rem;">Prüfen Sie Bebauungspläne und offizielle Bodenwerte:</p><ul style="padding-left:20px; color:#555; font-size: 0.9rem;">';
+                content += '<li style="margin-bottom:5px;"><a href="https://geoportal.staedteregion-aachen.de/" target="_blank" style="color:var(--accent-color); font-weight:bold;">Geoportal StädteRegion Aachen</a></li>';
+                content += '<li style="margin-bottom:5px;"><a href="https://www.boris.nrw.de/" target="_blank" style="color:var(--accent-color); font-weight:bold;">BORIS.NRW (Bodenrichtwerte)</a></li>';
+                content += '</ul>';
+            } else if (country === 'BE' && city.includes('Raeren')) {
+                resDiv.classList.remove('hidden');
+                content += '<p style="font-size: 0.9rem;">Prüfen Sie den Sektorenplan und Marktdaten:</p><ul style="padding-left:20px; color:#555; font-size: 0.9rem;">';
+                content += '<li style="margin-bottom:5px;"><a href="https://geoportail.wallonie.be/walonmap" target="_blank" style="color:var(--accent-color); font-weight:bold;">WalOnMap (Plan de Secteur)</a></li>';
+                content += '<li style="margin-bottom:5px;"><a href="https://www.wfg.be/" target="_blank" style="color:var(--accent-color); font-weight:bold;">WFG Ostbelgien (Strukturdaten)</a></li>';
+                content += '</ul>';
+            } else {
+                resDiv.classList.add('hidden');
+            }
+            
+            if (!resDiv.classList.contains('hidden')) {
+                resDiv.innerHTML = content;
+            }
         }
 
         // --- LANGUAGE & LOCATION LOGIC ---
@@ -425,6 +535,9 @@
                 localStorage.setItem('baukompass_location_city', foundCity);
                 localStorage.setItem('baukompass_location_plz', plz);
                 localStorage.setItem('baukompass_location_country', country);
+                
+                // Update Local Resources dynamically
+                updateLocalResources(country, foundCity);
             } else {
                 errorBox.classList.remove('hidden');
                 errorBox.innerText = translations[currentLang].modal_error || "PLZ nicht gefunden.";
@@ -508,14 +621,15 @@
 
             // Check for saved location
             const savedCity = localStorage.getItem('baukompass_location_city');
+            const savedCountry = localStorage.getItem('baukompass_location_country');
             if (savedCity) {
                 document.getElementById('header-location-display').innerText = `in ${savedCity}`;
                 document.getElementById('location-modal').classList.add('hidden');
                 document.getElementById('main-body').style.overflow = 'auto';
+                updateLocalResources(savedCountry, savedCity);
             }
         });
 
     </script>
 </body>
 </html>
-
