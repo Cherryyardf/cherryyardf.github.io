@@ -119,17 +119,35 @@
     flex-shrink: 0;
 }
 
-/* Der blaue Button am Rand muss mitwandern */
 .sidebar-toggle {
-    transition: right 0.3s ease-in-out;
+    position: fixed;
+    top: 50%;
+    right: 0; /* Bleibt am rechten Rand haften */
+    transform: translateY(-50%);
+    background: var(--accent-color);
+    color: #fff;
+    border: none;
+    padding: 25px 15px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    z-index: 2000; /* Höher als die Sidebar (1000) setzen! */
+    border-radius: 8px 0 0 8px;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transition: all 0.3s ease-in-out;
+    font-weight: bold;
+    box-shadow: -4px 0px 15px rgba(0,0,0,0.2);
 }
+
+/* Wenn die Sidebar aufgeklappt wird (400px) */
 .sidebar-toggle.open {
     right: 400px;
 }
+
+/* Wenn das Faltblatt voll entfaltet wird (800px) */
 .sidebar-toggle.folded {
     right: 800px;
 }
-
 /* Der Button muss bei 800px stehen bleiben */
 .sidebar-toggle.folded { right: 800px; }
 
@@ -826,6 +844,7 @@ window.addEventListener('load', () => {
     </script>
 </body>
 </html>
+
 
 
 
