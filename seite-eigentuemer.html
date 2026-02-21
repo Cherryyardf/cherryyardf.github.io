@@ -87,54 +87,60 @@
         .info-sidebar {
             position: fixed;
             top: 0;
-            right: -400px; /* Versteckt außerhalb des Bildschirms */
-            width: 400px;  /* Etwas breiter für besseren Lesefluss */
+            right: -600px; /* Erhöht, damit auch die breite Sidebar ganz ausfährt */
+            width: 400px;  
             height: 100vh;
             background: #fff;
             box-shadow: -5px 0 15px rgba(0,0,0,0.1);
-            transition: right 0.3s ease-in-out;
+            /* WICHTIG: width zur Transition hinzufügen für den Falteffekt */
+            transition: right 0.3s ease-in-out, width 0.3s ease-in-out; 
             z-index: 1000;
             padding: 40px;
             box-sizing: border-box;
             overflow-y: auto;
             border-left: 5px solid var(--accent-color);
         }
+
+        /* Wenn offen, aber noch nicht gefaltet */
         .info-sidebar.open {
             right: 0;
         }
 
-        /* Der senkrechte Button in einer Box */
+        /* Der senkrechte Button am Rand */
         .sidebar-toggle {
             position: fixed;
-            top: 50%; /* Vertikal zentriert */
+            top: 50%;
             right: 0;
-            transform: translateY(-50%); /* Exakt mittig ausrichten */
+            transform: translateY(-50%);
             background: var(--accent-color);
             color: #fff;
             border: none;
-            padding: 25px 15px; /* Box-Form (viel padding oben/unten) */
-            font-size: 1.2rem; /* Größere Schrift */
+            padding: 25px 15px;
+            font-size: 1.2rem;
             cursor: pointer;
             z-index: 1001;
-            border-radius: 8px 0 0 8px; /* Runde Ecken nur links */
-            writing-mode: vertical-rl; /* Senkrechte Schrift */
+            border-radius: 8px 0 0 8px;
+            writing-mode: vertical-rl;
             text-orientation: mixed;
-            transition: right 0.3s ease-in-out;
+            transition: right 0.3s ease-in-out; /* Folgt der Sidebar-Bewegung */
             font-weight: bold;
             box-shadow: -4px 0px 15px rgba(0,0,0,0.2);
             letter-spacing: 1px;
         }
+
+        /* Verschiebung des Buttons, wenn die Sidebar offen ist */
         .sidebar-toggle.open {
-            right: 400px; /* Schiebt den Button mit der Sidebar nach links */
+            right: 400px; 
         }
 
-        .info-sidebar ul {
-            padding-left: 20px;
-            color: #555;
-            line-height: 1.6;
+        /* ZUSÄTZLICH: Wenn die Eskalations-Stufe ausgefaltet ist */
+        .info-sidebar.folded {
+            width: 600px;
         }
-        .info-sidebar li {
-            margin-bottom: 20px;
+        
+        /* Der Button muss mitwandern, wenn die Sidebar auf 600px springt */
+        .sidebar-toggle.folded {
+            right: 600px;
         }
 
         /* Mobile */
@@ -743,6 +749,24 @@
             }, 800);
         }
 
+function toggleFold() {
+    const sidebar = document.getElementById('info-sidebar');
+    const toggleBtn = document.getElementById('sidebar-btn');
+    const fold = document.getElementById('escalation-fold');
+    const foldBtn = document.getElementById('escalation-fold-btn');
+
+    // Klassen für das "Falt-Design" umschalten
+    sidebar.classList.toggle('folded');
+    toggleBtn.classList.toggle('folded');
+    fold.classList.toggle('hidden');
+
+    if (sidebar.classList.contains('folded')) {
+        foldBtn.innerText = '⬅️ ZURÜCK ZUR KOOPERATION';
+    } else {
+        foldBtn.innerText = '⚠️ WENN KOOPERATION NICHT REICHT...';
+    }
+}
+        
         function showStrategy(type) {
     const container = document.getElementById('strategy-content');
     const title = document.getElementById('strategy-title');
@@ -806,6 +830,7 @@
     </script>
 </body>
 </html>
+
 
 
 
