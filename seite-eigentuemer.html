@@ -593,7 +593,7 @@ const translations = {
         "fund_local_title": "Municipal Facade Program", "fund_badge_3": "Subsidy: €5,000", "btn_apply": "Apply",
         "craft_title": "🛠️ Craftsmen Nearby", "craft_desc": "Find available experts within 10km.",
         "craft_placeholder": "Zip code or trade", "link_call": "Call", "tag_insulation": "Insulation", "tag_renovation": "Renovation", "craft_footer": "Verified Municipal Partners",
-        "vacancy_title": "🏚️ Vacancy & Conversion", "vacancy_desc": "Unused property? Report it for funding programs.",
+        "vacancy_title": "Vacancy & Conversion", "vacancy_desc": "Unused property? Report it for funding programs.",
         "lbl_prop_type": "Property Type", "opt_vacant_home": "Residential", "opt_commercial": "Commercial", "btn_submit_confidential": "Submit Confidentially",
         "coop_title": "🤝 Models & Partnership", "coop_desc": "We offer tailor-made models for your situation:",
         "cross_border_title": "🌍 Cross-Border Expertise", "cross_border_desc": "Understand differences – seize opportunities in the Aachen-Belgium border region.",
@@ -609,7 +609,7 @@ const translations = {
     },
     "fr": {
         "sidebar_toggle": "ℹ️ POURQUOI COOPÉRER ?",
-        "modal_title": "Bienvenue !", "modal_desc": "Veuillez choisir votre region pour les programmes d'aide locaux.", "lbl_country": "Pays", "lbl_zip": "Code postal", "modal_error": "Ce code postal est hors de notre zone pilote.", "btn_enter": "Accéder",
+        "modal_title": "Bienvenue !", "modal_desc": "Veuillez choisir votre région pour les programmes d'aide locaux.", "lbl_country": "Pays", "lbl_zip": "Code postal", "modal_error": "Ce code postal est hors de notre zone pilote.", "btn_enter": "Accéder",
         "nav_back": "← RETOUR À L'APERÇU", "header_title": "Préserver la valeur, assurer l'avenir", "header_sub": "Votre portail central pour la rénovation et le financement",
         "calc_title": "🌱 Calculateur de rénovation", "calc_desc": "Entrez les données du bâtiment pour déterminer le potentiel de plus-value.",
         "type_title": "🔍 Quel type de propriétaire êtes-vous ?", "type_desc": "Obtenez des stratégies adaptées à votre situation de vie.",
@@ -631,8 +631,8 @@ const translations = {
         "practice_title": "Better Practice : Apprendre des voisins",
         "ex_1_title": "De la grange au loft", "ex_2_title": "Rénovation énergétique",
         "kpi_cost": "Coût total", "kpi_fund": "Part d'aide", "kpi_amort": "Amortissement",
-        "comments_title": "Questions & commentaires :", "placeholder_ask": "Poser une question...", "btn_send": "Envoyer",
-        "alarm_title": "🔔 Alarme chantier", "alarm_desc": "Soyez notifié du lancement de nouveaux projets dans votre quartier.",
+        "comments_title": "Questions & commentaires :", "placeholder_ask": "Poser eine Frage...", "btn_send": "Envoyer",
+        "alarm_title": "🔔 Alarme chantier", "alarm_desc": "Soyez notifié du lancement de nouveaux projekte dans votre quartier.",
         "ph_address": "Votre adresse", "ph_email": "Votre e-mail", "btn_activate": "Activer"
     }
 };
@@ -662,7 +662,7 @@ function toggleSidebar() {
     if (!sidebar.classList.contains('open')) {
         changeFold(0); // Reset Leporello
     }
-} // <--- DIESE KLAMMER FEHLTE
+}
 
 function changeFold(level) {
     const sidebar = document.getElementById('info-sidebar');
@@ -728,7 +728,7 @@ function changeLanguage(lang) {
 
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.dataset.i18n;
-        if(translations[lang][key]) {
+        if(translations[lang] && translations[lang][key]) {
             if(el.tagName === 'INPUT' && el.hasAttribute('placeholder')) {
                 el.placeholder = translations[lang][key];
             } else {
@@ -771,15 +771,15 @@ function showStrategy(type) {
     const content = {
         'senioren': {
             title: 'Strategie für Senioren & Inaktive',
-            [cite_start]text: '<ul><li><strong>Immobilienverrentung (Viager):</strong> Erhalt einer lebenslangen Rente bei Wohnrecht [cite: 357][cite_start].</li><li><strong>Entlastung:</strong> Kommune hilft bei administrativen Risiken[cite: 31].</li></ul>'
+            text: '<ul><li><strong>Immobilienverrentung (Viager):</strong> Erhalt einer lebenslangen Rente bei Wohnrecht.</li><li><strong>Entlastung:</strong> Kommune hilft bei administrativen Risiken.</li></ul>'
         },
         'erben': {
             title: 'Strategie für Erbengemeinschaften',
-            [cite_start]text: '<ul><li><strong>Moderation:</strong> Hilfe bei Interessenbündelung [cite: 322][cite_start].</li><li><strong>Beratung:</strong> Angebote zur baukulturellen Reaktivierung[cite: 337].</li></ul>'
+            text: '<ul><li><strong>Moderation:</strong> Hilfe bei Interessenbündelung.</li><li><strong>Beratung:</strong> Angebote zur baukulturellen Reaktivierung.</li></ul>'
         },
         'anleger': {
             title: 'Strategie für Kapitalanleger',
-            [cite_start]text: '<ul><li><strong>Anreize:</strong> Reduzierung des Risikos durch finanzielle Anreize [cite: 328][cite_start].</li><li><strong>Baugebot:</strong> Als letzte Instanz bei Blockade möglich[cite: 338].</li></ul>'
+            text: '<ul><li><strong>Anreize:</strong> Reduzierung des Risikos durch finanzielle Anreize.</li><li><strong>Baugebot:</strong> Als letzte Instanz bei Blockade möglich.</li></ul>'
         }
     };
     title.innerText = content[type].title;
@@ -813,11 +813,11 @@ window.addEventListener('load', () => {
         document.getElementById('main-body').style.overflow = 'auto';
         updateLocalResources(savedCountry, savedCity);
     }
-});
-        
+});   
     </script>
 </body>
 </html>
+
 
 
 
