@@ -603,24 +603,43 @@
             return null;
         }
 
-       function toggleSidebar() {
-    const sidebar = document.getElementById('info-sidebar');
-    const btn = document.getElementById('sidebar-btn');
-    sidebar.classList.toggle('open');
-    btn.classList.toggle('open');
-    
-    // Falls die Sidebar geschlossen wird, auch den Falteffekt zurücksetzen
-    if (!sidebar.classList.contains('open')) {
-        sidebar.classList.remove('folded');
-        btn.classList.remove('folded');
-        document.getElementById('escalation-fold-btn').innerText = '⚠️ WENN KOOPERATION NICHT REICHT...';
-    }
+        // --- SIDEBAR NAVIGATION ---
+        function toggleSidebar() {
+            const sidebar = document.getElementById('info-sidebar');
+            const btn = document.getElementById('sidebar-btn');
+            sidebar.classList.toggle('open');
+            btn.classList.toggle('open');
+            
+            // Reset: Wenn die Sidebar geschlossen wird, auch den Falteffekt (Eskalation) zurücksetzen
+            if (!sidebar.classList.contains('open')) {
+                sidebar.classList.remove('folded');
+                btn.classList.remove('folded');
+                const foldBtn = document.getElementById('escalation-fold-btn');
+                if(foldBtn) foldBtn.innerText = '⚠️ WENN KOOPERATION NICHT REICHT...';
+            }
+        }
 
-        // --- LOKALE RESSOURCEN LOGIC ---
+        function toggleFold() {
+            const sidebar = document.getElementById('info-sidebar');
+            const toggleBtn = document.getElementById('sidebar-btn');
+            const foldBtn = document.getElementById('escalation-fold-btn');
+
+            sidebar.classList.toggle('folded');
+            toggleBtn.classList.toggle('folded');
+
+            if (sidebar.classList.contains('folded')) {
+                foldBtn.innerText = '⬅️ ZURÜCK ZUR KOOPERATION';
+            } else {
+                foldBtn.innerText = '⚠️ WENN KOOPERATION NICHT REICHT...';
+            }
+        }
+
+        // --- LOKALE RESSOURCEN & KONTAKT LOGIC ---
         function updateLocalResources(country, city) {
             const resDiv = document.getElementById('local-resources');
             let content = `<h3 style="color: #3498db;">📍 Lokale Daten für ${city}</h3>`;
             
+            [cite_start]// Ressourcen-Links aus dem Forschungsbericht [cite: 522, 523, 520, 521]
             if (country === 'DE' && city === 'Simmerath') {
                 resDiv.classList.remove('hidden');
                 content += '<p style="font-size: 0.9rem;">Prüfen Sie Bebauungspläne und offizielle Bodenwerte:</p><ul style="padding-left:20px; color:#555; font-size: 0.9rem;">';
@@ -640,8 +659,31 @@
             if (!resDiv.classList.contains('hidden')) {
                 resDiv.innerHTML = content;
             }
-        }
 
+            // --- KONTAKT LOGIK FÜR SIDEBAR ---
+            const contactDetails = document.getElementById('contact-details');
+            const contactIntro = document.getElementById('contact-intro');
+            const phone = document.getElementById('contact-phone');
+            const email = document.getElementById('contact-email');
+            const link = document.getElementById('contact-link');
+
+            [cite_start]// Daten für Bauämter [cite: 184]
+            const contacts = {
+                "Raeren": { phone: "+32 87 85 89 40", email: "urbanisme@raeren.be", url: "https://www.raeren.be" },
+                "Simmerath": { phone: "+49 2473 607-0", email: "info@simmerath.de", url: "https://www.simmerath.de" }
+            };
+
+            const cityKey = city.includes('Raeren') ? "Raeren" : city;
+
+            if (contacts[cityKey]) {
+                contactIntro.innerText = `Ihre Experten für Innenentwicklung in ${city}:`;
+                phone.innerText = contacts[cityKey].phone;
+                email.innerText = contacts[cityKey].email;
+                email.href = `mailto:${contacts[cityKey].email}`;
+                link.href = contacts[cityKey].url;
+                contactDetails.classList.remove('hidden');
+            }
+        }
 
         // --- LANGUAGE & LOCATION LOGIC ---
         let currentLang = 'de';
@@ -649,14 +691,10 @@
         function changeLanguage(lang) {
             currentLang = lang;
             localStorage.setItem('baukompass_lang', lang);
-            
-            // Visual Update Buttons
             document.querySelectorAll('.lang-btn').forEach(btn => {
-                if(btn.dataset.lang === lang) btn.classList.add('active');
-                else btn.classList.remove('active');
+                btn.classList.toggle('active', btn.dataset.lang === lang);
             });
 
-            // Update Text
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.dataset.i18n;
                 if(translations[lang][key]) {
@@ -682,17 +720,11 @@
             else if (country === 'NL') foundCity = checkRangeNL(plz);
 
             if (foundCity) {
-                const displayText = `in ${foundCity}`;
-                document.getElementById('header-location-display').innerText = displayText;
+                document.getElementById('header-location-display').innerText = `in ${foundCity}`;
                 modal.classList.add('hidden');
-                body.style.overflow = 'auto'; // Re-enable scrolling
-
-                // Save location to localStorage
+                body.style.overflow = 'auto';
                 localStorage.setItem('baukompass_location_city', foundCity);
-                localStorage.setItem('baukompass_location_plz', plz);
                 localStorage.setItem('baukompass_location_country', country);
-                
-                // Update Local Resources dynamically
                 updateLocalResources(country, foundCity);
             } else {
                 errorBox.classList.remove('hidden');
@@ -700,18 +732,43 @@
             }
         }
 
+        // --- TYP-STRATEGIEN (AUFKLAPPBAR) ---
+        function showStrategy(type) {
+            const container = document.getElementById('strategy-content');
+            const title = document.getElementById('strategy-title');
+            const text = document.getElementById('strategy-text');
+            
+            [cite_start]// Inhalte basierend auf Akteursanalyse [cite: 321, 323, 324, 357]
+            const content = {
+                'senioren': {
+                    title: 'Strategie für Senioren & Inaktive',
+                    [cite_start]text: '<ul><li><strong>Immobilienverrentung (Viager):</strong> Erhalt einer lebenslangen Rente bei gleichzeitigem Wohnrecht [cite: 357][cite_start].</li><li><strong>Entlastung:</strong> Die Kommune unterstützt bei administrativen Risiken[cite: 31].</li></ul>'
+                },
+                'erben': {
+                    title: 'Strategie für Erbengemeinschaften',
+                    [cite_start]text: '<ul><li><strong>Moderation:</strong> Unterstützung bei der Interessenbündelung bei einstimmigen Entscheidungen [cite: 322][cite_start].</li><li><strong>Beratung:</strong> Nutzung von Angeboten zur baukulturellen Reaktivierung[cite: 337].</li></ul>'
+                },
+                'anleger': {
+                    title: 'Strategie für Kapitalanleger',
+                    [cite_start]text: '<ul><li><strong>Anreize:</strong> Reduzierung des Risikos durch finanzielle Anreize für Innenentwicklung [cite: 328][cite_start].</li><li><strong>Baugebot:</strong> Als letzte Instanz bei strategischer Blockade möglich[cite: 338].</li></ul>'
+                }
+            };
+
+            title.innerText = content[type].title;
+            text.innerHTML = content[type].text;
+            container.style.display = 'block';
+            container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
         // --- CALCULATION LOGIC ---
         function calculateRenovation() {
             const year = document.getElementById('inp-year').value;
             const type = document.getElementById('inp-type').value;
             const insulation = document.getElementById('inp-insulation').value;
-            
             const resultBox = document.getElementById('simulation-result');
             const bar = document.getElementById('energy-bar');
             const textLabel = document.getElementById('energy-text');
             const valueLabel = document.getElementById('value-text');
-            const resType = document.getElementById('res-type');
-            const resYear = document.getElementById('res-year');
 
             if (!year || year < 1000 || year > 2030) {
                 alert("Bitte geben Sie ein gültiges Baujahr ein.");
@@ -719,95 +776,28 @@
             }
 
             resultBox.style.display = 'block';
-            resType.innerText = type;
-            resYear.innerText = year;
-
+            document.getElementById('res-type').innerText = type;
+            document.getElementById('res-year').innerText = year;
             textLabel.innerText = "Berechne Potenzial...";
-            valueLabel.innerText = "";
-            bar.style.width = "10%";
-            bar.style.background = "#e74c3c"; 
 
             setTimeout(() => {
-                let increase = "";
-                let width = "0%";
-                let color = "";
-                let label = "";
-
-                if (year < 1980 && insulation === 'none') {
-                    width = "95%"; color = "linear-gradient(90deg, #e74c3c, #2ecc71)";
-                    label = (currentLang === 'de') ? "Sprung von H auf A+ möglich" : "Jump H to A+ possible";
-                    increase = (currentLang === 'de') ? "+ 35% Wertsteigerung" : "+ 35% Value Increase";
-                } else if (year < 2000 && insulation !== 'good') {
-                    width = "70%"; color = "linear-gradient(90deg, #f1c40f, #2ecc71)";
-                    label = (currentLang === 'de') ? "Sprung von D auf B möglich" : "Jump D to B possible";
-                    increase = (currentLang === 'de') ? "+ 18% Wertsteigerung" : "+ 18% Value Increase";
-                } else {
-                    width = "40%"; color = "#2ecc71";
-                    label = (currentLang === 'de') ? "Optimierung der Anlagentechnik" : "Tech Optimization";
-                    increase = (currentLang === 'de') ? "+ 5-8% Wertsteigerung" : "+ 5-8% Value Increase";
-                }
-
+                let width = (year < 1980) ? "95%" : (year < 2000) ? "70%" : "40%";
+                let color = (year < 1980) ? "linear-gradient(90deg, #e74c3c, #2ecc71)" : "#2ecc71";
                 bar.style.width = width;
                 bar.style.background = color;
-                textLabel.innerText = label;
-                valueLabel.innerText = (currentLang === 'de' ? "Mögliche " : "Possible ") + increase;
+                textLabel.innerText = (year < 1980) ? "Sprung von H auf A+ möglich" : "Optimierung möglich";
+                valueLabel.innerText = (currentLang === 'de' ? "Mögliche Wertsteigerung: +15-35%" : "Possible increase: +15-35%");
             }, 800);
         }
 
-function toggleFold() {
-    const sidebar = document.getElementById('info-sidebar');
-    const toggleBtn = document.getElementById('sidebar-btn');
-    const foldBtn = document.getElementById('escalation-fold-btn');
-
-    sidebar.classList.toggle('folded');
-    toggleBtn.classList.toggle('folded');
-
-    if (sidebar.classList.contains('folded')) {
-        foldBtn.innerText = '⬅️ ZURÜCK ZUR KOOPERATION';
-    } else {
-        foldBtn.innerText = '⚠️ WENN KOOPERATION NICHT REICHT...';
-    }
-}
-        
-        function showStrategy(type) {
-    const container = document.getElementById('strategy-content');
-    const title = document.getElementById('strategy-title');
-    const text = document.getElementById('strategy-text');
-    
-    const content = {
-        'senioren': {
-            title: 'Strategie für Senioren & Inaktive',
-            text: '<ul><li><strong>Immobilienverrentung (Viager):</strong> Erhalt einer lebenslangen Rente bei gleichzeitigem Wohnrecht oder Umzug in barrierefreien Ersatzwohnraum .</li><li><strong>Entlastung:</strong> Die Kommune unterstützt bei administrativen Risiken, um den schleichenden Leerstand durch mangelnde Kapazitäten zu verhindern.</li></ul>'
-        },
-        'erben': {
-            title: 'Strategie für Erbengemeinschaften',
-            text: '<ul><li><strong>Moderation:</strong> Da Entscheidungen oft einstimmig fallen müssen, bietet die Kommune Unterstützung bei der Interessenbündelung an .</li><li><strong>Aktivierung:</strong> Nutzung von Beratungsangeboten zur baukulturellen Reaktivierung leerstehender Familienobjekte.</li></ul>'
-        },
-        'anleger': {
-            title: 'Strategie für Kapitalanleger',
-            text: '<ul><li><strong>Rendite durch Förderung:</strong> Reduzierung des Spekulationsrisikos durch gezielte finanzielle Anreize für die Innenentwicklung [cite: 323, 328].</li><li><strong>Baugebot:</strong> Als letzte Stufe kann die Kommune bei strategischer Blockade Baugebote oder finanzielle Steuerung (Grundsteuer C) einsetzen.</li></ul>'
-        }
-    };
-
-    title.innerText = content[type].title;
-    text.innerHTML = content[type].text;
-    container.style.display = 'block';
-    
-    // Scrollt sanft zum Inhalt
-    container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-        
+        // --- COMMENT LOGIC ---
         function addComment(id) {
             const input = document.getElementById('input-' + id);
             const list = document.getElementById('comments-' + id);
-            const text = input.value;
-
-            if (text.trim() === "") return;
-
+            if (input.value.trim() === "") return;
             const newLi = document.createElement('li');
             newLi.className = 'comment-bubble';
-            newLi.innerHTML = '<span class="comment-author">Gast (Gerade eben)</span>' + text;
-            
+            newLi.innerHTML = '<span class="comment-author">Gast (Gerade eben)</span>' + input.value;
             list.appendChild(newLi);
             input.value = "";
             alert("Danke! Ihr Kommentar wurde veröffentlicht.");
@@ -817,8 +807,6 @@ function toggleFold() {
         window.addEventListener('load', () => {
             const savedLang = localStorage.getItem('baukompass_lang') || 'de';
             changeLanguage(savedLang);
-
-            // Check for saved location
             const savedCity = localStorage.getItem('baukompass_location_city');
             const savedCountry = localStorage.getItem('baukompass_location_country');
             if (savedCity) {
@@ -828,10 +816,11 @@ function toggleFold() {
                 updateLocalResources(savedCountry, savedCity);
             }
         });
-
+        
     </script>
 </body>
 </html>
+
 
 
 
