@@ -30,22 +30,44 @@
         #location-modal { transition: opacity 0.3s ease-in-out; }
         #location-modal.hidden { opacity: 0; pointer-events: none; }
 
-       /* Angepasster Language-Button (passend zur Eigentümer-Seite) */
-.lang-btn {
-    background: none; border: none; 
-    font-size: 1.5rem; /* Schriftgröße an andere Seiten angepasst */
-    font-weight: 800;
-    cursor: pointer;
-    opacity: 0.5; 
-    transition: all 0.2s ease-in-out; 
-    padding: 0 4px;
-    color: #1e293b;
+nav { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 20px 40px; 
+    background: white; 
+    border-bottom: 1px solid #e0e0e0; 
 }
-.lang-btn:hover { opacity: 1; transform: scale(1.1); }
-.lang-btn.active { 
+
+/* Flex-Basis sorgt dafür, dass das Logo immer exakt in der Mitte bleibt */
+.nav-links { flex: 1; } 
+.lang-switch { display: flex; gap: 10px; flex: 1; justify-content: flex-end; }
+
+.logo { 
+    font-weight: 900; 
+    font-size: 1.5rem; 
+    letter-spacing: 2px; 
+    text-transform: uppercase; 
+    text-decoration: none; 
+    color: black; 
+    text-align: center;
+}
+
+.lang-btn { 
+    background: none; 
+    border: none; 
+    font-size: 1.5rem; 
+    cursor: pointer; 
+    opacity: 0.5; 
+    transition: opacity 0.2s, transform 0.2s; 
+    padding: 0; 
+    color: #222; /* Einheitliche Textfarbe */
+    font-weight: normal;
+}
+
+.lang-btn:hover, .lang-btn.active { 
     opacity: 1; 
     transform: scale(1.1); 
-    color: #f97316; /* Baukompass Orange */
 }
 
         /* Custom Scrollbar */
@@ -92,31 +114,17 @@
         </div>
     </div>
 
-    <nav class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3 cursor-pointer group" onclick="window.location.href='index.html'">
-                <div class="flex flex-col leading-tight">
-                    <span class="font-extrabold text-xl text-slate-900 tracking-wider uppercase group-hover:text-orange-600 transition-colors" data-i18n="nav_title">BAUKOMPASS</span>
-                    <span id="header-location" class="text-[10px] text-slate-500 font-semibold uppercase tracking-widest" data-i18n="nav_subtitle">Region wählen...</span>
-                </div>
-            </div>
-            
-            <div class="flex items-center gap-6">
-                <div class="hidden md:block text-xs font-bold bg-emerald-100 text-emerald-800 px-4 py-1.5 rounded-full uppercase tracking-wide" data-i18n="nav_phase">
-                    Phase: Bürger-Dialog
-                </div>
-                <div class="flex gap-1 border-l border-slate-200 pl-6">
-                    <button onclick="changeLanguage('de')" class="lang-btn active" data-lang="de">DE</button>
-                    <button onclick="changeLanguage('en')" class="lang-btn" data-lang="en">EN</button>
-                    <button onclick="changeLanguage('fr')" class="lang-btn" data-lang="fr">FR</button>
-                </div>
-                <button onclick="resetLocation()" class="text-xs text-slate-300 hover:text-red-500 transition-colors" title="Standort zurücksetzen">✕</button>
-            </div>
-        </div>
-        <div class="h-[2px] w-full bg-slate-100 relative">
-            <div class="absolute left-0 top-0 h-full w-32 bg-orange-500 ml-6 md:ml-[max(0px,calc(50vw-36rem))]"></div>
-        </div>
-    </nav>
+    <nav>
+    <div class="nav-links">
+        <a href="index.html" data-i18n="nav_back">&larr; ZURÜCK</a>
+    </div>
+    <a href="index.html" class="logo">BAUKOMPASS</a>
+    <div class="lang-switch">
+        <button onclick="changeLanguage('de')" class="lang-btn active" data-lang="de">DE</button>
+        <button onclick="changeLanguage('en')" class="lang-btn" data-lang="en">EN</button>
+        <button onclick="changeLanguage('fr')" class="lang-btn" data-lang="fr">FR</button>
+    </div>
+</nav>
 
     <main class="flex-grow max-w-5xl mx-auto px-4 py-10 w-full space-y-16">
         
@@ -425,4 +433,5 @@
     </script>
 </body>
 </html>
+
 
