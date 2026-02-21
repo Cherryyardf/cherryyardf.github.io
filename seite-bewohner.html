@@ -46,6 +46,19 @@
     padding: 0 8px;
     color: #1e293b; /* Passend zum Slate-Blau des Designs */
 }
+/* Ersetze den alten .lang-btn Block durch diesen hier */
+.lang-btn {
+    background: none; 
+    border: none; 
+    font-size: 0.75rem; /* Textgröße für DE/EN/FR */
+    font-weight: 800;
+    cursor: pointer;
+    opacity: 0.4; 
+    transition: all 0.2s; 
+    padding: 0 6px;
+    color: #1e293b; /* Dunkelblau aus dem Design */
+}
+.lang-btn:hover { opacity: 1; }
 .lang-btn.active { 
     opacity: 1; 
     color: #f97316; /* Baukompass Orange für die aktive Sprache */
@@ -478,5 +491,6 @@
     </script>
 </body>
 </html>
+
 
 
