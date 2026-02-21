@@ -459,86 +459,91 @@
 
     <button class="sidebar-toggle" id="sidebar-btn" onclick="toggleSidebar()" data-i18n="sidebar_toggle">WARUM KOOPERATION?</button>
 
- <div class="info-sidebar" id="info-sidebar">
+<div class="info-sidebar" id="info-sidebar">
     <div class="sidebar-panel">
         <button onclick="toggleSidebar()" style="float:right; border:none; background:none; font-size:2rem; cursor:pointer;">&times;</button>
-        <h2 style="color:var(--accent-color);">Stufe 0: Kooperation</h2>
-        <p><strong>Fokus: Aktivierende Ansprache.</strong> Bevor hoheitliche Maßnahmen greifen, unterstützt die Kommune durch Beratung und Anreize.</p>
+        <h2 style="color:var(--accent-color); border-bottom: 2px solid var(--highlight-color); padding-bottom: 10px;">Stufe 0: Kooperation</h2>
+        <p style="font-size: 0.95rem; line-height: 1.4;"><strong>Priorität der Freiwilligkeit:</strong> Bevor hoheitliche Maßnahmen greifen, setzt die Kommune auf aktivierende Beratung und Entlastung von administrativen Risiken[cite: 561, 562, 857].</p>
         
-        <div style="background:#f0f7ff; padding:15px; border-radius:5px; margin-bottom:15px; font-size:0.85rem;">
-            <strong>Vorteile der Innenentwicklung:</strong>
-            <ul style="padding-left:20px; margin-top:5px;">
-                <li><strong>DE:</strong> Beschleunigte Verfahren nach § 13a BauGB (Innenentwicklung ohne langwierige Umweltprüfung).</li>
-                <li><strong>BE:</strong> Reduzierter MwSt-Satz von 6% (statt 21%) für Renovierung von Gebäuden > 10 Jahre.</li>
+        <div style="background:#f0f7ff; padding:15px; border-radius:8px; margin: 15px 0; border: 1px solid #d1e3f8;">
+            <strong style="display:block; margin-bottom:5px; color:#2980b9;">💡 Beschleunigungs-Vorteile:</strong>
+            <ul style="font-size:0.85rem; padding-left:18px; margin:0; color: #34495e;">
+                <li style="margin-bottom:8px;"><strong>DE:</strong> Verfahren nach § 13a BauGB ermöglichen Innenentwicklung ohne langwierige Umweltprüfungen[cite: 820, 947].</li>
+                <li><strong>BE:</strong> Reduzierter MwSt-Satz von 6% (statt 21%) für Renovierungsprojekte bei Gebäuden älter als 10 Jahre.</li>
             </ul>
         </div>
         
-        <div id="contact-section">
-            <p id="contact-intro" style="font-weight:bold;">Ansprechpartner vor Ort:</p>
-            <div id="contact-details" class="hidden">
-                <p style="font-size:0.85rem;">📞 <span id="contact-phone"></span><br>
-                📧 <a id="contact-email" href="#"></a></p>
-                <a id="contact-link" href="#" target="_blank" class="btn-submit" style="display:block; text-align:center; text-decoration:none;">Gemeinde-Portal</a>
+        <div id="contact-section" style="margin-top: 20px;">
+            <p id="contact-intro" style="font-weight:bold; color: var(--accent-color);">Ihr direkter Kontakt vor Ort:</p>
+            <div id="contact-details" class="hidden" style="background:#fff; border:1px solid #eee; padding:12px; border-radius:8px;">
+                <p style="font-size:0.9rem; margin:0 0 10px 0;">📞 <span id="contact-phone" style="font-family: monospace;"></span><br>
+                📧 <a id="contact-email" href="#" style="color:var(--highlight-color);"></a></p>
+                <a id="contact-link" href="#" target="_blank" class="btn-submit" style="display:block; text-align:center; text-decoration:none; background: var(--accent-color); padding: 8px;">Zum Gemeinde-Portal</a>
             </div>
         </div>
-        <button class="btn-submit" onclick="changeFold(1)" style="background:var(--alert-color); width:100%; margin-top:20px;">⚠️ STUFE 1: FINANZIELLE HEBEL</button>
+        <button class="btn-submit" onclick="changeFold(1)" style="background:var(--alert-color); width:100%; margin-top:25px; padding: 15px; font-size: 0.9rem;">⚠️ STUFE 1: FINANZIELLE HEBEL</button>
     </div>
 
     <div class="sidebar-panel" style="background:#fffcf5;">
-        <h2 style="color:#e67e22;">Stufe 1: Finanzen</h2>
-        <p>Erhöhung der Haltekosten bei gleichzeitiger Förderung der Reaktivierung.</p>
+        <h2 style="color:#e67e22; border-bottom: 2px solid #f39c12; padding-bottom: 10px;">Stufe 1: Finanzen</h2>
+        <p style="font-size: 0.9rem;">Erhöhung der wirtschaftlichen Haltekosten für ungenutzte Flächen zur Mobilisierung[cite: 899].</p>
         
-        <div style="display:grid; gap:10px; font-size:0.85rem;">
-            <div style="background:white; padding:10px; border-left:4px solid #e67e22;">
-                <strong>Deutschland (DE):</strong><br>
-                <strong>Grundsteuer C:</strong> Höhere Besteuerung für baureife Grundstücke.<br>
-                <strong>Sanierungs-AfA:</strong> Steuerliche Absetzbarkeit von 100% der Kosten über 12 Jahre (§ 7h/7i EStG).
+        <div style="display:grid; gap:15px; margin-top:15px;">
+            <div style="background:white; padding:12px; border-left:5px solid #e67e22; border-radius:4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <strong style="color:#d35400;">Deutschland (DE)</strong>
+                <p style="font-size:0.85rem; margin:5px 0;"><strong>Grundsteuer C:</strong> Gezielte Besteuerung baureifer Grundstücke gegen Bodenspekulation[cite: 823, 869, 1007].</p>
+                <p style="font-size:0.85rem; margin:0;"><strong>Sanierungs-AfA:</strong> Steuerliche Absetzbarkeit von 100% der Kosten über 12 Jahre (§ 7h/7i EStG).</p>
             </div>
-            <div style="background:white; padding:10px; border-left:4px solid #3498db;">
-                <strong>Belgien (BE):</strong><br>
-                <strong>Leerstandsabgabe:</strong> Jährliche Steuer auf ungenutzten Wohnraum.<br>
-                <strong>Regionalförderung:</strong> Direkte Zuschüsse der Wallonischen Region für die Altbausanierung.
+            <div style="background:white; padding:12px; border-left:5px solid #3498db; border-radius:4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <strong style="color:#2980b9;">Belgien (BE)</strong>
+                <p style="font-size:0.85rem; margin:5px 0;"><strong>Leerstandsabgabe:</strong> Jährliche Steuer auf ungenutzten Wohnraum zur Vermeidung von Verwahrlosung[cite: 899].</p>
+                <p style="font-size:0.85rem; margin:0;"><strong>Planungswertabgabe:</strong> Teilweise Abführung von Gewinnen bei Planänderungen (Art. D.VI.48 CoDT)[cite: 757, 758].</p>
             </div>
         </div>
-        <button class="btn-submit" onclick="changeFold(2)" style="background:#c0392b; width:100%; margin-top:20px;">⚖️ STUFE 2: ORDNUNGSRECHT</button>
-        <button onclick="changeFold(0)" style="border:none; background:none; color:#666; cursor:pointer; margin-top:10px;">&larr; Zurück zur Beratung</button>
+        <button class="btn-submit" onclick="changeFold(2)" style="background:#c0392b; width:100%; margin-top:25px; padding: 15px;">⚖️ STUFE 2: ORDNUNGSRECHT</button>
+        <button onclick="changeFold(0)" style="border:none; background:none; color:#7f8c8d; cursor:pointer; margin-top:15px; font-size: 0.85rem; width: 100%;">&larr; Zurück zur Beratung</button>
     </div>
 
     <div class="sidebar-panel" style="background:#fff5f5;">
-        <h2 style="color:#c0392b;">Stufe 2: Ordnungsrecht</h2>
-        <p>Gesetzliche Verpflichtungen zur Sicherung des Gemeinwohls.</p>
+        <h2 style="color:#c0392b; border-bottom: 2px solid #e74c3c; padding-bottom: 10px;">Stufe 2: Ordnungsrecht</h2>
+        <p style="font-size: 0.9rem;">Sicherung städtebaulicher Ziele durch gesetzliche Verpflichtungen[cite: 624, 845].</p>
         
-        <div style="display:grid; gap:10px; font-size:0.85rem;">
-            <div style="background:white; padding:10px; border-left:4px solid #c0392b;">
-                <strong>Deutschland (DE):</strong><br>
-                <strong>Baugebot (§ 176 BauGB):</strong> Anordnung, ein Grundstück im Rahmen der Bebauungspläne zu nutzen.<br>
-                <strong>Modernisierungsgebot:</strong> Verpflichtung zur Beseitigung von Missständen.
+        <div style="display:grid; gap:15px; margin-top:15px;">
+            <div style="background:white; padding:12px; border-left:5px solid #c0392b; border-radius:4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <strong style="color:#a93226;">Deutschland (DE)</strong>
+                <p style="font-size:0.85rem; margin:5px 0;"><strong>Baugebot (§ 176 BauGB):</strong> Fristsetzung zur Bebauung im Rahmen der Pläne[cite: 624, 869, 900].</p>
+                <p style="font-size:0.85rem; margin:0;"><strong>Modernisierungsgebot:</strong> Verpflichtung zur Beseitigung städtebaulicher Missstände.</p>
             </div>
-            <div style="background:white; padding:10px; border-left:4px solid #3498db;">
-                <strong>Belgien (BE):</strong><br>
-                <strong>Injonction urbanistique:</strong> Behördliche Aufforderung zur Behebung von Verwahrlosung.<br>
-                <strong>Vorkaufsrecht (Droit de préemption):</strong> Vorrang der Gemeinde beim Verkauf strategischer Flächen.
+            <div style="background:white; padding:12px; border-left:5px solid #3498db; border-radius:4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <strong style="color:#2980b9;">Belgien (BE)</strong>
+                <p style="font-size:0.85rem; margin:5px 0;"><strong>Injonction urbanistique:</strong> Behördliche Anordnungen zur Behebung von Mängeln am Erscheinungsbild[cite: 900].</p>
+                <p style="font-size:0.85rem; margin:0;"><strong>Vorkaufsrecht:</strong> Vorrang der Gemeinde bei Verkäufen in strategischen Zonen (Droit de préemption)[cite: 1006].</p>
             </div>
         </div>
-        <button class="btn-submit" onclick="changeFold(3)" style="background:#000; width:100%; margin-top:20px;">🚫 STUFE 3: HOHEITLICHER ZUGRIFF</button>
-        <button onclick="changeFold(1)" style="border:none; background:none; color:#666; cursor:pointer; margin-top:10px;">&larr; Zurück</button>
+        <button class="btn-submit" onclick="changeFold(3)" style="background:#222; width:100%; margin-top:25px; padding: 15px;">🚫 STUFE 3: HOHEITLICHER ZUGRIFF</button>
+        <button onclick="changeFold(1)" style="border:none; background:none; color:#7f8c8d; cursor:pointer; margin-top:15px; font-size: 0.85rem; width: 100%;">&larr; Zurück</button>
     </div>
 
-    <div class="sidebar-panel" style="background:#f2f2f2;">
-        <h2 style="color:#000;">Stufe 3: Ultima Ratio</h2>
-        <p>Stärkste Eingriffe bei dauerhafter Blockade der Ortsentwicklung.</p>
+    <div class="sidebar-panel" style="background:#f8f9fa;">
+        <h2 style="color:#222; border-bottom: 2px solid #333; padding-bottom: 10px;">Stufe 3: Ultima Ratio</h2>
+        <p style="font-size: 0.9rem;">Finaler Zugriff zur Sicherung des Gemeinwohls bei strategischer Blockade[cite: 902].</p>
         
-        <div style="display:grid; gap:10px; font-size:0.85rem;">
-            <div style="background:white; padding:10px; border-left:4px solid #000;">
-                <strong>Belgien (BE):</strong><br>
-                <strong>Droit de Gestion Publique:</strong> Die Gemeinde übernimmt die Verwaltung des Objekts, saniert es und vermietet es, um den Leerstand zu beenden.
+        <div style="display:grid; gap:15px; margin-top:15px;">
+            <div style="background:white; padding:12px; border:1px solid #333; border-left:5px solid #222; border-radius:4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <strong style="color:#000;">Belgien (BE)</strong>
+                <p style="font-size:0.85rem; margin:5px 0;"><strong>Droit de Gestion Publique:</strong> Zeitweise Übernahme der Verwaltung durch die Gemeinde zur sozialen Reaktivierung von Wohnraum[cite: 901].</p>
             </div>
-            <div style="background:white; padding:10px; border-left:4px solid #e74c3c;">
-                <strong>Grenzübergreifend:</strong><br>
-                <strong>Enteignung / Expropriation:</strong> Finales Mittel zur Baulandmobilisierung, wenn alle anderen Stufen gescheitert sind.
+            <div style="background:white; padding:12px; border:1px solid #eee; border-left:5px solid #e74c3c; border-radius:4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <strong style="color:#c0392b;">Grenzüberschreitend</strong>
+                <p style="font-size:0.85rem; margin:5px 0;"><strong>Enteignung (Expropriation):</strong> Das letzte Mittel zur Baulandmobilisierung, wenn alle anderen Stufen gescheitert sind[cite: 902].</p>
             </div>
         </div>
-        <button onclick="changeFold(2)" style="border:none; background:none; color:#666; cursor:pointer; margin-top:20px;">&larr; Zurück</button>
+        
+        <div style="margin-top:25px; padding:10px; border-top: 1px dashed #ccc; font-size:0.75rem; color:#7f8c8d; font-style:italic;">
+            Hinweis: Diese Stufen werden erst nach intensiver rechtlicher Prüfung und dem Scheitern kooperativer Angebote beschritten[cite: 903, 980].
+        </div>
+        
+        <button onclick="changeFold(2)" style="border:none; background:none; color:#7f8c8d; cursor:pointer; margin-top:20px; font-size: 0.85rem; width: 100%;">&larr; Zurück</button>
     </div>
 </div>
 </div>
@@ -803,6 +808,7 @@
     </script>
 </body>
 </html>
+
 
 
 
