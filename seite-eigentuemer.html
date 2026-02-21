@@ -459,44 +459,45 @@
 
     <button class="sidebar-toggle" id="sidebar-btn" onclick="toggleSidebar()" data-i18n="sidebar_toggle">WARUM KOOPERATION?</button>
 
-  <div class="info-sidebar" id="info-sidebar">
+ <div class="info-sidebar" id="info-sidebar">
     <div class="sidebar-panel">
         <button onclick="toggleSidebar()" style="float:right; border:none; background:none; font-size:2rem; cursor:pointer;">&times;</button>
         <h2 style="color:var(--accent-color);">Stufe 0: Kooperation</h2>
-        <p><strong>Priorität der Freiwilligkeit:</strong> Der Fokus liegt auf der aktivierenden Eigentümeransprache durch Beratung und Unterstützung.</p>
+        <p><strong>Fokus: Aktivierende Ansprache.</strong> Bevor hoheitliche Maßnahmen greifen, unterstützt die Kommune durch Beratung und Anreize.</p>
         
-        <div style="background:#f0f7ff; padding:15px; border-radius:5px; margin-bottom:15px;">
-            <strong>Angebote:</strong>
-            <ul style="font-size:0.85rem; padding-left:20px;">
-                <li>Kostenlose Erstberatung zur Innenentwicklung.</li>
-                <li>Vermittlung von Architekten & Planern.</li>
-                <li>Unterstützung bei Erbengemeinschaften.</li>
+        <div style="background:#f0f7ff; padding:15px; border-radius:5px; margin-bottom:15px; font-size:0.85rem;">
+            <strong>Vorteile der Innenentwicklung:</strong>
+            <ul style="padding-left:20px; margin-top:5px;">
+                <li><strong>DE:</strong> Beschleunigte Verfahren nach § 13a BauGB (Innenentwicklung ohne langwierige Umweltprüfung).</li>
+                <li><strong>BE:</strong> Reduzierter MwSt-Satz von 6% (statt 21%) für Renovierung von Gebäuden > 10 Jahre.</li>
             </ul>
         </div>
         
         <div id="contact-section">
-            <p id="contact-intro" style="font-weight:bold;">Wählen Sie einen Standort aus.</p>
+            <p id="contact-intro" style="font-weight:bold;">Ansprechpartner vor Ort:</p>
             <div id="contact-details" class="hidden">
                 <p style="font-size:0.85rem;">📞 <span id="contact-phone"></span><br>
                 📧 <a id="contact-email" href="#"></a></p>
                 <a id="contact-link" href="#" target="_blank" class="btn-submit" style="display:block; text-align:center; text-decoration:none;">Gemeinde-Portal</a>
             </div>
         </div>
-        <button class="btn-submit" onclick="changeFold(1)" style="background:var(--alert-color); width:100%; margin-top:20px;">⚠️ STUFE 1: FINANZIELLE ANREIZE</button>
+        <button class="btn-submit" onclick="changeFold(1)" style="background:var(--alert-color); width:100%; margin-top:20px;">⚠️ STUFE 1: FINANZIELLE HEBEL</button>
     </div>
 
     <div class="sidebar-panel" style="background:#fffcf5;">
         <h2 style="color:#e67e22;">Stufe 1: Finanzen</h2>
-        <p>Erhöhung der Haltekosten für ungenutzte Flächen, um die Verkaufs- oder Baubereitschaft zu fördern.</p>
+        <p>Erhöhung der Haltekosten bei gleichzeitiger Förderung der Reaktivierung.</p>
         
         <div style="display:grid; gap:10px; font-size:0.85rem;">
             <div style="background:white; padding:10px; border-left:4px solid #e67e22;">
                 <strong>Deutschland (DE):</strong><br>
-                Einführung der <strong>Grundsteuer C</strong> für baureife Grundstücke zur Bekämpfung von Spekulation.
+                <strong>Grundsteuer C:</strong> Höhere Besteuerung für baureife Grundstücke.<br>
+                <strong>Sanierungs-AfA:</strong> Steuerliche Absetzbarkeit von 100% der Kosten über 12 Jahre (§ 7h/7i EStG).
             </div>
             <div style="background:white; padding:10px; border-left:4px solid #3498db;">
                 <strong>Belgien (BE):</strong><br>
-                Zentrale Erhebung von Leerstandsabgaben und Steuern auf ungenutzte Gewerbeflächen.
+                <strong>Leerstandsabgabe:</strong> Jährliche Steuer auf ungenutzten Wohnraum.<br>
+                <strong>Regionalförderung:</strong> Direkte Zuschüsse der Wallonischen Region für die Altbausanierung.
             </div>
         </div>
         <button class="btn-submit" onclick="changeFold(2)" style="background:#c0392b; width:100%; margin-top:20px;">⚖️ STUFE 2: ORDNUNGSRECHT</button>
@@ -505,16 +506,18 @@
 
     <div class="sidebar-panel" style="background:#fff5f5;">
         <h2 style="color:#c0392b;">Stufe 2: Ordnungsrecht</h2>
-        <p>Sicherung der städtebaulichen Ziele durch gesetzliche Verpflichtungen.</p>
+        <p>Gesetzliche Verpflichtungen zur Sicherung des Gemeinwohls.</p>
         
         <div style="display:grid; gap:10px; font-size:0.85rem;">
             <div style="background:white; padding:10px; border-left:4px solid #c0392b;">
                 <strong>Deutschland (DE):</strong><br>
-                <strong>Baugebot (§ 176 BauGB):</strong> Verpflichtung, das Grundstück innerhalb einer Frist zu bebauen.
+                <strong>Baugebot (§ 176 BauGB):</strong> Anordnung, ein Grundstück im Rahmen der Bebauungspläne zu nutzen.<br>
+                <strong>Modernisierungsgebot:</strong> Verpflichtung zur Beseitigung von Missständen.
             </div>
             <div style="background:white; padding:10px; border-left:4px solid #3498db;">
                 <strong>Belgien (BE):</strong><br>
-                Nutzung von <strong>Injonctions urbanistiques</strong> (städtebauliche Anordnungen) bei Verwahrlosung oder Nichtnutzung.
+                <strong>Injonction urbanistique:</strong> Behördliche Aufforderung zur Behebung von Verwahrlosung.<br>
+                <strong>Vorkaufsrecht (Droit de préemption):</strong> Vorrang der Gemeinde beim Verkauf strategischer Flächen.
             </div>
         </div>
         <button class="btn-submit" onclick="changeFold(3)" style="background:#000; width:100%; margin-top:20px;">🚫 STUFE 3: HOHEITLICHER ZUGRIFF</button>
@@ -523,16 +526,16 @@
 
     <div class="sidebar-panel" style="background:#f2f2f2;">
         <h2 style="color:#000;">Stufe 3: Ultima Ratio</h2>
-        <p>Eingriffe in das Eigentum als letztes Mittel bei strategischer Blockade von Gemeinwohlzielen.</p>
+        <p>Stärkste Eingriffe bei dauerhafter Blockade der Ortsentwicklung.</p>
         
         <div style="display:grid; gap:10px; font-size:0.85rem;">
             <div style="background:white; padding:10px; border-left:4px solid #000;">
                 <strong>Belgien (BE):</strong><br>
-                <strong>Droit de Gestion Publique:</strong> Die Gemeinde übernimmt befristet die Verwaltung, um Wohnraum zu reaktivieren.
+                <strong>Droit de Gestion Publique:</strong> Die Gemeinde übernimmt die Verwaltung des Objekts, saniert es und vermietet es, um den Leerstand zu beenden.
             </div>
             <div style="background:white; padding:10px; border-left:4px solid #e74c3c;">
                 <strong>Grenzübergreifend:</strong><br>
-                <strong>Enteignung / Expropriation:</strong> Nur bei dringendem öffentlichem Bedarf (z.B. soziale Infrastruktur).
+                <strong>Enteignung / Expropriation:</strong> Finales Mittel zur Baulandmobilisierung, wenn alle anderen Stufen gescheitert sind.
             </div>
         </div>
         <button onclick="changeFold(2)" style="border:none; background:none; color:#666; cursor:pointer; margin-top:20px;">&larr; Zurück</button>
@@ -800,6 +803,7 @@
     </script>
 </body>
 </html>
+
 
 
 
