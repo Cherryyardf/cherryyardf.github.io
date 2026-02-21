@@ -83,73 +83,44 @@
         .modal-content { background: white; border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); max-width: 28rem; width: 100%; padding: 2rem; border-top: 4px solid var(--alert-color); position: relative; }
         .hidden { display: none !important; }
 
-       /* --- INFO-SIDEBAR DOPPEL-PANEL --- */
+       /* --- VIERFACH-LEPORELLO SIDEBAR --- */
 .info-sidebar {
     position: fixed;
     top: 0;
-    right: -850px; /* Ganz aus dem Bild schieben */
-    width: 400px;  /* Startbreite */
+    right: -1650px; /* Parkposition weit außerhalb */
+    width: 400px;
     height: 100vh;
     background: #fff;
     box-shadow: -5px 0 15px rgba(0,0,0,0.1);
-    transition: right 0.3s ease-in-out, width 0.3s ease-in-out; 
+    transition: right 0.4s ease-in-out, width 0.4s ease-in-out;
     z-index: 1000;
-    display: flex; /* Panels nebeneinander */
-    overflow: hidden; 
+    display: flex;
+    overflow: hidden;
     border-left: 5px solid var(--accent-color);
 }
 
-/* Wenn die Sidebar mit dem Info-Button geöffnet wird */
-.info-sidebar.open {
-    right: 0 !important;
-}
+/* Zustände für die Faltung */
+.info-sidebar.open { right: 0 !important; width: 400px; }
+.info-sidebar.step-1 { width: 800px; }
+.info-sidebar.step-2 { width: 1200px; }
+.info-sidebar.step-3 { width: 1600px; }
 
-/* Wenn das zweite Blatt (Eskalation) ausgeklappt wird */
-.info-sidebar.folded {
-    width: 800px !important;
-}
-
-/* Die Panele (Blätter) des Faltblatts */
 .sidebar-panel {
     width: 400px;
     height: 100vh;
-    padding: 40px;
+    padding: 35px;
     box-sizing: border-box;
     overflow-y: auto;
     flex-shrink: 0;
+    border-right: 1px solid #eee;
 }
 
-.sidebar-toggle {
-    position: fixed;
-    top: 50%;
-    right: 0; /* Bleibt am rechten Rand haften */
-    transform: translateY(-50%);
-    background: var(--accent-color);
-    color: #fff;
-    border: none;
-    padding: 25px 15px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    z-index: 2000; /* Höher als die Sidebar (1000) setzen! */
-    border-radius: 8px 0 0 8px;
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    transition: all 0.3s ease-in-out;
-    font-weight: bold;
-    box-shadow: -4px 0px 15px rgba(0,0,0,0.2);
-}
-
-/* Wenn die Sidebar aufgeklappt wird (400px) */
-.sidebar-toggle.open {
-    right: 400px;
-}
-
-/* Wenn das Faltblatt voll entfaltet wird (800px) */
-.sidebar-toggle.folded {
-    right: 800px;
-}
-/* Der Button muss bei 800px stehen bleiben */
-.sidebar-toggle.folded { right: 800px; }
+/* Button-Positionen */
+.sidebar-toggle { z-index: 2000; transition: right 0.4s; }
+.sidebar-toggle.open { right: 400px; }
+.sidebar-toggle.step-1 { right: 800px; }
+.sidebar-toggle.step-2 { right: 1200px; }
+.sidebar-toggle.step-3 { right: 1600px; }
 
         /* Mobile */
         @media (max-width: 768px) {
@@ -466,54 +437,45 @@
 
     </div>
 
-    <button class="sidebar-toggle" id="sidebar-btn" onclick="toggleSidebar()" data-i18n="sidebar_toggle">ℹ️ WARUM KOOPERATION?</button>
+    <button class="sidebar-toggle" id="sidebar-btn" onclick="toggleSidebar()" data-i18n="sidebar_toggle">WARUM KOOPERATION?</button>
 
-    <div class="info-sidebar" id="info-sidebar">
+  <div class="info-sidebar" id="info-sidebar">
     <div class="sidebar-panel">
-        <button onclick="toggleSidebar()" style="float: right; border: none; background: none; font-size: 2rem; cursor: pointer;">&times;</button>
-        <h2 style="color: var(--accent-color); margin-top: 0;" data-i18n="sidebar_title">Gemeinsam für unsere Region</h2>
-        
-        <ul>
-            <li data-i18n="sidebar_li_1"><strong>Natur schützen:</strong> Innenentwicklung schont Grünflächen[cite: 89, 191].</li>
-            <li data-i18n="sidebar_li_2"><strong>Kosten sparen:</strong> Bestand nutzen ist effizienter[cite: 102, 105].</li>
-            <li data-i18n="sidebar_li_3"><strong>Fördern vor Fordern:</strong> Kooperation hat Vorrang[cite: 31, 376].</li>
-        </ul>
-
-        <div id="contact-section" style="background: #f9f9f9; padding: 20px; border-radius: 8px; border-left: 4px solid var(--highlight-color);">
-            <h4 data-i18n="contact_title">Ihr direkter Draht:</h4>
-            <p id="contact-intro" style="font-size: 0.9rem;">Wählen Sie einen Standort für Ihren Ansprechpartner[cite: 184].</p>
-            <div id="contact-details" class="hidden">
-                <p><strong>📞:</strong> <span id="contact-phone"></span></p>
-                <p><strong>📧:</strong> <a id="contact-email" href="#"></a></p>
-                <a id="contact-link" href="#" target="_blank" style="display:block; background:var(--accent-color); color:white; text-align:center; padding:10px; text-decoration:none; margin-top:10px;">Zur Gemeinde-Webseite</a>
-            </div>
-        </div>
-
-        <button id="escalation-fold-btn" onclick="toggleFold()" style="width: 100%; background: var(--alert-color); color: white; border: none; padding: 15px; margin-top: 20px; cursor: pointer; font-weight: bold;">
-            ⚠️ WENN KOOPERATION NICHT REICHT...
-        </button>
+        <button onclick="toggleSidebar()" style="float:right; border:none; background:none; font-size:2rem;">&times;</button>
+        <h2 style="color:var(--accent-color);">Gemeinsam für unsere Region</h2>
+        <p><strong>Kooperation vor Konfrontation:</strong> Wir setzen auf Beratung und Unterstützung[cite: 31, 376].</p>
+        <div id="contact-section"> </div>
+        <button class="btn-submit" onclick="changeFold(1)" style="background:var(--alert-color);">⚠️ STUFE 1: FINANZEN</button>
     </div>
 
-    <div class="sidebar-panel" style="background: #fdf2f2; border-left: 1px solid #ddd;">
-        <h2 style="color: #c0392b;">Konfrontative Maßnahmen</h2>
-        <p style="font-size: 0.9rem;">Hoheitliche Maßnahmen sichern die Gemeinwohlziele[cite: 30, 314].</p>
-        
-        <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
-            <div style="background: white; padding: 15px; border-left: 5px solid #e67e22;">
-                <strong>Stufe 1: Finanzen</strong>
-                <p style="font-size: 0.8rem;">Grundsteuer C oder Leerstandsabgaben[cite: 292, 368].</p>
-            </div>
-            <div style="background: white; padding: 15px; border-left: 5px solid #c0392b;">
-                <strong>Stufe 2: Ordnungsrecht</strong>
-                <p style="font-size: 0.8rem;">Baugebote oder Geldbußen[cite: 93, 369].</p>
-            </div>
-            <div style="background: white; padding: 15px; border-left: 5px solid #000;">
-                <strong>Stufe 3: Ultima Ratio</strong>
-                <p style="font-size: 0.8rem;">Öffentliche Verwaltung oder Enteignung[cite: 370, 371].</p>
-            </div>
+    <div class="sidebar-panel" style="background:#fffcf5;">
+        <h2 style="color:#e67e22;">Stufe 1: Finanzen</h2>
+        <p>Erhöhung des wirtschaftlichen Drucks zur Nutzung[cite: 368].</p>
+        <div style="padding:15px; background:white; border-left:5px solid #e67e22;">
+            <strong>Grundsteuer C</strong><br>Anwendung steuerrechtlicher Instrumente bei baureifen Grundstücken[cite: 368].
         </div>
+        <button class="btn-submit" onclick="changeFold(2)" style="background:#c0392b; margin-top:20px;">⚖️ STUFE 2: RECHT</button>
+        <button onclick="changeFold(0)" style="background:none; border:none; color:#666; cursor:pointer; margin-top:10px;">&larr; Zurück</button>
     </div>
-</div>
+
+    <div class="sidebar-panel" style="background:#fff5f5;">
+        <h2 style="color:#c0392b;">Stufe 2: Ordnungsrecht</h2>
+        <p>Sanktionen bei anhaltender Nichtnutzung[cite: 369].</p>
+        <div style="padding:15px; background:white; border-left:5px solid #c0392b;">
+            <strong>Baugebote & Bußgelder</strong><br>Einleitung von Baugeboten (§ 176 BauGB) oder Unterlassungsklagen[cite: 93, 369].
+        </div>
+        <button class="btn-submit" onclick="changeFold(3)" style="background:#000; margin-top:20px;">🚫 STUFE 3: ULTIMA RATIO</button>
+        <button onclick="changeFold(1)" style="background:none; border:none; color:#666; cursor:pointer; margin-top:10px;">&larr; Zurück</button>
+    </div>
+
+    <div class="sidebar-panel" style="background:#f2f2f2;">
+        <h2 style="color:#000;">Stufe 3: Ultima Ratio</h2>
+        <p>Sicherung der Gemeinwohlziele als letztes Mittel[cite: 371].</p>
+        <div style="padding:15px; background:white; border-left:5px solid #000;">
+            <strong>Öffentliche Verwaltung & Enteignung</strong><br>Droit de Gestion Publique (zeitweise Verwaltung) oder endgültige Expropriation[cite: 370, 371].
+        </div>
+        <button onclick="changeFold(2)" style="background:none; border:none; color:#666; cursor:pointer; margin-top:20px;">&larr; Zurück</button>
+    </div>
 </div>
 
     <script>
@@ -635,7 +597,21 @@ function checkRangeNL(plz) {
     return null;
 }
 
-// --- SIDEBAR NAVIGATION ---
+function changeFold(level) {
+    const sidebar = document.getElementById('info-sidebar');
+    const btn = document.getElementById('sidebar-btn');
+    
+    // Alle Stufen-Klassen entfernen
+    sidebar.classList.remove('step-1', 'step-2', 'step-3');
+    btn.classList.remove('step-1', 'step-2', 'step-3');
+
+    // Neue Stufe hinzufügen
+    if (level > 0) {
+        sidebar.classList.add('step-' + level);
+        btn.classList.add('step-' + level);
+    }
+}
+
 function toggleSidebar() {
     const sidebar = document.getElementById('info-sidebar');
     const btn = document.getElementById('sidebar-btn');
@@ -643,27 +619,10 @@ function toggleSidebar() {
     sidebar.classList.toggle('open');
     btn.classList.toggle('open');
     
-    // Falls zu, alles zurücksetzen
+    // Reset beim Schließen
     if (!sidebar.classList.contains('open')) {
-        sidebar.classList.remove('folded');
-        btn.classList.remove('folded');
+        changeFold(0);
     }
-}
-
-function toggleFold() {
-    const sidebar = document.getElementById('info-sidebar');
-    const btn = document.getElementById('sidebar-btn');
-    const foldBtn = document.getElementById('escalation-fold-btn');
-
-    sidebar.classList.toggle('folded');
-    btn.classList.toggle('folded');
-
-    if (sidebar.classList.contains('folded')) {
-        foldBtn.innerText = '⬅️ ZURÜCK ZUR KOOPERATION';
-    } else {
-        foldBtn.innerText = '⚠️ WENN KOOPERATION NICHT REICHT...';
-    }
-}
 
 // --- LOKALE RESSOURCEN & KONTAKT LOGIC ---
 function updateLocalResources(country, city) {
@@ -844,6 +803,7 @@ window.addEventListener('load', () => {
     </script>
 </body>
 </html>
+
 
 
 
