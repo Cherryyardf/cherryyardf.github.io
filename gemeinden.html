@@ -41,12 +41,25 @@
         .info-section h2 { color: var(--accent-color); border-left: 5px solid var(--active-tab); padding-left: 15px; margin-top: 0; }
         .highlight-box { background: #fdf6e3; border-left: 4px solid #b58900; padding: 20px; margin: 20px 0; font-style: italic; }
         
-        /* Grid */
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
-        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); position: relative; display: flex; flex-direction: column; }
+        /* Projekte Tabellen-Layout Styles */
+        .project-table-container { display: flex; gap: 20px; align-items: flex-start; overflow-x: auto; padding-bottom: 20px; }
+        .project-column { flex: 1; min-width: 280px; }
+        .column-header { background: var(--accent-color); color: white; padding: 15px; border-radius: 8px 8px 0 0; text-align: center; font-weight: bold; font-size: 0.9rem; min-height: 50px; display: flex; align-items: center; justify-content: center; }
         
+        /* Grid & Cards */
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 20px; border-radius: 0 0 8px 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); position: relative; display: flex; flex-direction: column; margin-bottom: 15px; border-top: 4px solid transparent; }
+        .card h3 { margin: 10px 0; font-size: 1.1rem; color: var(--accent-color); }
+        .card p { font-size: 0.85rem; margin-bottom: 15px; flex-grow: 1; }
+        
+        /* Projekt-spezifische Card-Styles */
+        .card.infra { border-top-color: var(--cat-infra); }
+        .card.wohnen { border-top-color: var(--cat-wohnen); }
+        .card.sozial { border-top-color: var(--cat-sozial); }
+        .card.natur { border-top-color: var(--cat-natur); }
+
         /* Badges */
-        .badge { position: absolute; top: 15px; right: 15px; padding: 4px 10px; border-radius: 4px; color: white; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
+        .badge { align-self: flex-start; padding: 3px 8px; border-radius: 4px; color: white; font-size: 0.65rem; font-weight: bold; text-transform: uppercase; }
         .bg-infra { background: var(--cat-infra); }
         .bg-wohnen { background: var(--cat-wohnen); }
         .bg-sozial { background: var(--cat-sozial); }
@@ -56,7 +69,7 @@
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
         .modal-content { background-color: white; margin: 5% auto; padding: 30px; border-radius: 8px; width: 90%; max-width: 500px; }
         .modal-content input, .modal-content textarea, .modal-content select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        .btn-contact { background: var(--active-tab); color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; text-align: center; display: block; text-decoration: none; }
+        .btn-contact { background: var(--active-tab); color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; text-align: center; display: block; text-decoration: none; font-size: 0.9rem; }
 
         @keyframes fadeEffect { from {opacity: 0;} to {opacity: 1;} }
     </style>
@@ -93,66 +106,29 @@
         <button class="tab-button" onclick="openTab(event, 'Geoportale')">Geoportale</button>
         <button class="tab-button" onclick="openTab(event, 'Tool')">Immobilien-Tool</button>
         <button class="tab-button" onclick="openTab(event, 'Kontakte')">Gemeinden</button>
-        <button class="tab-button" onclick="openTab(event, 'Projekte')">Projektbörse</button>
+        <button class="tab-button" onclick="openTab(event, 'Projekte')">Projekte</button>
     </div>
 
     <main class="content-wrapper">
         
         <div id="Info" class="tab-content" style="display: block;">
-            
             <div class="info-section">
                 <h2>1. Status Quo & Flächenpotenziale</h2>
-                <p>Das MORO-Konzept „Mehr Wohnraum schaffen“ hat gezeigt, dass die identifizierten Flächenpotenziale oft zweitrangig sind oder aufgrund schwieriger Eigentümerstrukturen kaum nutzbar bleiben. Aktuelle Bauvorhaben haben Vorrang, wodurch die tatsächliche Aktivierung dieser Flächen erst verzögert stattfinden kann.</p>
+                <p>Das MORO-Konzept „Mehr Wohnraum schaffen“ hat gezeigt, dass die identifizierten Flächenpotenziale oft zweitrangig sind oder aufgrund schwieriger Eigentümerstrukturen kaum nutzbar bleiben.</p>
                 <div class="highlight-box">
-                    „Der Widerstand von Eigentümer:innen führt zu einer schwachen Innenentwicklung und einem stetigen Wachstum nach außen – ein Trend, der sowohl in Deutschland als auch in Belgien sichtbar ist.“
+                    „Der Widerstand von Eigentümer:innen führt zu einer schwachen Innenentwicklung und einem stetigen Wachstum nach außen.“
                 </div>
             </div>
-
-            <div class="info-section">
-                <h2>2. Systemvergleich: Reaktiv vs. Proaktiv</h2>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px;">
-                    <div>
-                        <h4 style="color: #c0392b;">Deutschland (Reaktiv)</h4>
-                        <p style="font-size: 0.9rem;">Fokus auf Schutz der Naturräume und Infrastruktureffizienz. Instrumente wie der vorhabenbezogene B-Plan (§ 12 BauGB) reagieren auf private Initiativen. <strong>Folge:</strong> Hoher Zeitaufwand und Schwerfälligkeit.</p>
-                    </div>
-                    <div>
-                        <h4 style="color: #27ae60;">Belgien (Proaktiv)</h4>
-                        <p style="font-size: 0.9rem;">Angebotsplanung (ZACC-Zonen), um Eigenheimbau zu forcieren. Hohe Geschwindigkeit und einfache Eigentumsbildung. <strong>Folge:</strong> Starke Zersiedelung und hoher Flächenverbrauch.</p>
-                    </div>
-                </div>
             </div>
-
-            <div class="info-section">
-                <h2>3. Strategische Vision: RegFNP & Infrastruktur</h2>
-                <p>Ein Transfer von Verantwortlichkeiten ist das Ziel: Die Übertragung des Flächennutzungsplans (FNP) auf die <strong>StädteRegion Aachen</strong> (analog zum RVR im Ruhrgebiet) würde Ressourcen bündeln und eine gesamtregionale Steuerung ermöglichen.</p>
-                <p><strong>Zentrale Erkenntnis:</strong> Grenzüberschreitende Kooperation gelingt am besten über den <strong>gemeinsamen Ausbau der Infrastruktur und Mobilität</strong>, statt über den reinen Wohnungsbau. Nur eine verknüpfte Grenzregion kann den Wohnungsdruck nachhaltig bewältigen.</p>
-            </div>
-
-            <div class="info-section">
-                <h2>4. Ausblick: Innen- vor Außenentwicklung</h2>
-                <p>Mit Blick auf die Prognosen ab 2035 (Bevölkerungsrückgang) ist die proaktive Ansprache der Eigentümerschaft unerlässlich. Der Leitfaden zur Eigentümeraktivierung dient hierbei als zentrales Werkzeug, um Leerständen vorausschauend vorzubeugen.</p>
-            </div>
-
-        </div>
 
         <div id="Geoportale" class="tab-content">
             <div class="grid-container">
-                <div class="card" style="border-top: 5px solid #00549f;">
+                <div class="card" style="border-top: 5px solid #00549f; border-radius: 8px;">
                     <h3>Geoportal StädteRegion</h3>
                     <p>Bebauungspläne und Kataster der Aachener Region.</p>
                     <a href="https://geoportal.staedteregion-aachen.de" target="_blank" style="color: var(--active-tab); font-weight: bold; text-decoration: none; margin-top: 10px;">Portal öffnen &rarr;</a>
                 </div>
-                <div class="card" style="border-top: 5px solid #ffcc00;">
-                    <h3>WalOnMap (Belgien)</h3>
-                    <p>Sektorenplan und Geodaten für Wallonien (Raeren).</p>
-                    <a href="https://geoportail.wallonie.be/walonmap" target="_blank" style="color: var(--active-tab); font-weight: bold; text-decoration: none; margin-top: 10px;">Karte öffnen &rarr;</a>
                 </div>
-                <div class="card" style="border-top: 5px solid #d32f2f;">
-                    <h3>BORIS.NRW</h3>
-                    <p>Bodenrichtwerte und Marktberichte NRW.</p>
-                    <a href="https://www.boris.nrw.de" target="_blank" style="color: var(--active-tab); font-weight: bold; text-decoration: none; margin-top: 10px;">Werte prüfen &rarr;</a>
-                </div>
-            </div>
         </div>
 
         <div id="Tool" class="tab-content">
@@ -163,35 +139,53 @@
 
         <div id="Kontakte" class="tab-content">
             <div class="grid-container">
-                <div class="card"><h3>Stadt Aachen</h3><p>Zollernstraße 10</p><a href="https://www.aachen.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a></div>
-                <div class="card"><h3>Stolberg</h3><p>Rathausstraße 11</p><a href="https://www.stolberg.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a></div>
-                <div class="card"><h3>Simmerath</h3><p>Rathausplatz 1</p><a href="https://www.simmerath.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a></div>
-                <div class="card"><h3>Eschweiler</h3><p>Johannes-Rau-Platz 1</p><a href="https://www.eschweiler.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a></div>
-                <div class="card"><h3>Monschau</h3><p>Laufenstraße 84</p><a href="https://www.monschau.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a></div>
-                <div class="card"><h3>Alsdorf</h3><p>Hubertusstraße 17</p><a href="https://www.alsdorf.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a></div>
-                <div class="card"><h3>Herzogenrath</h3><p>Rathausplatz 1</p><a href="https://www.herzogenrath.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a></div>
-                <div class="card"><h3>Würselen</h3><p>Morlaixplatz 1</p><a href="https://www.wuerselen.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a></div>
-                <div class="card"><h3>Roetgen</h3><p>Hauptstraße 95</p><a href="https://www.roetgen.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a></div>
-                <div class="card"><h3>Baesweiler</h3><p>Mariastraße 2</p><a href="https://www.baesweiler.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a></div>
-            </div>
+                <div class="card" style="border-radius: 8px;"><h3>Stadt Aachen</h3><p>Zollernstraße 10</p><a href="https://www.aachen.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a></div>
+                </div>
         </div>
 
         <div id="Projekte" class="tab-content">
-            <div class="grid-container">
-                <div class="category-header"><h2>🚧 Infrastruktur & Mobilität</h2></div>
-                <div class="card">
-                    <span class="badge bg-infra">Strategisch</span>
-                    <h3>Interkommunale Mobilitätsachse</h3>
-                    <p>Ausbau der Anbindung Aachen-Umland zur Entlastung des Wohnungsdrucks.</p>
-                    <button class="btn-contact" onclick="openModal('Infrastruktur: Mobilitätsachse')">Anfrage stellen</button>
+            <div class="project-table-container">
+                
+                <div class="project-column">
+                    <div class="column-header">Infrastruktur & Mobilität</div>
+                    <div class="card infra">
+                        <span class="badge bg-infra">Strategisch</span>
+                        <h3>Interkommunale Mobilitätsachse</h3>
+                        <p>Ausbau der Anbindung Aachen-Umland zur Entlastung des Wohnungsdrucks durch verbesserte Erreichbarkeit.</p>
+                        <button class="btn-contact" onclick="openModal('Infrastruktur: Mobilitätsachse')">Anfrage stellen</button>
+                    </div>
                 </div>
-                <div class="category-header"><h2>🏠 Wohnen & Innenentwicklung</h2></div>
-                <div class="card">
-                    <span class="badge bg-wohnen">Pilot</span>
-                    <h3>Eigentümer-Aktivierung Simmerath</h3>
-                    <p>Anwendung des MORO-Leitfadens zur Mobilisierung von Innenpotenzialen.</p>
-                    <button class="btn-contact" onclick="openModal('Wohnen: Aktivierung Simmerath')">Anfrage stellen</button>
+
+                <div class="project-column">
+                    <div class="column-header">Wohnen & Innenentwicklung</div>
+                    <div class="card wohnen">
+                        <span class="badge bg-wohnen">Pilot</span>
+                        <h3>Eigentümeraktivierung</h3>
+                        <p>Anwendung des MORO-Leitfadens zur proaktiven Ansprache von Eigentümern zwecks Mobilisierung von Innenraumpotenzialen.</p>
+                        <button class="btn-contact" onclick="openModal('Wohnen: Eigentümeraktivierung')">Anfrage stellen</button>
+                    </div>
                 </div>
+
+                <div class="project-column">
+                    <div class="column-header">Soziales & Wohnraum</div>
+                    <div class="card sozial">
+                        <span class="badge bg-sozial">In Planung</span>
+                        <h3>Geförderter Wohnraum AC</h3>
+                        <p>Bündelung von Fördermitteln für sozialen Wohnungsbau in Grenznähe zu Belgien.</p>
+                        <button class="btn-contact" onclick="openModal('Soziales: Wohnraumförderung')">Anfrage stellen</button>
+                    </div>
+                </div>
+
+                <div class="project-column">
+                    <div class="column-header">Natur & Umwelt</div>
+                    <div class="card natur">
+                        <span class="badge bg-natur">Gutachten</span>
+                        <h3>Klimaanalyse Rurtal</h3>
+                        <p>Grenzüberschreitende Untersuchung der Kaltluftentstehung und Auswirkungen auf Bauvorhaben.</p>
+                        <button class="btn-contact" onclick="openModal('Natur: Klimaanalyse')">Anfrage stellen</button>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -222,7 +216,6 @@
             closeModal();
         }
 
-        // Iframe Resize Logic (Originaler Stand)
         window.addEventListener('message', function(e) {
             if (e.data && e.data.type === 'resize-iframe') {
                 const iframe = document.getElementById('seamless-tool');
@@ -232,4 +225,3 @@
     </script>
 </body>
 </html>
-
