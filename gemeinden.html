@@ -24,100 +24,63 @@
             line-height: 1.6; 
         }
         
+        /* Navigation */
         nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: white; border-bottom: 1px solid #e0e0e0; }
         .logo { font-weight: 900; font-size: 1.5rem; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; color: black; }
         .nav-links a { text-decoration: none; color: var(--text-color); font-weight: bold; font-size: 0.9rem; text-transform: uppercase; }
 
+        /* Tabs */
         .tab-container { display: flex; justify-content: center; border-bottom: 2px solid #ccc; margin-bottom: 40px; background: white; padding-top: 20px; flex-wrap: wrap; }
         .tab-button { background-color: transparent; border: none; cursor: pointer; padding: 14px 25px; font-size: 1rem; font-weight: bold; color: #666; border-bottom: 4px solid transparent; transition: 0.3s; }
         .tab-button:hover { color: var(--accent-color); background: #f9f9f9; }
         .tab-button.active { color: var(--accent-color); border-bottom: 4px solid var(--active-tab); }
         .tab-content { display: none; animation: fadeEffect 0.5s; padding: 0 20px 40px 20px; }
 
+        /* Layout & Text */
         .content-wrapper { width: 100%; max-width: 1600px; margin: 0 auto; }
         .info-section { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 30px; }
         .info-section h2 { color: var(--accent-color); border-left: 5px solid var(--active-tab); padding-left: 15px; margin-top: 0; }
+        .highlight-box { background: #fdf6e3; border-left: 4px solid #b58900; padding: 20px; margin: 20px 0; font-style: italic; }
         
-        /* PROJEKT-TABELLE LAYOUT */
-        .project-table-container { 
-            display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
-            gap: 0; 
-            background: #fff; 
-            border-radius: 8px; 
-            overflow: hidden; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
+        /* Projekt-Tabelle (Board) */
+        .project-board-table { width: 100%; border-collapse: separate; border-spacing: 15px 0; table-layout: fixed; }
+        .project-board-table th { color: white; padding: 15px; border-radius: 8px 8px 0 0; font-size: 1.1rem; text-align: center; }
+        .project-board-table td { vertical-align: top; background: rgba(255,255,255,0.3); border-radius: 0 0 8px 8px; padding: 15px 0; }
         
-        .project-column-header { 
-            padding: 20px; 
-            color: white; 
-            text-align: center; 
-            font-weight: bold; 
-            font-size: 1.1rem;
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .project-cell { 
-            padding: 20px; 
-            border: 1px solid #eee; 
-            background: #fff;
-            min-height: 200px;
-        }
-
-        .project-card-mini {
-            background: #fdfbf3;
-            border: 1px solid #e0d0b0;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 10px;
-            position: relative;
-        }
-        .project-card-mini h3 { margin: 0 0 10px 0; font-size: 0.95rem; color: var(--accent-color); line-height: 1.2; }
-        .project-card-mini p { font-size: 0.8rem; margin-bottom: 15px; color: #555; }
-
-        .btn-mini { 
-            background: var(--active-tab); 
-            color: white; 
-            border: none; 
-            padding: 6px 12px; 
-            border-radius: 3px; 
-            cursor: pointer; 
-            font-size: 0.75rem; 
-            font-weight: bold;
-            width: 100%;
-        }
+        /* Cards in der Tabelle */
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); position: relative; display: flex; flex-direction: column; margin: 0 10px 20px 10px; transition: transform 0.2s; }
+        .card:hover { transform: translateY(-3px); }
+        .card h3 { margin: 0 0 10px 0; font-size: 1rem; color: var(--accent-color); border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .card p { font-size: 0.85rem; margin-bottom: 15px; }
+        
+        /* Badges */
+        .badge { position: absolute; top: 10px; right: 10px; padding: 2px 8px; border-radius: 4px; color: white; font-size: 0.65rem; font-weight: bold; text-transform: uppercase; }
+        .bg-infra { background: var(--cat-infra); }
+        .bg-wohnen { background: var(--cat-wohnen); }
+        .bg-sozial { background: var(--cat-sozial); }
+        .bg-natur { background: var(--cat-natur); }
 
         /* Modal */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
         .modal-content { background-color: white; margin: 5% auto; padding: 30px; border-radius: 8px; width: 90%; max-width: 500px; }
         .modal-content input, .modal-content textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .btn-contact { background: var(--active-tab); color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; font-size: 0.9rem; }
 
         @keyframes fadeEffect { from {opacity: 0;} to {opacity: 1;} }
-        
-        @media (max-width: 1000px) {
-            .project-table-container { grid-template-columns: 1fr 1fr; }
-        }
-        @media (max-width: 600px) {
-            .project-table-container { grid-template-columns: 1fr; }
-        }
     </style>
 </head>
 <body>
 
     <div id="contactModal" class="modal">
         <div class="modal-content">
-            <h2>Kooperations-Anfrage</h2>
-            <p style="font-size: 0.8rem; color: #666;">Zentrale Vermittlung: StädteRegion Aachen</p>
+            <h2>Projekt-Anfrage</h2>
+            <p style="font-size: 0.8rem; color: #666;">Vermittlung durch die StädteRegion Aachen.</p>
             <form id="projectForm">
-                <input type="text" placeholder="Ihre Gemeinde / Amt" required>
-                <input type="email" placeholder="Ansprechpartner E-Mail" required>
+                <input type="text" placeholder="Organisation / Gemeinde" required>
+                <input type="email" placeholder="E-Mail" required>
                 <textarea rows="4" id="modalMessage"></textarea>
-                <button type="submit" class="btn-mini" style="font-size: 1rem; padding: 12px;">Anfrage absenden</button>
-                <button type="button" onclick="closeModal()" style="background:none; border:none; color:#888; width:100%; margin-top:10px; cursor:pointer;">Schließen</button>
+                <button type="submit" class="btn-contact">Anfrage absenden</button>
+                <button type="button" onclick="closeModal()" style="background:none; border:none; color:#888; width:100%; margin-top:10px; cursor:pointer;">Abbrechen</button>
             </form>
         </div>
     </div>
@@ -127,6 +90,11 @@
         <a href="index.html" class="logo">BAUKOMPASS</a>
         <div style="width: 80px;"></div>
     </nav>
+
+    <div style="text-align: center; margin: 40px 0;">
+        <h1>Von Gemeinden für Gemeinden</h1>
+        <p>MORO-Dashboard StädteRegion Aachen</p>
+    </div>
 
     <div class="tab-container">
         <button class="tab-button active" onclick="openTab(event, 'Info')">Fazit & Ausblick</button>
@@ -140,17 +108,21 @@
         
         <div id="Info" class="tab-content" style="display: block;">
             <div class="info-section">
-                <h2>MORO-Strategieprozess</h2>
-                <p>Erkenntnisse aus der Zusammenarbeit zwischen der Stadt Aachen, der StädteRegion und den beteiligten Gemeinden.</p>
-                <p>Fokus: <strong>Innen- vor Außenentwicklung</strong> und die Bündelung der Planungshoheit (RegFNP) zur Entlastung der Kommunen.</p>
+                <h2>1. Status Quo & Flächenpotenziale</h2>
+                <p>Das MORO-Konzept „Mehr Wohnraum schaffen“ zeigt, dass Flächenpotenziale oft zweitrangig sind oder aufgrund schwieriger Eigentümerstrukturen blockiert bleiben.</p>
+                <div class="highlight-box">„Der Widerstand von Eigentümer:innen führt zu schwacher Innenentwicklung – ein Trend in DE und BE.“</div>
+            </div>
+            <div class="info-section">
+                <h2>2. Strategische Vision</h2>
+                <p>Zentraler Ansatz: Übertragung des FNP auf die <strong>StädteRegion Aachen</strong> zur Bündelung der Ressourcen. Grenzüberschreitende Kooperation gelingt primär über gemeinsamen <strong>Infrastrukturausbau</strong>.</p>
             </div>
         </div>
 
         <div id="Geoportale" class="tab-content">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                <div class="info-section"><h3>StädteRegion Aachen</h3><a href="https://geoportal.staedteregion-aachen.de" target="_blank">Geoportal öffnen &rarr;</a></div>
-                <div class="info-section"><h3>Ostbelgien</h3><a href="https://geoportail.wallonie.be/walonmap" target="_blank">WalOnMap öffnen &rarr;</a></div>
-                <div class="info-section"><h3>Bodenwerte</h3><a href="https://www.boris.nrw.de" target="_blank">BORIS.NRW öffnen &rarr;</a></div>
+            <div class="grid-container">
+                <div class="card" style="border-top: 5px solid #00549f;"><h3>Geoportal StädteRegion</h3><a href="https://geoportal.staedteregion-aachen.de" target="_blank" style="color:var(--active-tab); font-weight:bold; text-decoration:none;">Öffnen &rarr;</a></div>
+                <div class="card" style="border-top: 5px solid #ffcc00;"><h3>WalOnMap (Belgien)</h3><a href="https://geoportail.wallonie.be/walonmap" target="_blank" style="color:var(--active-tab); font-weight:bold; text-decoration:none;">Öffnen &rarr;</a></div>
+                <div class="card" style="border-top: 5px solid #d32f2f;"><h3>BORIS.NRW</h3><a href="https://www.boris.nrw.de" target="_blank" style="color:var(--active-tab); font-weight:bold; text-decoration:none;">Öffnen &rarr;</a></div>
             </div>
         </div>
 
@@ -161,54 +133,63 @@
         </div>
 
         <div id="Kontakte" class="tab-content">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
-                <div class="info-section" style="padding: 20px;"><h3>Aachen</h3><a href="https://www.aachen.de">Service &rarr;</a></div>
-                <div class="info-section" style="padding: 20px;"><h3>Simmerath</h3><a href="https://www.simmerath.de">Service &rarr;</a></div>
-                <div class="info-section" style="padding: 20px;"><h3>Stolberg</h3><a href="https://www.stolberg.de">Service &rarr;</a></div>
-                <div class="info-section" style="padding: 20px;"><h3>Monschau</h3><a href="https://www.monschau.de">Service &rarr;</a></div>
+            <div class="grid-container">
+                <div class="card"><h3>Stadt Aachen</h3><a href="https://www.aachen.de" target="_blank" style="color:var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a></div>
+                <div class="card"><h3>Stolberg</h3><a href="https://www.stolberg.de" target="_blank" style="color:var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a></div>
+                <div class="card"><h3>Simmerath</h3><a href="https://www.simmerath.de" target="_blank" style="color:var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a></div>
+                <div class="card"><h3>Monschau</h3><a href="https://www.monschau.de" target="_blank" style="color:var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a></div>
+                <div class="card"><h3>Roetgen</h3><a href="https://www.roetgen.de" target="_blank" style="color:var(--active-tab); font-weight:bold; text-decoration:none;">Service &rarr;</a></div>
             </div>
         </div>
 
         <div id="Projekte" class="tab-content">
-            <div class="project-table-container">
-                
-                <div class="project-column-header" style="background: var(--cat-infra);">Infrastruktur & Mobilität</div>
-                <div class="project-column-header" style="background: var(--cat-wohnen);">Wohnen & Innenentwicklung</div>
-                <div class="project-column-header" style="background: var(--cat-sozial);">Soziales & Wohnraum</div>
-                <div class="project-column-header" style="background: var(--cat-natur);">Natur & Umwelt</div>
-
-                <div class="project-cell">
-                    <div class="project-card-mini">
-                        <h3>Interkommunale Mobilitätsachse</h3>
-                        <p>Gemeinsame Planung der Verkehrsanbindung zur Entlastung des Aachener Wohnungsdrucks.</p>
-                        <button class="btn-mini" onclick="openModal('Mobilitätsachse')">Kooperieren</button>
-                    </div>
-                </div>
-
-                <div class="project-cell">
-                    <div class="project-card-mini">
-                        <h3>Eigentümeraktivierung</h3>
-                        <p>Proaktive Ansprache zur Mobilisierung von Baulücken und Innenpotenzialen laut MORO-Leitfaden.</p>
-                        <button class="btn-mini" onclick="openModal('Eigentümeraktivierung')">Kooperieren</button>
-                    </div>
-                </div>
-
-                <div class="project-cell">
-                    <div class="project-card-mini">
-                        <h3>Sozialer Wohnraum Aachen-Land</h3>
-                        <p>Förderung von bezahlbarem Wohnraum durch interkommunale Kontingente.</p>
-                        <button class="btn-mini" onclick="openModal('Sozialer Wohnraum')">Kooperieren</button>
-                    </div>
-                </div>
-
-                <div class="project-cell">
-                    <div class="project-card-mini">
-                        <h3>Klimagutachten Nordeifel</h3>
-                        <p>Grenzüberschreitende Analyse von Kaltluftentstehungsgebieten (Simmerath/Raeren).</p>
-                        <button class="btn-mini" onclick="openModal('Klimagutachten')">Kooperieren</button>
-                    </div>
-                </div>
-
+            <div style="overflow-x: auto;">
+                <table class="project-board-table">
+                    <thead>
+                        <tr>
+                            <th class="bg-infra">Infrastruktur & Mobilität</th>
+                            <th class="bg-wohnen">Wohnen & Innenentwicklung</th>
+                            <th class="bg-sozial">Soziales</th>
+                            <th class="bg-natur">Natur</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="card">
+                                    <span class="badge bg-infra">Strategisch</span>
+                                    <h3>Interkommunale Mobilitätsachse</h3>
+                                    <p>Gemeinsamer Ausbau Aachen-Umland zur Entlastung des Wohnungsmarktes.</p>
+                                    <button class="btn-contact" onclick="openModal('Infrastruktur: Mobilitätsachse')">Interesse</button>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="card">
+                                    <span class="badge bg-wohnen">Pilot</span>
+                                    <h3>Eigentümeraktivierung</h3>
+                                    <p>Proaktive Ansprache zur Nutzung von Innenpotenzialen laut MORO-Leitfaden.</p>
+                                    <button class="btn-contact" onclick="openModal('Wohnen: Eigentümeraktivierung')">Interesse</button>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="card">
+                                    <span class="badge bg-sozial">Aktiv</span>
+                                    <h3>Senioren-Campus</h3>
+                                    <p>Barrierefreier Wohnraum im ländlichen Raum der StädteRegion Aachen.</p>
+                                    <button class="btn-contact" onclick="openModal('Soziales: Senioren-Campus')">Interesse</button>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="card">
+                                    <span class="badge bg-natur">Gutachten</span>
+                                    <h3>Klima-Analyse Eifel</h3>
+                                    <p>Grenzüberschreitendes Gutachten zu Kaltluftströmen in der Nord-Eifel.</p>
+                                    <button class="btn-contact" onclick="openModal('Natur: Klima-Analyse')">Interesse</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -228,14 +209,14 @@
         const modal = document.getElementById("contactModal");
         function openModal(title) {
             modal.style.display = "block";
-            document.getElementById("modalMessage").value = "Betreff: Anfrage zum Projekt [" + title + "]\n\nWir haben Interesse an einer interkommunalen Zusammenarbeit...";
+            document.getElementById("modalMessage").value = "Betreff: Interesse am Projekt [" + title + "]\n\nWir möchten uns gerne an diesem Projekt beteiligen...";
         }
         function closeModal() { modal.style.display = "none"; }
         window.onclick = function(e) { if (e.target == modal) closeModal(); }
 
         document.getElementById("projectForm").onsubmit = function(e) {
             e.preventDefault();
-            alert("Anfrage versendet! Die StädteRegion Aachen wird sich mit Ihnen in Verbindung setzen.");
+            alert("Ihre Nachricht wurde an die zentrale Koordinierungsstelle der StädteRegion Aachen gesendet.");
             closeModal();
         }
 
