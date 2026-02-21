@@ -30,23 +30,23 @@
         #location-modal { transition: opacity 0.3s ease-in-out; }
         #location-modal.hidden { opacity: 0; pointer-events: none; }
 
-        /* --- DEINE AKTUALISIERTEN LANG-BTN STYLES --- */
-        .lang-btn {
-            background: none; border: none; 
-            font-size: 0.75rem; font-weight: 800;
-            cursor: pointer;
-            opacity: 0.4; 
-            transition: all 0.2s; 
-            padding: 0 6px;
-            color: #1e293b;
-        }
-        .lang-btn:hover { opacity: 1; transform: scale(1.1); }
-        .lang-btn.active { 
-            opacity: 1; 
-            transform: scale(1.2); 
-            color: #f97316; /* Baukompass Orange */
-            font-weight: bold;
-        }
+       /* Angepasster Language-Button (passend zur Eigentümer-Seite) */
+.lang-btn {
+    background: none; border: none; 
+    font-size: 1.5rem; /* Schriftgröße an andere Seiten angepasst */
+    font-weight: 800;
+    cursor: pointer;
+    opacity: 0.5; 
+    transition: all 0.2s ease-in-out; 
+    padding: 0 4px;
+    color: #1e293b;
+}
+.lang-btn:hover { opacity: 1; transform: scale(1.1); }
+.lang-btn.active { 
+    opacity: 1; 
+    transform: scale(1.1); 
+    color: #f97316; /* Baukompass Orange */
+}
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
@@ -425,3 +425,4 @@
     </script>
 </body>
 </html>
+
