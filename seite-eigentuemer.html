@@ -441,38 +441,45 @@
         <p style="font-weight: bold;" data-i18n="sidebar_subtitle">Warum wir Sie als Eigentümer:in brauchen:</p>
         
         <ul>
-            <li data-i18n="sidebar_li_1"><strong>Natur & Ortsbild schützen...</li>
-            </ul>
+            [cite_start]<li data-i18n="sidebar_li_1"><strong>Natur & Ortsbild schützen:</strong> Innenentwicklung schont wertvolle Grünflächen[cite: 89, 191].</li>
+            [cite_start]<li data-i18n="sidebar_li_2"><strong>Infrastrukturkosten sparen:</strong> Die Nutzung von Bestand ist effizienter als Neuerschließungen[cite: 102, 105].</li>
+            [cite_start]<li data-i18n="sidebar_li_3"><strong>Fördern vor Fordern:</strong> Kooperative Ansätze haben Vorrang vor restriktiven Maßnahmen[cite: 31, 376].</li>
+        </ul>
 
-        <div id="contact-section">...</div>
+        <div id="contact-section" style="background: #f9f9f9; padding: 20px; border-radius: 8px; border-left: 4px solid var(--highlight-color); margin-top: 20px;">
+            <h4 style="margin-top: 0; color: var(--accent-color);" data-i18n="contact_title">Ihr direkter Draht:</h4>
+            <p id="contact-intro" style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">Wählen Sie oben Ihren Standort aus, um Ihren lokalen Ansprechpartner zu sehen.</p>
+            <div id="contact-details" class="hidden">
+                <p style="font-size: 0.9rem; margin-bottom: 8px;"><strong>📞 Telefon:</strong> <span id="contact-phone"></span></p>
+                <p style="font-size: 0.9rem; margin-bottom: 15px;"><strong>📧 E-Mail:</strong> <a id="contact-email" href="#" style="color: var(--accent-color); text-decoration: underline;"></a></p>
+                <a id="contact-link" href="#" target="_blank" style="display: block; background: var(--accent-color); color: white; text-align: center; padding: 10px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 0.85rem;">🌐 Zur Website der Gemeinde</a>
+            </div>
+        </div>
 
         <button id="escalation-fold-btn" onclick="toggleFold()" style="width: 100%; background: var(--alert-color); color: white; border: none; padding: 15px; margin-top: 20px; cursor: pointer; font-weight: bold; border-radius: 4px;">
             ⚠️ WENN KOOPERATION NICHT REICHT...
         </button>
     </div>
 
-    <div class="sidebar-panel" id="escalation-fold" style="background: #fdf2f2; border-left: 1px solid #ddd;">
+    <div class="sidebar-panel" style="background: #fdf2f2; border-left: 1px solid #ddd;">
         <h2 style="color: #c0392b;">Konfrontative Maßnahmen</h2>
-        <p style="font-size: 0.9rem;">Erfolgreiche Aktivierung erfordert einen Paradigmenwechsel: Kooperative Ansätze sind effektiv, aber ordnungsrechtliche Rückfalloptionen sichern die Gemeinwohlziele[cite: 30, 31, 371].</p>
+        [cite_start]<p style="font-size: 0.9rem;">Erfolgreiche Aktivierung erfordert einen Paradigmenwechsel: Kooperative Ansätze sind effektiver, aber ordnungsrechtliche Rückfalloptionen sichern die Gemeinwohlziele[cite: 30, 314].</p>
         
         <div style="display: flex; flex-direction: column; gap: 20px; margin-top: 25px;">
             <div style="background: white; padding: 15px; border-left: 5px solid #e67e22; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
                 <strong style="text-transform: uppercase; font-size: 0.8rem; color: #e67e22;">Stufe 1: Finanzen</strong>
-                <p style="font-size: 0.85rem; margin-top: 5px;">Erhöhung des wirtschaftlichen Drucks durch die <strong>Grundsteuer C</strong> oder Leerstandsabgaben[cite: 368, 378].</p>
+                [cite_start]<p style="font-size: 0.85rem; margin-top: 5px;">Erhöhung des wirtschaftlichen Drucks durch die <strong>Grundsteuer C</strong> oder Leerstandsabgaben[cite: 292, 368].</p>
             </div>
             <div style="background: white; padding: 15px; border-left: 5px solid #c0392b; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
                 <strong style="text-transform: uppercase; font-size: 0.8rem; color: #c0392b;">Stufe 2: Ordnungsrecht</strong>
-                <p style="font-size: 0.85rem; margin-top: 5px;">Anwendung von <strong>Baugeboten</strong> (§ 176 BauGB) oder Geldbußen bei anhaltender Nichtnutzung[cite: 338, 369].</p>
+                [cite_start]<p style="font-size: 0.85rem; margin-top: 5px;">Anwendung von <strong>Baugeboten</strong> (§ 176 BauGB) oder Geldbußen bei anhaltender Nichtnutzung[cite: 93, 369].</p>
             </div>
             <div style="background: white; padding: 15px; border-left: 5px solid #000; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
                 <strong style="text-transform: uppercase; font-size: 0.8rem; color: #000;">Stufe 3: Ultima Ratio</strong>
-                <p style="font-size: 0.85rem; margin-top: 5px;">Zeitweise <strong>öffentliche Verwaltung</strong> oder endgültige Enteignung (Expropriation) zur Sicherung der Ziele[cite: 370, 371].</p>
+                [cite_start]<p style="font-size: 0.85rem; margin-top: 5px;">Zeitweise <strong>öffentliche Verwaltung</strong> oder Enteignung (Expropriation) zur Sicherung der Ziele[cite: 370, 371].</p>
             </div>
         </div>
-        
-        <p style="font-size: 0.8rem; color: #666; margin-top: 30px; font-style: italic;">
-            Diese Stufen werden erst nach ausbleibender Wirkung kooperativer Angebote und intensiver rechtlicher Prüfung beschritten[cite: 137, 367, 372].
-        </p>
+        [cite_start]<p style="font-size: 0.8rem; color: #666; margin-top: 30px; font-style: italic;">Diese Stufen werden erst nach ausbleibender Wirkung kooperativer Angebote beschritten[cite: 367, 449].</p>
     </div>
 </div>
 </div>
@@ -596,13 +603,18 @@
             return null;
         }
 
-        // --- SIDEBAR LOGIC ---
-        function toggleSidebar() {
-            const sidebar = document.getElementById('info-sidebar');
-            const btn = document.getElementById('sidebar-btn');
-            sidebar.classList.toggle('open');
-            btn.classList.toggle('open');
-        }
+       function toggleSidebar() {
+    const sidebar = document.getElementById('info-sidebar');
+    const btn = document.getElementById('sidebar-btn');
+    sidebar.classList.toggle('open');
+    btn.classList.toggle('open');
+    
+    // Falls die Sidebar geschlossen wird, auch den Falteffekt zurücksetzen
+    if (!sidebar.classList.contains('open')) {
+        sidebar.classList.remove('folded');
+        btn.classList.remove('folded');
+        document.getElementById('escalation-fold-btn').innerText = '⚠️ WENN KOOPERATION NICHT REICHT...';
+    }
 
         // --- LOKALE RESSOURCEN LOGIC ---
         function updateLocalResources(country, city) {
@@ -820,6 +832,7 @@ function toggleFold() {
     </script>
 </body>
 </html>
+
 
 
 
