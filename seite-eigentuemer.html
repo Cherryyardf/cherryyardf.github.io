@@ -248,7 +248,7 @@ details.legal .legal-body{padding:0 18px 16px; font-size:.92rem}
 /* ============ LOCATION MODAL ============ */
 .modal-backdrop{position:fixed; inset:0; z-index:900; background:rgba(12,20,32,.7); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; padding:18px; opacity:0; pointer-events:none; transition:opacity .25s}
 .modal-backdrop.open{opacity:1; pointer-events:auto}
-.modal{background:var(--surface); border-radius:18px; box-shadow:var(--shadow-lg); width:100%; max-width:440px; padding:30px; border-top:5px solid var(--warn); transform:translateY(14px); transition:transform .25s}
+.modal{background:var(--surface); border-radius:18px; box-shadow:var(--shadow-lg); width:100%; max-width:440px; padding:30px; border-top:5px solid var(--accent); transform:translateY(14px); transition:transform .25s}
 .modal-backdrop.open .modal{transform:none}
 .modal h2{margin:0 0 4px; font-size:1.3rem; color:var(--primary); text-align:center}
 .modal .sub{margin:0 0 18px; font-size:.85rem; color:var(--text-soft); text-align:center}
@@ -303,7 +303,7 @@ footer{background:var(--primary); color:rgba(255,255,255,.82); padding:28px 24px
         <input id="plz-input" type="text" placeholder="z.B. 52152" required inputmode="numeric" autocomplete="postal-code">
       </div>
       <p id="location-error" role="alert" data-i18n="modal_error">Diese PLZ liegt leider außerhalb unseres Pilotgebiets.</p>
-      <button type="submit" class="btn btn-warn btn-block" data-i18n="btn_enter">Zum Bereich</button>
+      <button type="submit" class="btn btn-primary btn-block" data-i18n="btn_enter">Zum Bereich</button>
     </form>
   </div>
 </div>
@@ -624,19 +624,526 @@ footer{background:var(--primary); color:rgba(255,255,255,.82); padding:28px 24px
 </footer>
 
 <script>
-/* SCRIPT_PLACEHOLDER */
+/* ============================================================
+   BAUKOMPASS – Eigentümer:innen  ·  vollständige Interaktivität
+   ============================================================ */
+
+/* ---------- ÜBERSETZUNGEN (DE / EN / FR) ---------- */
+const I18N = {
+  de: {
+    nav_back:"← Zurück zur Übersicht",
+    header_title:"Werte erhalten, Zukunft sichern",
+    header_sub:"Ihr zentrales Portal für Sanierung und Förderung",
+    calc_title:"Sanierungs-Rechner",
+    calc_desc:"Geben Sie Ihre Gebäudedaten ein, um das individuelle Wertsteigerungspotenzial zu ermitteln.",
+    prog_input:"Eingabe", prog_result:"Ergebnis",
+    lbl_year:"Baujahr", lbl_type:"Gebäudetyp",
+    opt_house:"Einfamilienhaus", opt_row:"Reihenhaus", opt_multi:"Mehrfamilienhaus", opt_timber:"Fachwerkhaus",
+    lbl_insulation:"Aktueller Dämm-Standard",
+    opt_ins_none:"Unbekannt / Keine Dämmung", opt_ins_old:"Altbestand (vor 1995)", opt_ins_partial:"Teilgedämmt (z.B. nur Dach)", opt_ins_good:"Gut (nach 2005)",
+    btn_analyze:"Analyse starten",
+    res_prefix:"Ergebnis für Ihr",
+    res_disclaimer:"*Basierend auf regionalen Durchschnittswerten.",
+    energy_prefix:"Energieklasse", value_suffix:"mögliche Wertsteigerung",
+    type_title:"🔍 Welcher Eigentümer-Typ sind Sie?",
+    type_desc:"Klicken Sie auf Ihre Lebenslage für passende Strategien aus dem Forschungsbericht.",
+    type_seniors:"Senioren / Inaktive", type_heirs:"Erbengemeinschaften", type_investors:"Kapitalanleger",
+    strat_senioren_t:"Senioren & inaktive Eigentümer:innen",
+    strat_senioren_d:"Im Fokus stehen Entlastung und Sicherheit: Modelle wie die Verrentung (Viager) sichern eine lebenslange Rente samt barrierefreier Ersatzwohnung. Eine begleitete Beratung nimmt die organisatorische Last von Sanierung oder Vermietung ab.",
+    strat_erben_t:"Erbengemeinschaften",
+    strat_erben_d:"Uneinigkeit blockiert oft die Nutzung. Mediation und klare Verkaufs- oder Aktivierungsmodelle lösen die Gemeinschaft auf. Die Kommune unterstützt bei der zügigen Vermittlung an Investoren oder Genossenschaften.",
+    strat_anleger_t:"Kapitalanleger",
+    strat_anleger_d:"Sanierung wird zur Rendite: KfW- und BAFA-Förderungen kombiniert mit der Sanierungs-AfA senken die Kosten erheblich. Zwischennutzung vermeidet Leerstandskosten und schafft sofortige Erträge.",
+    fund_title:"💰 Verfügbare Fördergelder", fund_desc:"Aktuelle Programme für Ihre Region:",
+    fund_badge_1:"Bis zu 45% Zuschuss", btn_info:"Info",
+    fund_badge_2:"Bis zu 70% Förderung", btn_help:"Hilfe",
+    fund_local_title:"Kommunales Fassadenprogramm", fund_badge_3:"Zuschuss: 5.000€", btn_apply:"Antrag",
+    btn_print:"🖨 Übersicht drucken",
+    craft_title:"🛠️ Handwerker in der Nähe", craft_desc:"Experten im Umkreis von 10km.",
+    craft_placeholder:"PLZ oder Gewerk", link_call:"Anrufen",
+    tag_insulation:"Dämmung", tag_renovation:"Sanierung", craft_footer:"Geprüfte Partner der Kommune",
+    vacancy_title:"🏚️ Leerstand & Umnutzung",
+    vacancy_desc:"Haben Sie eine ungenutzte Immobilie? Melden Sie sie freiwillig für Förder-Programme.",
+    lbl_prop_type:"Art der Immobilie",
+    opt_vacant_home:"Wohnhaus", opt_commercial:"Gewerbe", opt_interim:"Potenzial für Zwischennutzung",
+    btn_submit_confidential:"Vertraulich absenden",
+    coop_title:"🤝 Modelle & Partnerschaft", coop_desc:"Wir bieten passgenaue Modelle für Ihre Situation:",
+    m1_b:"Verkauf/Aktivierung:", m1_t:"Unterstützung bei der Vermittlung an Investoren.",
+    m2_b:"Verrentung (Viager):", m2_t:"Lebenslange Rente und barrierefreie Ersatzwohnung.",
+    m3_b:"Verpachtung:", m3_t:"Sie behalten das Eigentum, profitieren aber von gesicherten Erträgen.",
+    m4_b:"Genossenschaften:", m4_t:"Unterstützung beim gemeinschaftlichen Erwerb.",
+    m5_b:"Zwischennutzung (Occupation précaire):", m5_t:"Kurzfristige Belebung zur Vermeidung von Vandalismus und Senkung laufender Kosten.",
+    m6_b:"Öffentlich-Private Partnerschaft:", m6_t:"Entlastung von baulichen und administrativen Risiken durch die Kommune.",
+    btn_book:"Beratung buchen",
+    rights_title:"⚖️ Rechte, Pflichten & Fristen",
+    rights_desc:"Vermeiden Sie Bußgelder und Haftungsrisiken. Hier sind die wichtigsten Punkte, die Sie als Eigentümer beachten müssen.",
+    duty_safe_title:"Verkehrssicherungspflicht",
+    duty_safe_desc:"Sie haften für Schäden durch Glatteis oder herabfallende Ziegel. <br><strong>Pflicht:</strong> Räum- und Streupflicht (7–20 Uhr), Baumkontrolle.",
+    duty_energy_title:"Energetische Nachrüstpflichten (GEG)",
+    duty_energy_desc:"Bei Eigentümerwechsel greifen oft Pflichten binnen 2 Jahren. <br><strong>Pflicht:</strong> Dämmung oberste Geschossdecke, Austausch 30+ Jahre alter Standardkessel.",
+    duty_turbo_title:"Bau-Turbo (§ 246e BauGB)",
+    duty_turbo_desc:"In Gebieten mit angespanntem Wohnungsmarkt können Abweichungen von Bebauungsplänen den Wohnungsbau beschleunigen. <br><strong>Hinweis:</strong> In Deutschland wird zudem die Grundsteuer C für baureife, ungenutzte Grundstücke als Lenkungsmittel eingesetzt.",
+    duty_clean_title:"Straßenreinigung & Rückschnitt",
+    duty_clean_desc:"Pflanzen dürfen nicht in den Gehweg ragen. Gehwege sind oft vom Anlieger zu reinigen. <br><strong>Pflicht:</strong> Rückschnitt bis Grundstücksgrenze, Kehrpflicht.",
+    legal_disclaimer:"Keine Rechtsberatung. Bitte prüfen Sie die lokale Ortssatzung.",
+    practice_title:"Better Practice: Von Nachbarn lernen",
+    badge_done:"Abgeschlossen 2024",
+    ex_1_title:"Scheune zu Loft-Wohnen",
+    ex_1_desc:"\u201EDie alte Scheune stand 10 Jahre leer. Durch die Umnutzung entstanden zwei moderne Mietwohnungen.\u201C",
+    kpi_cost:"Gesamtkosten", kpi_fund:"Förderanteil", kpi_amort:"Amortisation",
+    comments_title:"Fragen & Kommentare:",
+    comment_1:"Gibt es Probleme mit dem Denkmalschutz bei den großen Fenstern?",
+    placeholder_ask:"Frage stellen...", btn_send:"Senden",
+    badge_ongoing:"Laufend",
+    ex_2_title:"Energetische Kernsanierung",
+    ex_2_desc:"\u201EBaujahr 1970. Durch Wärmepumpe und Dämmung haben wir die Nebenkosten um 70% gesenkt.\u201C",
+    kpi_invest:"Investition", kpi_quota:"Förderquote", kpi_rent:"Rentabilität",
+    comment_2:"Welchen Energieberater hatten Sie? Wir suchen auch noch.",
+    comment_you:"Sie:",
+    cross_border_title:"🌍 Grenzüberschreitendes Fachwissen",
+    cross_border_desc:"Unterschiede verstehen – Chancen nutzen im Grenzraum Aachen-Belgien.",
+    cb_de_text:"Dezentrale Struktur mit kommunaler Planungshoheit. Fokus auf reaktive Instrumente wie vorhabenbezogene Bebauungspläne.",
+    cb_be_text:"Zentralisierter Sektorenplan der Region Wallonie. Hohe Flexibilität bei konkreten Genehmigungen durch das Prinzip der \u201Eguten räumlichen Ordnung\u201C.",
+    esc_title:"🪜 Warum Kooperation? Das 4-Stufen-Modell",
+    esc_desc:"Von freiwilliger Beratung bis zur Ultima Ratio: Klicken Sie auf eine Stufe für Details zu den Instrumenten in DE & BE.",
+    st0_short:"Kooperation", st0_sub:"Freiwilligkeit",
+    st1_short:"Finanzen", st1_sub:"Haltekosten",
+    st2_short:"Ordnungsrecht", st2_sub:"Gebote",
+    st3_short:"Ultima Ratio", st3_sub:"Zugriff",
+    stage0_t:"Stufe 0: Kooperation",
+    stage0_b:"<p>Priorität der Freiwilligkeit: Beratung und Entlastung der Eigentümer:innen stehen im Vordergrund.</p><p><strong>Deutschland (DE):</strong> § 13a BauGB – beschleunigte Verfahren für die Innenentwicklung.</p><p><strong>Belgien (BE):</strong> Reduzierter MwSt-Satz von 6 % für Renovierungen von Gebäuden, die älter als 10 Jahre sind.</p>",
+    stage1_t:"Stufe 1: Finanzen",
+    stage1_b:"<p>Erhöhung der Haltekosten ungenutzter Flächen, um eine Aktivierung anzureizen.</p><p><strong>Deutschland (DE):</strong> Grundsteuer C für baureife Grundstücke &amp; Sanierungs-AfA.</p><p><strong>Belgien (BE):</strong> Leerstandsabgabe &amp; Planungswertabgabe.</p>",
+    stage2_t:"Stufe 2: Ordnungsrecht",
+    stage2_b:"<p>Gesetzliche Gebote zur Sicherung des Gemeinwohls.</p><p><strong>Deutschland (DE):</strong> Baugebot (§ 176 BauGB) &amp; Modernisierungsgebot.</p><p><strong>Belgien (BE):</strong> Injonction urbanistique &amp; kommunales Vorkaufsrecht.</p>",
+    stage3_t:"Stufe 3: Ultima Ratio",
+    stage3_b:"<p>Stärkste Eingriffe bei dauerhafter Blockade – nur als letztes Mittel.</p><p><strong>Belgien (BE):</strong> Droit de Gestion Publique (öffentliche Verwaltung der Immobilie).</p><p><strong>Grenzüberschreitend:</strong> Enteignung (Expropriation) als äußerstes Instrument.</p>",
+    alarm_title:"🔔 Bau-Alarm: Nichts verpassen!",
+    alarm_desc:"Werden Sie benachrichtigt, wenn in Ihrem direkten Umfeld (Radius 200m) neue Bauprojekte in die Offenlage gehen oder Bebauungspläne geändert werden.",
+    ph_address:"Ihre Adresse", ph_email:"Ihre E-Mail", btn_activate:"Aktivieren",
+    modal_title:"Willkommen!", modal_desc:"Bitte wählen Sie Ihre Region für lokale Förderprogramme.",
+    lbl_country:"Land", lbl_zip:"Postleitzahl",
+    modal_error:"Diese PLZ liegt leider außerhalb unseres Pilotgebiets.", btn_enter:"Zum Bereich",
+    footer_line:"Interkommunale Bauentwicklung – StädteRegion Aachen & Ostbelgien",
+    toast_kfw:"KfW 261: Bis zu 45 % Zuschuss für die energetische Sanierung von Wohngebäuden.",
+    toast_bafa:"BAFA Heizungstausch: Bis zu 70 % Förderung beim Umstieg auf erneuerbare Heizsysteme.",
+    toast_form:"Fassadenprogramm: Das Antragsformular wird vorbereitet – die Kommune meldet sich.",
+    toast_search:"Suche gestartet – passende Handwerksbetriebe in Ihrer Nähe werden geladen.",
+    toast_booking:"Beratungstermin angefragt – wir melden uns zur Terminabstimmung.",
+    toast_alarm:"Bau-Alarm aktiviert – Sie werden bei neuen Projekten im 200m-Radius benachrichtigt.",
+    toast_vacancy:"Vertraulich übermittelt – Ihre Meldung wird geprüft. Vielen Dank!",
+    toast_comment:"Kommentar veröffentlicht.",
+    toast_region:"Region gespeichert – lokale Förderprogramme werden angezeigt.",
+    toast_theme_dark:"Dunkelmodus aktiviert.", toast_theme_light:"Hellmodus aktiviert."
+  },
+  en: {
+    nav_back:"← Back to overview",
+    header_title:"Preserve value, secure the future",
+    header_sub:"Your central portal for renovation and funding",
+    calc_title:"Renovation calculator",
+    calc_desc:"Enter your building data to determine your individual value-increase potential.",
+    prog_input:"Input", prog_result:"Result",
+    lbl_year:"Year built", lbl_type:"Building type",
+    opt_house:"Detached house", opt_row:"Terraced house", opt_multi:"Apartment building", opt_timber:"Timber-framed house",
+    lbl_insulation:"Current insulation standard",
+    opt_ins_none:"Unknown / no insulation", opt_ins_old:"Old stock (before 1995)", opt_ins_partial:"Partially insulated (e.g. roof only)", opt_ins_good:"Good (after 2005)",
+    btn_analyze:"Start analysis",
+    res_prefix:"Result for your",
+    res_disclaimer:"*Based on regional average values.",
+    energy_prefix:"Energy class", value_suffix:"potential value increase",
+    type_title:"🔍 Which type of owner are you?",
+    type_desc:"Click on your situation for tailored strategies from the research report.",
+    type_seniors:"Seniors / inactive", type_heirs:"Inheritance communities", type_investors:"Investors",
+    strat_senioren_t:"Seniors & inactive owners",
+    strat_senioren_d:"The focus is on relief and security: models such as life annuity (viager) provide a lifelong income plus a barrier-free replacement home. Guided advice takes the organisational burden of renovation or letting off your shoulders.",
+    strat_erben_t:"Inheritance communities",
+    strat_erben_d:"Disagreement often blocks any use. Mediation and clear sale or activation models dissolve the community. The municipality supports a swift transfer to investors or cooperatives.",
+    strat_anleger_t:"Investors",
+    strat_anleger_d:"Renovation becomes a return: KfW and BAFA grants combined with renovation depreciation (AfA) cut costs considerably. Interim use avoids vacancy costs and generates immediate income.",
+    fund_title:"💰 Available funding", fund_desc:"Current programmes for your region:",
+    fund_badge_1:"Up to 45% grant", btn_info:"Info",
+    fund_badge_2:"Up to 70% funding", btn_help:"Help",
+    fund_local_title:"Municipal façade programme", fund_badge_3:"Grant: €5,000", btn_apply:"Apply",
+    btn_print:"🖨 Print overview",
+    craft_title:"🛠️ Tradespeople nearby", craft_desc:"Experts within a 10 km radius.",
+    craft_placeholder:"Postcode or trade", link_call:"Call",
+    tag_insulation:"Insulation", tag_renovation:"Renovation", craft_footer:"Verified municipal partners",
+    vacancy_title:"🏚️ Vacancy & conversion",
+    vacancy_desc:"Do you own an unused property? Report it voluntarily for funding programmes.",
+    lbl_prop_type:"Type of property",
+    opt_vacant_home:"Residential building", opt_commercial:"Commercial", opt_interim:"Potential for interim use",
+    btn_submit_confidential:"Submit confidentially",
+    coop_title:"🤝 Models & partnership", coop_desc:"We offer tailored models for your situation:",
+    m1_b:"Sale/activation:", m1_t:"Support with finding investors.",
+    m2_b:"Life annuity (viager):", m2_t:"Lifelong income and a barrier-free replacement home.",
+    m3_b:"Leasing:", m3_t:"You keep ownership but benefit from secured returns.",
+    m4_b:"Cooperatives:", m4_t:"Support for joint acquisition.",
+    m5_b:"Interim use (occupation précaire):", m5_t:"Short-term revitalisation to prevent vandalism and reduce running costs.",
+    m6_b:"Public-private partnership:", m6_t:"Relief from structural and administrative risks through the municipality.",
+    btn_book:"Book a consultation",
+    rights_title:"⚖️ Rights, duties & deadlines",
+    rights_desc:"Avoid fines and liability risks. Here are the key points you must observe as an owner.",
+    duty_safe_title:"Duty to maintain safety",
+    duty_safe_desc:"You are liable for damage caused by black ice or falling roof tiles. <br><strong>Duty:</strong> clearing and gritting (7 am–8 pm), tree inspection.",
+    duty_energy_title:"Energy retrofit duties (GEG)",
+    duty_energy_desc:"When ownership changes, duties often apply within 2 years. <br><strong>Duty:</strong> insulate the top-floor ceiling, replace standard boilers older than 30 years.",
+    duty_turbo_title:"Building turbo (§ 246e BauGB)",
+    duty_turbo_desc:"In areas with a tight housing market, deviations from development plans can accelerate housing construction. <br><strong>Note:</strong> in Germany, property tax C is also used as a steering tool for ready-to-build, unused plots.",
+    duty_clean_title:"Street cleaning & pruning",
+    duty_clean_desc:"Plants must not protrude onto the pavement. Pavements often have to be cleaned by the adjacent owner. <br><strong>Duty:</strong> prune back to the property line, sweeping duty.",
+    legal_disclaimer:"Not legal advice. Please check your local bylaws.",
+    practice_title:"Better practice: learning from neighbours",
+    badge_done:"Completed 2024",
+    ex_1_title:"Barn to loft living",
+    ex_1_desc:"\u201CThe old barn stood empty for 10 years. The conversion created two modern rental flats.\u201D",
+    kpi_cost:"Total cost", kpi_fund:"Funding share", kpi_amort:"Amortisation",
+    comments_title:"Questions & comments:",
+    comment_1:"Are there issues with heritage protection for the large windows?",
+    placeholder_ask:"Ask a question...", btn_send:"Send",
+    badge_ongoing:"Ongoing",
+    ex_2_title:"Deep energy renovation",
+    ex_2_desc:"\u201CBuilt in 1970. With a heat pump and insulation we cut running costs by 70%.\u201D",
+    kpi_invest:"Investment", kpi_quota:"Funding rate", kpi_rent:"Profitability",
+    comment_2:"Which energy consultant did you use? We are still looking too.",
+    comment_you:"You:",
+    cross_border_title:"🌍 Cross-border expertise",
+    cross_border_desc:"Understand the differences – seize opportunities in the Aachen-Belgium border area.",
+    cb_de_text:"Decentralised structure with municipal planning authority. Focus on reactive instruments such as project-related development plans.",
+    cb_be_text:"Centralised sector plan of the Wallonia region. High flexibility for specific permits through the principle of \u201Cgood spatial order\u201D.",
+    esc_title:"🪜 Why cooperation? The 4-level model",
+    esc_desc:"From voluntary advice to the ultima ratio: click a level for details on the instruments in DE & BE.",
+    st0_short:"Cooperation", st0_sub:"Voluntary",
+    st1_short:"Finance", st1_sub:"Holding costs",
+    st2_short:"Regulatory law", st2_sub:"Orders",
+    st3_short:"Ultima ratio", st3_sub:"Access",
+    stage0_t:"Level 0: Cooperation",
+    stage0_b:"<p>Priority on voluntariness: advice and relief for owners come first.</p><p><strong>Germany (DE):</strong> § 13a BauGB – accelerated procedures for inner development.</p><p><strong>Belgium (BE):</strong> reduced VAT rate of 6% for renovations of buildings older than 10 years.</p>",
+    stage1_t:"Level 1: Finance",
+    stage1_b:"<p>Increasing the holding costs of unused land to incentivise activation.</p><p><strong>Germany (DE):</strong> property tax C for ready-to-build plots &amp; renovation depreciation.</p><p><strong>Belgium (BE):</strong> vacancy levy &amp; planning-value charge.</p>",
+    stage2_t:"Level 2: Regulatory law",
+    stage2_b:"<p>Legal orders to safeguard the common good.</p><p><strong>Germany (DE):</strong> building order (§ 176 BauGB) &amp; modernisation order.</p><p><strong>Belgium (BE):</strong> injonction urbanistique &amp; municipal right of first refusal.</p>",
+    stage3_t:"Level 3: Ultima ratio",
+    stage3_b:"<p>The strongest interventions in case of permanent blockage – only as a last resort.</p><p><strong>Belgium (BE):</strong> Droit de Gestion Publique (public management of the property).</p><p><strong>Cross-border:</strong> expropriation as the ultimate instrument.</p>",
+    alarm_title:"🔔 Building alert: don't miss a thing!",
+    alarm_desc:"Get notified when new building projects go on public display within 200 m of you, or development plans change.",
+    ph_address:"Your address", ph_email:"Your e-mail", btn_activate:"Activate",
+    modal_title:"Welcome!", modal_desc:"Please select your region for local funding programmes.",
+    lbl_country:"Country", lbl_zip:"Postcode",
+    modal_error:"Unfortunately this postcode is outside our pilot area.", btn_enter:"Enter the area",
+    footer_line:"Inter-municipal building development – Aachen city region & East Belgium",
+    toast_kfw:"KfW 261: up to 45% grant for the energy renovation of residential buildings.",
+    toast_bafa:"BAFA boiler replacement: up to 70% funding when switching to renewable heating.",
+    toast_form:"Façade programme: the application form is being prepared – the municipality will be in touch.",
+    toast_search:"Search started – matching tradespeople near you are being loaded.",
+    toast_booking:"Consultation requested – we will contact you to arrange a date.",
+    toast_alarm:"Building alert activated – you will be notified of new projects within 200 m.",
+    toast_vacancy:"Submitted confidentially – your report will be reviewed. Thank you!",
+    toast_comment:"Comment published.",
+    toast_region:"Region saved – local funding programmes are now shown.",
+    toast_theme_dark:"Dark mode enabled.", toast_theme_light:"Light mode enabled."
+  },
+  fr: {
+    nav_back:"← Retour à l'aperçu",
+    header_title:"Préserver la valeur, sécuriser l'avenir",
+    header_sub:"Votre portail central pour la rénovation et les aides",
+    calc_title:"Calculateur de rénovation",
+    calc_desc:"Saisissez les données de votre bâtiment pour estimer votre potentiel individuel de plus-value.",
+    prog_input:"Saisie", prog_result:"Résultat",
+    lbl_year:"Année de construction", lbl_type:"Type de bâtiment",
+    opt_house:"Maison individuelle", opt_row:"Maison mitoyenne", opt_multi:"Immeuble collectif", opt_timber:"Maison à colombages",
+    lbl_insulation:"Standard d'isolation actuel",
+    opt_ins_none:"Inconnu / sans isolation", opt_ins_old:"Ancien (avant 1995)", opt_ins_partial:"Partiellement isolé (p.ex. toit)", opt_ins_good:"Bon (après 2005)",
+    btn_analyze:"Lancer l'analyse",
+    res_prefix:"Résultat pour votre",
+    res_disclaimer:"*Sur la base de moyennes régionales.",
+    energy_prefix:"Classe énergétique", value_suffix:"plus-value possible",
+    type_title:"🔍 Quel type de propriétaire êtes-vous ?",
+    type_desc:"Cliquez sur votre situation pour des stratégies adaptées issues du rapport de recherche.",
+    type_seniors:"Seniors / inactifs", type_heirs:"Indivisions successorales", type_investors:"Investisseurs",
+    strat_senioren_t:"Seniors & propriétaires inactifs",
+    strat_senioren_d:"L'accent est mis sur l'allègement et la sécurité : des modèles comme la vente en viager assurent une rente à vie et un logement de remplacement sans obstacles. Un accompagnement personnalisé décharge de la gestion de la rénovation ou de la location.",
+    strat_erben_t:"Indivisions successorales",
+    strat_erben_d:"Les désaccords bloquent souvent l'usage. La médiation et des modèles clairs de vente ou d'activation permettent de dissoudre l'indivision. La commune soutient une transmission rapide à des investisseurs ou des coopératives.",
+    strat_anleger_t:"Investisseurs",
+    strat_anleger_d:"La rénovation devient un rendement : les aides KfW et BAFA combinées à l'amortissement de rénovation réduisent fortement les coûts. L'occupation précaire évite les coûts de vacance et génère des revenus immédiats.",
+    fund_title:"💰 Aides disponibles", fund_desc:"Programmes actuels pour votre région :",
+    fund_badge_1:"Jusqu'à 45% de subvention", btn_info:"Info",
+    fund_badge_2:"Jusqu'à 70% d'aide", btn_help:"Aide",
+    fund_local_title:"Programme communal de façades", fund_badge_3:"Subvention : 5 000 €", btn_apply:"Demande",
+    btn_print:"🖨 Imprimer l'aperçu",
+    craft_title:"🛠️ Artisans à proximité", craft_desc:"Experts dans un rayon de 10 km.",
+    craft_placeholder:"Code postal ou métier", link_call:"Appeler",
+    tag_insulation:"Isolation", tag_renovation:"Rénovation", craft_footer:"Partenaires agréés de la commune",
+    vacancy_title:"🏚️ Vacance & reconversion",
+    vacancy_desc:"Vous possédez un bien inutilisé ? Signalez-le volontairement pour les programmes d'aide.",
+    lbl_prop_type:"Type de bien",
+    opt_vacant_home:"Maison d'habitation", opt_commercial:"Commerce", opt_interim:"Potentiel d'occupation temporaire",
+    btn_submit_confidential:"Envoyer confidentiellement",
+    coop_title:"🤝 Modèles & partenariat", coop_desc:"Nous proposons des modèles adaptés à votre situation :",
+    m1_b:"Vente/activation :", m1_t:"Accompagnement pour la mise en relation avec des investisseurs.",
+    m2_b:"Viager :", m2_t:"Rente à vie et logement de remplacement sans obstacles.",
+    m3_b:"Bail emphytéotique :", m3_t:"Vous gardez la propriété tout en profitant de revenus garantis.",
+    m4_b:"Coopératives :", m4_t:"Accompagnement pour l'acquisition collective.",
+    m5_b:"Occupation précaire :", m5_t:"Redynamisation à court terme pour éviter le vandalisme et réduire les coûts courants.",
+    m6_b:"Partenariat public-privé :", m6_t:"Allègement des risques techniques et administratifs par la commune.",
+    btn_book:"Réserver un conseil",
+    rights_title:"⚖️ Droits, obligations & délais",
+    rights_desc:"Évitez les amendes et les risques de responsabilité. Voici les points essentiels à respecter en tant que propriétaire.",
+    duty_safe_title:"Obligation de sécurité",
+    duty_safe_desc:"Vous êtes responsable des dommages dus au verglas ou aux tuiles qui tombent. <br><strong>Obligation :</strong> déneigement et salage (7 h–20 h), contrôle des arbres.",
+    duty_energy_title:"Obligations de rénovation énergétique (GEG)",
+    duty_energy_desc:"Lors d'un changement de propriétaire, des obligations s'appliquent souvent dans un délai de 2 ans. <br><strong>Obligation :</strong> isolation du plafond du dernier étage, remplacement des chaudières standard de plus de 30 ans.",
+    duty_turbo_title:"Turbo de construction (§ 246e BauGB)",
+    duty_turbo_desc:"Dans les zones au marché du logement tendu, des dérogations aux plans d'urbanisme peuvent accélérer la construction de logements. <br><strong>Remarque :</strong> en Allemagne, la taxe foncière C s'applique aussi aux terrains constructibles inutilisés comme outil d'incitation.",
+    duty_clean_title:"Nettoyage de la voirie & élagage",
+    duty_clean_desc:"Les plantes ne doivent pas empiéter sur le trottoir. Les trottoirs doivent souvent être nettoyés par le riverain. <br><strong>Obligation :</strong> élagage jusqu'à la limite de propriété, obligation de balayage.",
+    legal_disclaimer:"Pas de conseil juridique. Veuillez vérifier le règlement local.",
+    practice_title:"Bonnes pratiques : apprendre de ses voisins",
+    badge_done:"Achevé en 2024",
+    ex_1_title:"D'une grange à un loft",
+    ex_1_desc:"\u00AB La vieille grange est restée vide 10 ans. La reconversion a créé deux appartements locatifs modernes. \u00BB",
+    kpi_cost:"Coût total", kpi_fund:"Part d'aide", kpi_amort:"Amortissement",
+    comments_title:"Questions & commentaires :",
+    comment_1:"Y a-t-il des problèmes de protection du patrimoine pour les grandes fenêtres ?",
+    placeholder_ask:"Poser une question...", btn_send:"Envoyer",
+    badge_ongoing:"En cours",
+    ex_2_title:"Rénovation énergétique complète",
+    ex_2_desc:"\u00AB Construit en 1970. Avec une pompe à chaleur et l'isolation, nous avons réduit les charges de 70%. \u00BB",
+    kpi_invest:"Investissement", kpi_quota:"Taux d'aide", kpi_rent:"Rentabilité",
+    comment_2:"Quel conseiller en énergie avez-vous eu ? Nous cherchons aussi.",
+    comment_you:"Vous :",
+    cross_border_title:"🌍 Expertise transfrontalière",
+    cross_border_desc:"Comprendre les différences – saisir les opportunités dans la zone frontalière Aix-la-Chapelle–Belgique.",
+    cb_de_text:"Structure décentralisée avec souveraineté communale en matière de planification. Accent sur des instruments réactifs comme les plans d'urbanisme liés à un projet.",
+    cb_be_text:"Plan de secteur centralisé de la Région wallonne. Grande flexibilité pour les permis concrets grâce au principe du \u00AB bon aménagement des lieux \u00BB.",
+    esc_title:"🪜 Pourquoi coopérer ? Le modèle à 4 niveaux",
+    esc_desc:"Du conseil volontaire à l'ultima ratio : cliquez sur un niveau pour les détails des instruments en DE & BE.",
+    st0_short:"Coopération", st0_sub:"Volontariat",
+    st1_short:"Finances", st1_sub:"Coûts de détention",
+    st2_short:"Droit de l'ordre public", st2_sub:"Injonctions",
+    st3_short:"Ultima ratio", st3_sub:"Accès",
+    stage0_t:"Niveau 0 : Coopération",
+    stage0_b:"<p>Priorité au volontariat : le conseil et l'allègement des propriétaires passent en premier.</p><p><strong>Allemagne (DE) :</strong> § 13a BauGB – procédures accélérées pour la densification.</p><p><strong>Belgique (BE) :</strong> taux de TVA réduit de 6 % pour la rénovation de bâtiments de plus de 10 ans.</p>",
+    stage1_t:"Niveau 1 : Finances",
+    stage1_b:"<p>Augmenter les coûts de détention des terrains inutilisés pour inciter à l'activation.</p><p><strong>Allemagne (DE) :</strong> taxe foncière C pour terrains constructibles &amp; amortissement de rénovation.</p><p><strong>Belgique (BE) :</strong> taxe sur les immeubles inoccupés &amp; taxe sur la plus-value de planification.</p>",
+    stage2_t:"Niveau 2 : Droit de l'ordre public",
+    stage2_b:"<p>Injonctions légales pour garantir l'intérêt général.</p><p><strong>Allemagne (DE) :</strong> injonction de construire (§ 176 BauGB) &amp; injonction de modernisation.</p><p><strong>Belgique (BE) :</strong> injonction urbanistique &amp; droit de préemption communal.</p>",
+    stage3_t:"Niveau 3 : Ultima ratio",
+    stage3_b:"<p>Les interventions les plus fortes en cas de blocage durable – uniquement en dernier recours.</p><p><strong>Belgique (BE) :</strong> Droit de Gestion Publique (gestion publique du bien).</p><p><strong>Transfrontalier :</strong> l'expropriation comme instrument ultime.</p>",
+    alarm_title:"🔔 Alerte chantier : ne rien manquer !",
+    alarm_desc:"Soyez averti lorsque de nouveaux projets de construction sont mis à l'enquête dans un rayon de 200 m, ou lorsque les plans d'urbanisme changent.",
+    ph_address:"Votre adresse", ph_email:"Votre e-mail", btn_activate:"Activer",
+    modal_title:"Bienvenue !", modal_desc:"Veuillez choisir votre région pour les programmes d'aide locaux.",
+    lbl_country:"Pays", lbl_zip:"Code postal",
+    modal_error:"Ce code postal se situe malheureusement hors de notre zone pilote.", btn_enter:"Accéder à l'espace",
+    footer_line:"Développement intercommunal – Région urbaine d'Aix-la-Chapelle & Belgique de l'Est",
+    toast_kfw:"KfW 261 : jusqu'à 45 % de subvention pour la rénovation énergétique des logements.",
+    toast_bafa:"BAFA remplacement de chaudière : jusqu'à 70 % d'aide pour passer au chauffage renouvelable.",
+    toast_form:"Programme de façades : le formulaire de demande est en préparation – la commune vous contactera.",
+    toast_search:"Recherche lancée – les artisans correspondants près de chez vous sont chargés.",
+    toast_booking:"Rendez-vous de conseil demandé – nous vous contacterons pour fixer une date.",
+    toast_alarm:"Alerte chantier activée – vous serez averti des nouveaux projets dans un rayon de 200 m.",
+    toast_vacancy:"Envoyé confidentiellement – votre signalement sera examiné. Merci !",
+    toast_comment:"Commentaire publié.",
+    toast_region:"Région enregistrée – les programmes d'aide locaux s'affichent.",
+    toast_theme_dark:"Mode sombre activé.", toast_theme_light:"Mode clair activé."
+  }
+};
+
+let LANG = 'de';
+let activeStrategy = null;
+
+function t(k){ return (I18N[LANG] && I18N[LANG][k] !== undefined) ? I18N[LANG][k] : (I18N.de[k] !== undefined ? I18N.de[k] : k); }
+
+/* ---------- SPRACHE ---------- */
+function changeLanguage(lang){
+  if(!I18N[lang]) return;
+  LANG = lang;
+  localStorage.setItem('baukompass_lang', lang);
+  document.documentElement.lang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const v = I18N[lang][el.dataset.i18n];
+    if(v === undefined) return;
+    const tag = el.tagName;
+    if((tag === 'INPUT' || tag === 'TEXTAREA') && el.hasAttribute('placeholder')) el.placeholder = v;
+    else el.innerHTML = v;
+  });
+  if(activeStrategy){
+    document.getElementById('strategy-title').textContent = t('strat_'+activeStrategy+'_t');
+    document.getElementById('strategy-text').textContent = t('strat_'+activeStrategy+'_d');
+  }
+}
+
+/* ---------- THEME (Dark/Light) ---------- */
+function applyTheme(theme){
+  document.documentElement.setAttribute('data-theme', theme);
+  const tg = document.getElementById('themeToggle');
+  if(tg) tg.textContent = theme === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('baukompass_theme', theme);
+}
+function toggleTheme(){
+  const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  showToast(next === 'dark' ? t('toast_theme_dark') : t('toast_theme_light'));
+}
+
+/* ---------- TOASTS ---------- */
+function showToast(msg){
+  const zone = document.getElementById('toastZone');
+  if(!zone) return;
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  zone.appendChild(el);
+  setTimeout(() => el.remove(), 3800);
+}
+
+/* ---------- HEADER / NAV / SCROLL ---------- */
+(function navSetup(){
+  const burger = document.getElementById('burgerBtn');
+  if(burger){
+    burger.addEventListener('click', () => {
+      const nav = document.getElementById('navTools');
+      const open = nav.classList.toggle('open');
+      burger.setAttribute('aria-expanded', String(open));
+    });
+  }
+  window.addEventListener('scroll', () => {
+    const h = document.getElementById('siteHeader');
+    const top = document.getElementById('toTop');
+    if(h) h.classList.toggle('scrolled', window.scrollY > 8);
+    if(top) top.classList.toggle('visible', window.scrollY > 500);
+  }, { passive:true });
+})();
+
+/* ---------- REGION / PLZ-MODAL ---------- */
+const PILOT = {
+  DE: p => /^52\d{3}$/.test(p),   // StädteRegion Aachen (52xxx)
+  BE: p => /^47\d{2}$/.test(p),   // Ostbelgien: Eupen, Kelmis, Raeren, Lontzen (47xx)
+  NL: () => false                 // keine NL-Pilotkommunen
+};
+function hideLocationModal(){
+  const m = document.getElementById('location-modal');
+  if(m) m.classList.remove('open');
+  document.body.style.overflow = '';
+}
+function setRegionDisplay(country, plz){
+  const flag = { DE:'🇩🇪', BE:'🇧🇪', NL:'🇳🇱' }[country] || '';
+  const disp = document.getElementById('header-location-display');
+  if(disp) disp.textContent = '· ' + flag + ' ' + plz;
+}
+document.getElementById('location-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const country = document.getElementById('country-select').value;
+  const plz = document.getElementById('plz-input').value.trim();
+  const err = document.getElementById('location-error');
+  const ok = PILOT[country] && PILOT[country](plz);
+  if(!ok){ err.classList.add('show'); return; }
+  err.classList.remove('show');
+  localStorage.setItem('baukompass_region', JSON.stringify({ country, plz }));
+  setRegionDisplay(country, plz);
+  hideLocationModal();
+  showToast(t('toast_region'));
+});
+
+/* ---------- SANIERUNGS-RECHNER ---------- */
+function calculateRenovation(){
+  const year = parseInt(document.getElementById('inp-year').value, 10);
+  const typeSel = document.getElementById('inp-type');
+  const typeText = typeSel.options[typeSel.selectedIndex].textContent;
+  const ins = document.getElementById('inp-insulation').value;
+  let idx = ({ none:7, old:6, partial:4, good:2 })[ins];
+  if(!isNaN(year)){
+    if(year < 1979) idx += 1;
+    else if(year >= 2010) idx -= 2;
+    else if(year >= 1995) idx -= 1;
+  }
+  idx = Math.max(0, Math.min(7, idx));
+  const letters = ['A','B','C','D','E','F','G','H'];
+  const cls = letters[idx];
+  const potential = 15 + Math.round((idx / 7) * 25);
+  document.getElementById('res-year').textContent = isNaN(year) ? '—' : year;
+  document.getElementById('res-type').textContent = typeText;
+  document.getElementById('energy-class-text').textContent = t('energy_prefix') + ' ' + cls;
+  document.getElementById('value-text').textContent = '↑ ' + potential + '% ' + t('value_suffix');
+  document.querySelectorAll('.energy-step').forEach(s => s.classList.remove('lit'));
+  const step = document.querySelector('.energy-step.e-' + cls);
+  if(step) step.classList.add('lit');
+  document.getElementById('simulation-result').style.display = 'block';
+  document.getElementById('pstep1').classList.add('done');
+  document.getElementById('pstep1').classList.remove('current');
+  document.getElementById('pstep2').classList.add('current');
+  document.getElementById('simulation-result').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+/* ---------- EIGENTÜMER-TYP / STRATEGIE ---------- */
+function showStrategy(type){
+  activeStrategy = type;
+  document.querySelectorAll('.type-btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.type === type)));
+  document.getElementById('strategy-title').textContent = t('strat_' + type + '_t');
+  document.getElementById('strategy-text').textContent = t('strat_' + type + '_d');
+  document.getElementById('strategy-content').style.display = 'block';
+}
+
+/* ---------- ESKALATIONS-STUFEN (Slide-out) ---------- */
+function openStage(n){
+  document.getElementById('slideTitle').textContent = t('stage' + n + '_t');
+  document.getElementById('slideBody').innerHTML = t('stage' + n + '_b');
+  document.getElementById('slideout').classList.add('open');
+  document.getElementById('slideBackdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeStage(){
+  document.getElementById('slideout').classList.remove('open');
+  document.getElementById('slideBackdrop').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ---------- KOMMENTARE ---------- */
+function addComment(id){
+  const input = document.getElementById('input-' + id);
+  const val = input.value.trim();
+  if(!val) return;
+  const li = document.createElement('li');
+  li.className = 'comment-bubble';
+  const who = document.createElement('span');
+  who.className = 'comment-author';
+  who.textContent = t('comment_you') + ' ';
+  li.appendChild(who);
+  li.appendChild(document.createTextNode(val));
+  document.getElementById('comments-' + id).appendChild(li);
+  input.value = '';
+  showToast(t('toast_comment'));
+}
+
+/* ---------- LEERSTAND-FORMULAR ---------- */
+document.getElementById('vacancyForm').addEventListener('submit', e => {
+  e.preventDefault();
+  e.target.reset();
+  showToast(t('toast_vacancy'));
+});
+
+/* ---------- TASTATUR: ESC schließt Overlays ---------- */
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape'){ closeStage(); }
+});
+
+/* ---------- INIT ---------- */
+(function init(){
+  applyTheme(localStorage.getItem('baukompass_theme') || 'light');
+  changeLanguage(localStorage.getItem('baukompass_lang') || 'de');
+  const stored = localStorage.getItem('baukompass_region');
+  if(stored){
+    try{
+      const r = JSON.parse(stored);
+      if(r && r.country && r.plz){ setRegionDisplay(r.country, r.plz); hideLocationModal(); }
+    }catch(e){ /* ignorieren */ }
+  }
+})();
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
 
 
 
