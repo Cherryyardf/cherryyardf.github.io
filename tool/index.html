@@ -98,6 +98,7 @@ a{color:var(--teal-dark)}
 
 /* ============ LAYOUT ============ */
 .dash{max-width:1180px;margin:0 auto;width:100%;padding:26px 20px 70px;display:grid;gap:22px}
+.dash > *{min-width:0}
 .panel{
   background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
   padding:24px;box-shadow:var(--shadow-sm);
@@ -144,6 +145,7 @@ a{color:var(--teal-dark)}
 
 /* ============ CHARTS ============ */
 .charts{display:grid;grid-template-columns:1.4fr 1fr;gap:22px}
+.charts > *{min-width:0}
 .bar-row{display:grid;grid-template-columns:130px 1fr 56px;align-items:center;gap:12px;padding:7px 0}
 .bar-row .bar-label{font-size:.83rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bar-track{height:12px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border);overflow:hidden}
