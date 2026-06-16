@@ -1,589 +1,978 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Für Gemeinden - BAUKOMPASS</title>
-    <style>
-        :root {
-            --bg-color: #f8f1d9;
-            --text-color: #222;
-            --accent-color: #2c3e50;
-            --active-tab: #e67e22;
-            --cat-infra: #34495e;
-            --cat-wohnen: #d35400;
-            --cat-sozial: #27ae60;
-            --cat-natur: #2ecc71;
-        }
-        body { 
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
-            margin: 0; padding: 0; 
-            background-color: var(--bg-color); 
-            color: var(--text-color); 
-            line-height: 1.6; 
-        }
-        
-        /* Navigation */
-       /* --- EINHEITLICHE NAVIGATION & SPRACHUMSCHALTER --- */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 40px;
-            background: white;
-            border-bottom: 1px solid #e0e0e0;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="BAUKOMPASS für Gemeinden – MORO-Strategien, Geoportale, Immobilien-Tool und interkommunale Projekte in der StädteRegion Aachen & Ostbelgien.">
+<title>Für Gemeinden – BAUKOMPASS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ============ DESIGN TOKENS (identisch zu index.html) ============ */
+:root{
+  --navy:#1a2e4a; --navy-deep:#12233c; --navy-soft:#23446b;
+  --teal:#2a9d8f; --teal-dark:#1f7a70; --teal-soft:rgba(42,157,143,.12);
+  --bg:#f4f7fa; --surface:#ffffff; --surface-2:#eaf0f5;
+  --text:#1c2733; --text-2:#56687a; --border:#dce5ed;
+  --amber:#e9c46a; --red:#e76f51;
+  --shadow-sm:0 1px 3px rgba(18,35,60,.08);
+  --shadow-md:0 6px 24px rgba(18,35,60,.10);
+  --radius:14px;
+  --header-h:68px;
+}
+[data-theme="dark"]{
+  --navy:#27496f; --navy-deep:#0c1626; --navy-soft:#33598a;
+  --teal:#3cb8a9; --teal-dark:#2a9d8f; --teal-soft:rgba(60,184,169,.14);
+  --bg:#0e1726; --surface:#16243a; --surface-2:#1d2f4b;
+  --text:#e9eff6; --text-2:#9db0c4; --border:#28405f;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.4);
+  --shadow-md:0 8px 28px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+body{
+  margin:0;font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  animation:pageFade .45s ease both;
+  transition:background-color .3s ease,color .3s ease;
+  display:flex;flex-direction:column;min-height:100vh;
+}
+@keyframes pageFade{from{opacity:0}to{opacity:1}}
+body.leaving{opacity:0;transition:opacity .25s ease}
+a{color:var(--teal-dark)}
+:focus-visible{outline:3px solid var(--teal);outline-offset:2px;border-radius:4px}
 
-        .nav-links {
-            flex: 1;
-            display: flex;
-            justify-content: flex-start;
-        }
+/* ============ HEADER ============ */
+.site-header{
+  position:sticky;top:0;z-index:90;height:var(--header-h);
+  background:color-mix(in srgb,var(--surface) 88%,transparent);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  transition:box-shadow .25s ease,background-color .3s ease;
+}
+.site-header.scrolled{box-shadow:var(--shadow-md)}
+.header-inner{max-width:1180px;margin:0 auto;height:100%;padding:0 20px;display:flex;align-items:center;gap:18px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);font-weight:900;letter-spacing:.14em;font-size:1.05rem;text-transform:uppercase}
+.brand svg{flex-shrink:0}
+.main-nav{display:flex;gap:4px;margin-left:auto}
+.main-nav a{
+  text-decoration:none;color:var(--text-2);font-size:.8rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.06em;padding:8px 12px;border-radius:8px;
+  transition:color .2s,background-color .2s;
+}
+.main-nav a:hover{color:var(--teal-dark);background:var(--teal-soft)}
+.main-nav a[aria-current="page"]{color:var(--teal-dark);background:var(--teal-soft)}
+.header-tools{display:flex;align-items:center;gap:8px}
+.lang-switch{display:flex;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:3px;gap:2px}
+.lang-btn{
+  border:0;background:none;color:var(--text-2);font:inherit;font-size:.72rem;font-weight:800;
+  padding:5px 9px;border-radius:6px;cursor:pointer;transition:all .2s;letter-spacing:.04em;
+}
+.lang-btn:hover{color:var(--text)}
+.lang-btn.active{background:var(--navy);color:#fff;box-shadow:var(--shadow-sm)}
+[data-theme="dark"] .lang-btn.active{background:var(--teal)}
+.theme-toggle{
+  width:38px;height:38px;border-radius:9px;border:1px solid var(--border);
+  background:var(--surface-2);cursor:pointer;display:grid;place-items:center;
+  font-size:1rem;transition:transform .2s,background-color .2s;color:var(--text);
+}
+.theme-toggle:hover{transform:rotate(15deg)}
+.menu-btn{display:none;width:40px;height:40px;border:1px solid var(--border);background:var(--surface-2);border-radius:9px;cursor:pointer;color:var(--text);font-size:1.15rem}
+.accent-line{height:3px;background:linear-gradient(90deg,var(--navy) 0%,var(--teal) 55%,var(--amber) 100%)}
 
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-color);
-            font-weight: bold;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-        }
+/* ============ PAGE HERO ============ */
+.page-hero{position:relative;text-align:center;padding:60px 20px 36px;overflow:hidden}
+.page-hero::before{
+  content:"";position:absolute;inset:0;opacity:.55;pointer-events:none;
+  background:
+    radial-gradient(620px 300px at 18% -10%, rgba(233,196,106,.18), transparent 70%),
+    radial-gradient(620px 320px at 85% 0%, rgba(26,46,74,.10), transparent 70%);
+}
+[data-theme="dark"] .page-hero::before{opacity:.9}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;font-size:.72rem;font-weight:800;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--teal-dark);
+  background:var(--teal-soft);border:1px solid color-mix(in srgb,var(--teal) 35%,transparent);
+  padding:6px 14px;border-radius:99px;margin-bottom:18px;position:relative;
+}
+.page-hero h1{font-size:clamp(1.8rem,4.4vw,2.7rem);font-weight:900;line-height:1.14;letter-spacing:-.02em;margin:0 0 12px;position:relative}
+.page-hero h1 .accent{color:var(--teal-dark)}
+[data-theme="dark"] .page-hero h1 .accent{color:var(--teal)}
+.page-hero p{max-width:620px;margin:0 auto;font-size:1.05rem;color:var(--text-2);position:relative}
 
-        .logo {
-            font-weight: 900;
-            font-size: 1.5rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            text-decoration: none;
-            color: black;
-            text-align: center;
-        }
+/* ============ TABS ============ */
+.tabs-wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+.tabs{
+  display:flex;flex-wrap:wrap;gap:6px;background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:7px;box-shadow:var(--shadow-sm);
+  position:sticky;top:calc(var(--header-h) + 11px);z-index:60;
+}
+.tab-btn{
+  flex:1 1 auto;border:0;background:none;color:var(--text-2);font:inherit;font-size:.82rem;
+  font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:11px 14px;border-radius:9px;
+  cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;
+}
+.tab-btn:hover{color:var(--teal-dark);background:var(--teal-soft)}
+.tab-btn[aria-selected="true"]{background:var(--navy);color:#fff;box-shadow:var(--shadow-sm)}
+[data-theme="dark"] .tab-btn[aria-selected="true"]{background:var(--teal);color:#06121f}
+.tab-panel{display:none;animation:panelIn .35s ease both}
+.tab-panel.active{display:block}
+@keyframes panelIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 
-        .lang-switch {
-            display: flex;
-            gap: 10px;
-            flex: 1;
-            justify-content: flex-end;
-        }
+.section{max-width:1180px;margin:0 auto;padding:34px 20px 70px;width:100%}
+.section-title{font-size:1.35rem;font-weight:900;letter-spacing:-.01em;margin:0 0 6px}
+.section-sub{color:var(--text-2);margin:0 0 26px;max-width:720px}
 
-        .lang-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            opacity: 0.5;
-            transition: opacity 0.2s, transform 0.2s;
-            padding: 0;
-            color: #222;
-            font-weight: normal;
-        }
+/* ============ INFO-BLÖCKE ============ */
+.info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+.info-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:28px 26px;box-shadow:var(--shadow-sm);position:relative;overflow:hidden;
+  transition:transform .25s ease,box-shadow .25s ease;
+}
+.info-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+.info-card::after{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--block-accent,var(--teal))}
+.info-num{
+  display:inline-grid;place-items:center;width:40px;height:40px;border-radius:11px;font-weight:900;
+  background:color-mix(in srgb,var(--block-accent,var(--teal)) 14%,var(--surface));
+  border:1px solid color-mix(in srgb,var(--block-accent,var(--teal)) 32%,transparent);
+  color:var(--text);margin-bottom:14px;font-size:1rem;
+}
+.info-card h3{margin:0 0 10px;font-size:1.06rem;font-weight:800;line-height:1.35}
+.info-card p{margin:0 0 10px;color:var(--text-2);font-size:.93rem}
+.info-card p:last-child{margin-bottom:0}
+.info-card blockquote{
+  margin:14px 0 0;padding:12px 16px;border-left:3px solid var(--block-accent,var(--teal));
+  background:var(--surface-2);border-radius:0 10px 10px 0;font-size:.9rem;color:var(--text-2);font-style:italic;
+}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.compare-box{border:1px solid var(--border);border-radius:11px;padding:14px 15px;background:var(--surface-2)}
+.compare-box h4{margin:0 0 6px;font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.compare-box.de h4{color:var(--navy-soft)}
+[data-theme="dark"] .compare-box.de h4{color:#8fb3e2}
+.compare-box.be h4{color:var(--teal-dark)}
+[data-theme="dark"] .compare-box.be h4{color:var(--teal)}
+.compare-box p{margin:0;font-size:.84rem;color:var(--text-2)}
+.compare-box .law{display:inline-block;margin-top:8px;font-size:.7rem;font-weight:800;letter-spacing:.06em;border:1px solid var(--border);border-radius:99px;padding:3px 9px;background:var(--surface)}
+.key-insight{
+  margin-top:14px;padding:13px 16px;border-radius:11px;font-size:.9rem;
+  background:var(--teal-soft);border:1px solid color-mix(in srgb,var(--teal) 32%,transparent);
+}
+.key-insight strong{color:var(--teal-dark)}
+[data-theme="dark"] .key-insight strong{color:var(--teal)}
 
-        .lang-btn:hover, .lang-btn.active {
-            opacity: 1;
-            transform: scale(1.1);
-            color: #222;
-        }
+/* ============ GEOPORTALE ============ */
+.portal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.portal-card{
+  display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:22px 20px;text-decoration:none;color:var(--text);
+  box-shadow:var(--shadow-sm);transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;
+  position:relative;overflow:hidden;
+}
+.portal-card::after{
+  content:"";position:absolute;left:0;right:0;top:0;height:4px;background:var(--teal);
+  transform:scaleX(.3);transform-origin:left;transition:transform .3s ease;
+}
+.portal-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:color-mix(in srgb,var(--teal) 45%,var(--border))}
+.portal-card:hover::after{transform:scaleX(1)}
+.portal-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:1.25rem;background:var(--teal-soft);border:1px solid color-mix(in srgb,var(--teal) 30%,transparent);margin-bottom:14px}
+.portal-card h3{margin:0 0 6px;font-size:.98rem;font-weight:800}
+.portal-card .flag{position:absolute;top:18px;right:18px;font-size:.66rem;font-weight:800;letter-spacing:.1em;border:1px solid var(--border);border-radius:99px;padding:3px 9px;background:var(--surface-2);color:var(--text-2)}
+.portal-card p{margin:0;font-size:.84rem;color:var(--text-2);flex-grow:1}
+.portal-card .go{margin-top:16px;font-weight:800;font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;color:var(--teal-dark);display:inline-flex;align-items:center;gap:6px}
+[data-theme="dark"] .portal-card .go{color:var(--teal)}
+.portal-card .go::after{content:"↗";transition:transform .25s ease}
+.portal-card:hover .go::after{transform:translate(3px,-2px)}
 
-        /* Tabs */
-        .tab-container { display: flex; justify-content: center; border-bottom: 2px solid #ccc; margin-bottom: 40px; background: white; padding-top: 20px; flex-wrap: wrap; }
-        .tab-button { background-color: transparent; border: none; cursor: pointer; padding: 14px 25px; font-size: 1rem; font-weight: bold; color: #666; border-bottom: 4px solid transparent; transition: 0.3s; }
-        .tab-button:hover { color: var(--accent-color); background: #f9f9f9; }
-        .tab-button.active { color: var(--accent-color); border-bottom: 4px solid var(--active-tab); }
-        .tab-content { display: none; animation: fadeEffect 0.5s; padding: 0 20px 40px 20px; }
+/* ============ TOOL-TEASER ============ */
+.tool-teaser{
+  position:relative;border-radius:var(--radius);overflow:hidden;color:#fff;
+  background:linear-gradient(135deg,var(--navy-deep) 0%,var(--navy) 55%,var(--teal-dark) 130%);
+  padding:54px 44px;box-shadow:var(--shadow-md);
+}
+.tool-teaser::before{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background:radial-gradient(560px 280px at 85% 15%, rgba(42,157,143,.4), transparent 70%);
+}
+.tool-teaser .hero-eyebrow{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.25);color:#9fe3da}
+.tool-teaser h3{font-size:clamp(1.5rem,3.4vw,2.1rem);font-weight:900;margin:0 0 12px;line-height:1.2;position:relative}
+.tool-teaser p{max-width:560px;margin:0 0 24px;color:#c4d0de;position:relative}
+.tool-feats{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 30px;padding:0;list-style:none;position:relative}
+.tool-feats li{
+  font-size:.78rem;font-weight:700;letter-spacing:.04em;padding:7px 13px;border-radius:99px;
+  background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.2);
+}
+.btn{
+  display:inline-flex;align-items:center;gap:9px;border:0;cursor:pointer;text-decoration:none;
+  font:inherit;font-weight:800;font-size:.88rem;letter-spacing:.04em;text-transform:uppercase;
+  padding:14px 26px;border-radius:11px;transition:transform .2s ease,box-shadow .2s ease,background-color .2s;
+}
+.btn-primary{background:var(--teal);color:#06221e;box-shadow:0 6px 20px rgba(42,157,143,.4)}
+.btn-primary:hover{transform:translateY(-2px);background:#36b3a4}
+.btn-ghost{background:var(--surface-2);color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--teal-soft);color:var(--teal-dark)}
+.btn-navy{background:var(--navy);color:#fff}
+.btn-navy:hover{background:var(--navy-soft);transform:translateY(-1px)}
+.tool-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:26px}
+.tool-step{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm)}
+.tool-step .k{font-size:.7rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--teal-dark)}
+[data-theme="dark"] .tool-step .k{color:var(--teal)}
+.tool-step h4{margin:7px 0 6px;font-size:.98rem;font-weight:800}
+.tool-step p{margin:0;font-size:.85rem;color:var(--text-2)}
 
-        /* Layout & Text */
-        .content-wrapper { width: 100%; max-width: 1400px; margin: 0 auto; }
-        .info-section { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 30px; }
-        .info-section h2 { color: var(--accent-color); border-left: 5px solid var(--active-tab); padding-left: 15px; margin-top: 0; }
-        .highlight-box { background: #fdf6e3; border-left: 4px solid #b58900; padding: 20px; margin: 20px 0; font-style: italic; }
-        
-        /* Grid */
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
-        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); position: relative; display: flex; flex-direction: column; }
-        
-        /* Projekte: Tabellen-Spalten-Layout */
-        .project-table-row { display: flex; gap: 20px; align-items: flex-start; overflow-x: auto; padding-bottom: 10px; }
-        .project-col { flex: 1; min-width: 300px; }
-        .col-title { background: var(--accent-color); color: white; padding: 15px; border-radius: 8px 8px 0 0; font-weight: bold; text-align: center; font-size: 0.9rem; }
-        .project-card { background: white; padding: 20px; border-radius: 0 0 8px 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-top: 4px solid transparent; margin-bottom: 20px; }
-        .project-card.infra { border-top-color: var(--cat-infra); }
-        .project-card.wohnen { border-top-color: var(--cat-wohnen); }
-        .project-card.sozial { border-top-color: var(--cat-sozial); }
-        .project-card.natur { border-top-color: var(--cat-natur); }
+/* ============ GEMEINDEN-GRID ============ */
+.muni-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.muni-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:20px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:4px;
+  transition:transform .25s ease,box-shadow .25s ease;position:relative;
+}
+.muni-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+.muni-card .be-badge{
+  position:absolute;top:16px;right:16px;font-size:.64rem;font-weight:800;letter-spacing:.08em;
+  border-radius:99px;padding:3px 9px;background:rgba(233,196,106,.18);
+  border:1px solid color-mix(in srgb,var(--amber) 55%,transparent);color:var(--text);
+}
+.muni-card h3{margin:0;font-size:1rem;font-weight:800}
+.muni-card .addr{font-size:.83rem;color:var(--text-2);flex-grow:1}
+.muni-card a{
+  margin-top:12px;font-size:.76rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+  text-decoration:none;color:var(--teal-dark);display:inline-flex;gap:6px;align-items:center;
+}
+[data-theme="dark"] .muni-card a{color:var(--teal)}
+.muni-card a::after{content:"→";transition:transform .2s}
+.muni-card a:hover::after{transform:translateX(4px)}
 
-        /* Badges */
-        .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; color: white; font-size: 0.65rem; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; }
-        .bg-infra { background: var(--cat-infra); }
-        .bg-wohnen { background: var(--cat-wohnen); }
-        .bg-sozial { background: var(--cat-sozial); }
-        .bg-natur { background: var(--cat-natur); }
+/* ============ PROJEKTE ============ */
+.project-list{display:grid;gap:16px}
+.project-card{
+  display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:center;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:22px 24px;box-shadow:var(--shadow-sm);transition:transform .25s ease,box-shadow .25s ease;
+}
+.project-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+.project-icon{width:52px;height:52px;border-radius:13px;display:grid;place-items:center;font-size:1.4rem;background:color-mix(in srgb,var(--proj-accent,var(--teal)) 14%,var(--surface));border:1px solid color-mix(in srgb,var(--proj-accent,var(--teal)) 32%,transparent)}
+.project-card .cat{font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text-2)}
+.project-card h3{margin:3px 0 4px;font-size:1.05rem;font-weight:800}
+.project-card p{margin:0;font-size:.88rem;color:var(--text-2)}
+.status-badge{
+  display:inline-block;margin-top:8px;font-size:.7rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
+  padding:4px 11px;border-radius:99px;background:color-mix(in srgb,var(--proj-accent,var(--teal)) 15%,var(--surface));
+  border:1px solid color-mix(in srgb,var(--proj-accent,var(--teal)) 45%,transparent);
+}
+.proj-mobil{--proj-accent:var(--navy-soft)}
+[data-theme="dark"] .proj-mobil{--proj-accent:#5f8cc7}
+.proj-eigen{--proj-accent:var(--teal)}
+.proj-sozial{--proj-accent:var(--amber)}
+.proj-natur{--proj-accent:#57a05c}
 
-        /* Modal */
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
-        .modal-content { background-color: white; margin: 5% auto; padding: 30px; border-radius: 8px; width: 90%; max-width: 500px; }
-        .modal-content input, .modal-content textarea, .modal-content select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        .btn-contact { background: var(--active-tab); color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; text-align: center; display: block; text-decoration: none; }
+/* ============ MODAL ============ */
+.modal-backdrop{
+  position:fixed;inset:0;z-index:300;background:rgba(8,17,30,.6);backdrop-filter:blur(4px);
+  display:none;align-items:center;justify-content:center;padding:20px;
+}
+.modal-backdrop.open{display:flex;animation:pageFade .25s ease both}
+.modal{
+  width:min(540px,100%);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  box-shadow:var(--shadow-md);padding:30px 28px;animation:modalIn .3s ease both;max-height:90vh;overflow:auto;
+}
+@keyframes modalIn{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:none}}
+.modal h2{margin:0 0 4px;font-size:1.25rem;font-weight:900}
+.modal .modal-sub{margin:0 0 22px;font-size:.88rem;color:var(--text-2)}
+.modal label{display:block;font-size:.78rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--text-2);margin:0 0 6px}
+.modal .field{margin-bottom:16px}
+.modal input,.modal select,.modal textarea{
+  width:100%;font:inherit;font-size:.92rem;color:var(--text);background:var(--surface-2);
+  border:1px solid var(--border);border-radius:10px;padding:11px 13px;transition:border-color .2s;
+}
+.modal input:focus,.modal select:focus,.modal textarea:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-soft)}
+.modal textarea{resize:vertical;min-height:96px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:6px;flex-wrap:wrap}
+.field-error{display:none;font-size:.78rem;color:var(--red);margin-top:5px;font-weight:600}
+.field.invalid .field-error{display:block}
+.field.invalid input,.field.invalid textarea{border-color:var(--red)}
 
-        @keyframes fadeEffect { from {opacity: 0;} to {opacity: 1;} }
+/* ============ FOOTER / TOAST / TO-TOP ============ */
+.site-footer{background:var(--navy-deep);color:#c4d0de;padding:42px 20px;margin-top:auto}
+.footer-inner{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between}
+.footer-inner p{margin:0;font-size:.85rem}
+.footer-links{display:flex;gap:22px}
+.footer-links a{color:#c4d0de;text-decoration:none;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;transition:color .2s}
+.footer-links a:hover{color:var(--teal)}
+.toast-region{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:400;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast{
+  background:var(--navy-deep);color:#fff;padding:13px 22px;border-radius:11px;
+  font-size:.9rem;font-weight:600;box-shadow:var(--shadow-md);display:flex;gap:10px;align-items:center;
+  animation:toastIn .3s ease both;border-left:4px solid var(--teal);max-width:min(92vw,440px);
+}
+.toast.out{animation:toastOut .3s ease both}
+@keyframes toastIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes toastOut{to{opacity:0;transform:translateY(14px)}}
+.to-top{
+  position:fixed;right:22px;bottom:22px;z-index:150;width:46px;height:46px;border-radius:50%;
+  background:var(--navy);color:#fff;border:0;cursor:pointer;font-size:1.15rem;box-shadow:var(--shadow-md);
+  opacity:0;visibility:hidden;transform:translateY(12px);transition:all .3s ease;
+}
+.to-top.show{opacity:1;visibility:visible;transform:translateY(0)}
+.to-top:hover{background:var(--teal-dark)}
 
-        </style>
+/* ============ RESPONSIVE ============ */
+@media (max-width:1020px){
+  .portal-grid{grid-template-columns:repeat(3,1fr)}
+  .muni-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:920px){
+  .info-grid{grid-template-columns:1fr}
+  .tool-steps{grid-template-columns:1fr}
+  .main-nav{
+    display:none;position:fixed;top:calc(var(--header-h) + 3px);left:0;right:0;z-index:89;
+    flex-direction:column;background:var(--surface);border-bottom:1px solid var(--border);
+    padding:14px 20px;box-shadow:var(--shadow-md);gap:6px;margin:0;
+  }
+  .main-nav.open{display:flex;animation:toastIn .25s ease}
+  .main-nav a{padding:13px 12px;font-size:.9rem}
+  .menu-btn{display:grid;place-items:center}
+  .tabs{position:static}
+  .tab-btn{flex:1 1 44%}
+  .project-card{grid-template-columns:auto 1fr;row-gap:14px}
+  .project-card .btn{grid-column:1/-1;justify-content:center}
+  .tool-teaser{padding:38px 26px}
+}
+@media (max-width:680px){
+  .portal-grid{grid-template-columns:repeat(2,1fr)}
+  .muni-grid{grid-template-columns:repeat(2,1fr)}
+  .compare{grid-template-columns:1fr}
+}
+@media (max-width:520px){
+  .lang-btn{padding:5px 7px}
+  .brand span{display:none}
+  .portal-grid,.muni-grid{grid-template-columns:1fr}
+}
+@media print{
+  .site-header,.site-footer,.to-top,.toast-region,.tabs,.modal-backdrop{display:none}
+  body{background:#fff;color:#000}
+  .tab-panel{display:block!important}
+}
+</style>
 </head>
 <body>
 
-    <div id="contactModal" class="modal">
-        <div class="modal-content">
-            <h2 data-i18n="modal_title">Projekt-Anfrage</h2>
-            <p style="font-size: 0.8rem; color: #666;" data-i18n="modal_desc">Vermittlung via StädteRegion Aachen.</p>
-            <form id="projectForm">
-                <input type="text" placeholder="Organisation / Gemeinde" required>
-                <input type="email" placeholder="E-Mail" required>
-                <textarea rows="4" id="modalMessage" placeholder="Ihre Nachricht..."></textarea>
-                <button type="submit" class="btn-contact" data-i18n="modal_submit">Anfrage absenden</button>
-                <button type="button" onclick="closeModal()" style="background:none; border:none; color:#888; width:100%; margin-top:10px; cursor:pointer;" data-i18n="modal_cancel">Abbrechen</button>
-            </form>
+<a class="brand" href="#main" style="position:absolute;left:-9999px" data-i18n="skip_link">Zum Inhalt springen</a>
+
+<header class="site-header" id="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="brand" data-nav aria-label="BAUKOMPASS – Startseite">
+      <svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+        <circle cx="15" cy="15" r="13.5" stroke="var(--teal)" stroke-width="2.4"/>
+        <path d="M15 4.5 L18 15 L15 25.5 L12 15 Z" fill="var(--navy)"/>
+        <path d="M15 4.5 L18 15 H12 Z" fill="var(--teal)"/>
+        <circle cx="15" cy="15" r="2" fill="var(--surface)"/>
+      </svg>
+      <span>BAUKOMPASS</span>
+    </a>
+
+    <nav class="main-nav" id="main-nav" aria-label="Hauptnavigation">
+      <a href="seite-bewohner.html" data-nav data-i18n="nav_res">Bewohner:innen</a>
+      <a href="seite-eigentuemer.html" data-nav data-i18n="nav_own">Eigentümer:innen</a>
+      <a href="gemeinden.html" aria-current="page" data-i18n="nav_mun">Gemeinden</a>
+    </nav>
+
+    <div class="header-tools">
+      <div class="lang-switch" role="group" aria-label="Sprache wählen">
+        <button onclick="changeLanguage('de')" class="lang-btn active" data-lang="de" aria-label="Deutsch">DE</button>
+        <button onclick="changeLanguage('en')" class="lang-btn" data-lang="en" aria-label="English">EN</button>
+        <button onclick="changeLanguage('fr')" class="lang-btn" data-lang="fr" aria-label="Français">FR</button>
+      </div>
+      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" aria-label="Dunkelmodus umschalten">🌙</button>
+      <button class="menu-btn" id="menu-btn" aria-label="Menü öffnen" aria-expanded="false" onclick="toggleMenu()">☰</button>
+    </div>
+  </div>
+  <div class="accent-line" aria-hidden="true"></div>
+</header>
+
+<main id="main">
+
+  <section class="page-hero">
+    <span class="hero-eyebrow" data-i18n="hero_eyebrow">StädteRegion Aachen · Ostbelgien</span>
+    <h1><span data-i18n="hero_title_a">Von Gemeinden</span> <span class="accent" data-i18n="hero_title_b">für Gemeinden</span></h1>
+    <p data-i18n="hero_desc">MORO-Strategieprozess, Geoportale, Immobilien-Monitoring und interkommunale Projekte – gebündelt an einem Ort.</p>
+  </section>
+
+  <div class="tabs-wrap">
+    <div class="tabs" role="tablist" aria-label="Themenbereiche">
+      <button class="tab-btn" role="tab" id="tab-info" aria-selected="true" aria-controls="panel-info" onclick="switchTab('info')"><span aria-hidden="true">📋</span><span data-i18n="tab_info">Informationen</span></button>
+      <button class="tab-btn" role="tab" id="tab-geo" aria-selected="false" aria-controls="panel-geo" tabindex="-1" onclick="switchTab('geo')"><span aria-hidden="true">🗺️</span><span data-i18n="tab_geo">Geoportale</span></button>
+      <button class="tab-btn" role="tab" id="tab-tool" aria-selected="false" aria-controls="panel-tool" tabindex="-1" onclick="switchTab('tool')"><span aria-hidden="true">📊</span><span data-i18n="tab_tool">Immobilien-Tool</span></button>
+      <button class="tab-btn" role="tab" id="tab-muni" aria-selected="false" aria-controls="panel-muni" tabindex="-1" onclick="switchTab('muni')"><span aria-hidden="true">🏛️</span><span data-i18n="tab_muni">Gemeinden</span></button>
+      <button class="tab-btn" role="tab" id="tab-proj" aria-selected="false" aria-controls="panel-proj" tabindex="-1" onclick="switchTab('proj')"><span aria-hidden="true">🤝</span><span data-i18n="tab_proj">Projekte</span></button>
+    </div>
+  </div>
+
+  <!-- ============ TAB 1: INFORMATIONEN ============ -->
+  <section class="section tab-panel active" id="panel-info" role="tabpanel" aria-labelledby="tab-info">
+    <h2 class="section-title" data-i18n="info_title">Strategische Grundlagen</h2>
+    <p class="section-sub" data-i18n="info_sub">Vier Bausteine des MORO-Strategieprozesses „Mehr Wohnraum schaffen“ für die Grenzregion.</p>
+
+    <div class="info-grid">
+      <article class="info-card" style="--block-accent:var(--teal)">
+        <span class="info-num" aria-hidden="true">1</span>
+        <h3>Status Quo &amp; Flächenpotenziale</h3>
+        <p>Das MORO-Konzept „Mehr Wohnraum schaffen“ hat gezeigt, dass die identifizierten Flächenpotenziale oft zweitrangig sind oder aufgrund schwieriger Eigentümerstrukturen kaum nutzbar bleiben. Aktuelle Bauvorhaben haben Vorrang, wodurch die tatsächliche Aktivierung dieser Flächen erst verzögert stattfinden kann.</p>
+        <blockquote>„Der Widerstand von Eigentümer:innen führt zu einer schwachen Innenentwicklung und einem stetigen Wachstum nach außen – ein Trend, der sowohl in Deutschland als auch in Belgien sichtbar ist.“</blockquote>
+      </article>
+
+      <article class="info-card" style="--block-accent:var(--navy-soft)">
+        <span class="info-num" aria-hidden="true">2</span>
+        <h3>Systemvergleich: Reaktiv vs. Proaktiv</h3>
+        <p>Zwei Planungskulturen treffen in der Grenzregion aufeinander – mit gegensätzlichen Stärken und Schwächen.</p>
+        <div class="compare">
+          <div class="compare-box de">
+            <h4>🇩🇪 Deutschland (Reaktiv)</h4>
+            <p>Fokus auf Schutz der Naturräume und Infrastruktureffizienz. Instrumente wie der vorhabenbezogene B-Plan reagieren auf private Initiativen. Folge: hoher Zeitaufwand und Schwerfälligkeit.</p>
+            <span class="law">§ 12 BauGB</span>
+          </div>
+          <div class="compare-box be">
+            <h4>🇧🇪 Belgien (Proaktiv)</h4>
+            <p>Angebotsplanung über ZACC-Zonen, um Eigenheimbau zu forcieren. Hohe Geschwindigkeit und einfache Eigentumsbildung. Folge: starke Zersiedelung und hoher Flächenverbrauch.</p>
+            <span class="law">CoDT / ZACC</span>
+          </div>
         </div>
+      </article>
+
+      <article class="info-card" style="--block-accent:var(--amber)">
+        <span class="info-num" aria-hidden="true">3</span>
+        <h3>Strategische Vision: RegFNP &amp; Infrastruktur</h3>
+        <p>Ein Transfer von Verantwortlichkeiten ist das Ziel: Die Übertragung des Flächennutzungsplans (FNP) auf die StädteRegion Aachen – analog zum RVR im Ruhrgebiet – würde Ressourcen bündeln und eine gesamtregionale Steuerung ermöglichen.</p>
+        <div class="key-insight"><strong data-i18n="info_key">Zentrale Erkenntnis:</strong> Grenzüberschreitende Kooperation gelingt am besten über den gemeinsamen Ausbau von Infrastruktur und Mobilität, statt über den reinen Wohnungsbau. Nur eine verknüpfte Grenzregion kann den Wohnungsdruck nachhaltig bewältigen.</div>
+      </article>
+
+      <article class="info-card" style="--block-accent:#57a05c">
+        <span class="info-num" aria-hidden="true">4</span>
+        <h3>Ausblick 2035: Innen- vor Außenentwicklung</h3>
+        <p>Mit Blick auf die Prognosen ab 2035 (Bevölkerungsrückgang) ist die proaktive Ansprache der Eigentümerschaft unerlässlich. Der Leitfaden zur Eigentümeraktivierung dient hierbei als zentrales Werkzeug, um Leerständen vorausschauend vorzubeugen.</p>
+        <p style="margin-top:6px"><button class="btn btn-ghost" style="padding:10px 18px;font-size:.78rem" onclick="switchTab('tool')" data-i18n="info_to_tool">Zum Immobilien-Tool →</button></p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ TAB 2: GEOPORTALE ============ -->
+  <section class="section tab-panel" id="panel-geo" role="tabpanel" aria-labelledby="tab-geo" hidden>
+    <h2 class="section-title" data-i18n="geo_title">Geoportale &amp; Kartendienste</h2>
+    <p class="section-sub" data-i18n="geo_sub">Acht externe Fachportale für Planung, Umwelt und Bodenwerte – Deutschland und Belgien.</p>
+
+    <div class="portal-grid">
+      <a class="portal-card" href="https://geoportal.staedteregion-aachen.de" target="_blank" rel="noopener">
+        <span class="portal-icon" aria-hidden="true">🗺️</span><span class="flag">DE</span>
+        <h3>Geoportal StädteRegion</h3>
+        <p>Zentrales Portal für B-Pläne, FNP und Katasterdaten der Region.</p>
+        <span class="go" data-i18n="geo_open">Portal öffnen</span>
+      </a>
+      <a class="portal-card" href="https://www.tim-online.nrw.de" target="_blank" rel="noopener">
+        <span class="portal-icon" aria-hidden="true">🛰️</span><span class="flag">DE</span>
+        <h3>TIM-online</h3>
+        <p>Geobasisdaten NRW: Topographische Karten und Luftbilder im Detail.</p>
+        <span class="go" data-i18n="geo_open">Portal öffnen</span>
+      </a>
+      <a class="portal-card" href="https://www.bauportal.nrw" target="_blank" rel="noopener">
+        <span class="portal-icon" aria-hidden="true">🏗️</span><span class="flag">DE</span>
+        <h3>Bauportal.NRW</h3>
+        <p>Zentrale Informationsplattform für alles rund um das Bauen in NRW.</p>
+        <span class="go" data-i18n="geo_open">Portal öffnen</span>
+      </a>
+      <a class="portal-card" href="https://www.umweltportal.nrw.de" target="_blank" rel="noopener">
+        <span class="portal-icon" aria-hidden="true">🌿</span><span class="flag">DE</span>
+        <h3>Umweltportal NRW</h3>
+        <p>Interaktive Karten zu Lärm, Wasser, Luft und Naturschutz lokal entdecken.</p>
+        <span class="go" data-i18n="geo_open_map">Karten öffnen</span>
+      </a>
+      <a class="portal-card" href="https://www.solare-stadt.de/staedteregion-aachen" target="_blank" rel="noopener">
+        <span class="portal-icon" aria-hidden="true">☀️</span><span class="flag">DE</span>
+        <h3>Solardachbörse AC</h3>
+        <p>Solarpotenzialkataster und Dachbörse der StädteRegion Aachen.</p>
+        <span class="go" data-i18n="geo_open">Portal öffnen</span>
+      </a>
+      <a class="portal-card" href="https://geoportail.wallonie.be/walonmap" target="_blank" rel="noopener">
+        <span class="portal-icon" aria-hidden="true">🧭</span><span class="flag">BE</span>
+        <h3>WalOnMap</h3>
+        <p>Geoportail de la Wallonie: Sektorenplan und Geodaten für Wallonien.</p>
+        <span class="go" data-i18n="geo_open_map">Karte öffnen</span>
+      </a>
+      <a class="portal-card" href="https://www.geo.be" target="_blank" rel="noopener">
+        <span class="portal-icon" aria-hidden="true">🇧🇪</span><span class="flag">BE</span>
+        <h3>Geo.be</h3>
+        <p>Zentrales Geoportal der belgischen föderalen Institutionen.</p>
+        <span class="go" data-i18n="geo_open">Portal öffnen</span>
+      </a>
+      <a class="portal-card" href="https://www.boris.nrw.de" target="_blank" rel="noopener">
+        <span class="portal-icon" aria-hidden="true">💶</span><span class="flag">DE</span>
+        <h3>BORIS.NRW</h3>
+        <p>Bodenrichtwerte und Marktberichte für ganz Nordrhein-Westfalen.</p>
+        <span class="go" data-i18n="geo_check">Werte prüfen</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============ TAB 3: IMMOBILIEN-TOOL ============ -->
+  <section class="section tab-panel" id="panel-tool" role="tabpanel" aria-labelledby="tab-tool" hidden>
+    <div class="tool-teaser">
+      <span class="hero-eyebrow" data-i18n="tool_eyebrow">Kommunales Dashboard</span>
+      <h3 data-i18n="tool_title">Immobilien-Aktivierungs-Tool</h3>
+      <p data-i18n="tool_desc">Das funktionale Herzstück für die Kommunalverwaltung: Leerstands-Monitoring, MORO-Zielerreichung und der Aktivierungs-Tracker nach dem 4-Stufen-Eskalationsmodell – live und interaktiv.</p>
+      <ul class="tool-feats">
+        <li data-i18n="tool_feat1">📈 KPI-Übersicht</li>
+        <li data-i18n="tool_feat2">🏘️ 13 Kommunen filterbar</li>
+        <li data-i18n="tool_feat3">🧮 Leerstandsquoten</li>
+        <li data-i18n="tool_feat4">🪜 Eskalationsstufen 0–3</li>
+      </ul>
+      <a href="tool/index.html" class="btn btn-primary" data-nav data-i18n="tool_cta">Dashboard öffnen →</a>
     </div>
 
-<nav>
-    <div class="nav-links">
-        <a href="index.html" data-i18n="nav_back">&larr; Zurück</a>
+    <div class="tool-steps">
+      <div class="tool-step">
+        <span class="k" data-i18n="tool_s1_k">Schritt 1</span>
+        <h4 data-i18n="tool_s1_t">Daten &amp; Meldungen</h4>
+        <p data-i18n="tool_s1_d">Gemeldete Leerstände aus den Bewohner:innen- und Eigentümer:innen-Formularen laufen zentral zusammen.</p>
+      </div>
+      <div class="tool-step">
+        <span class="k" data-i18n="tool_s2_k">Schritt 2</span>
+        <h4 data-i18n="tool_s2_t">Analyse &amp; Priorisierung</h4>
+        <p data-i18n="tool_s2_d">Objekte werden nach Dringlichkeit und Eskalationsstufe sortiert – von Erstkontakt bis hoheitlichem Eingriff.</p>
+      </div>
+      <div class="tool-step">
+        <span class="k" data-i18n="tool_s3_k">Schritt 3</span>
+        <h4 data-i18n="tool_s3_t">Aktivierung &amp; Monitoring</h4>
+        <p data-i18n="tool_s3_d">Fortschritte gegenüber den MORO-Zielen werden je Kommune visualisiert und vergleichbar gemacht.</p>
+      </div>
     </div>
-    <a href="index.html" class="logo">BAUKOMPASS</a>
-    
-    <div class="lang-switch">
-        <button onclick="changeLanguage('de')" class="lang-btn active" data-lang="de">DE</button>
-        <button onclick="changeLanguage('en')" class="lang-btn" data-lang="en">EN</button>
-        <button onclick="changeLanguage('fr')" class="lang-btn" data-lang="fr">FR</button>
+  </section>
+
+  <!-- ============ TAB 4: GEMEINDEN ============ -->
+  <section class="section tab-panel" id="panel-muni" role="tabpanel" aria-labelledby="tab-muni" hidden>
+    <h2 class="section-title" data-i18n="muni_title">Die 13 Kommunen der Kooperation</h2>
+    <p class="section-sub" data-i18n="muni_sub">StädteRegion Aachen und ostbelgische Partnergemeinden mit Anschrift und Bürgerservice.</p>
+    <div class="muni-grid" id="muni-grid"></div>
+  </section>
+
+  <!-- ============ TAB 5: PROJEKTE ============ -->
+  <section class="section tab-panel" id="panel-proj" role="tabpanel" aria-labelledby="tab-proj" hidden>
+    <h2 class="section-title" data-i18n="proj_title">Interkommunale Projekte</h2>
+    <p class="section-sub" data-i18n="proj_sub">Laufende Kooperationen der Grenzregion – Anfragen werden über die StädteRegion Aachen vermittelt.</p>
+
+    <div class="project-list">
+      <article class="project-card proj-mobil">
+        <span class="project-icon" aria-hidden="true">🚆</span>
+        <div>
+          <span class="cat" data-i18n="proj1_cat">Infrastruktur &amp; Mobilität</span>
+          <h3>Interkommunale Mobilitätsachse</h3>
+          <p data-i18n="proj1_desc">Ausbau der Anbindung Aachen–Umland zur Entlastung des Wohnungsdrucks.</p>
+          <span class="status-badge" data-i18n="proj1_status">Strategisch</span>
+        </div>
+        <button class="btn btn-navy" onclick="openModal('Interkommunale Mobilitätsachse')" data-i18n="proj_cta">Anfrage stellen</button>
+      </article>
+
+      <article class="project-card proj-eigen">
+        <span class="project-icon" aria-hidden="true">🔑</span>
+        <div>
+          <span class="cat" data-i18n="proj2_cat">Wohnen &amp; Innenentwicklung</span>
+          <h3>Eigentümeraktivierung</h3>
+          <p data-i18n="proj2_desc">Anwendung des MORO-Leitfadens zur Mobilisierung von Innenpotenzialen.</p>
+          <span class="status-badge" data-i18n="proj2_status">Pilot</span>
+        </div>
+        <button class="btn btn-navy" onclick="openModal('Eigentümeraktivierung')" data-i18n="proj_cta">Anfrage stellen</button>
+      </article>
+
+      <article class="project-card proj-sozial">
+        <span class="project-icon" aria-hidden="true">🏢</span>
+        <div>
+          <span class="cat" data-i18n="proj3_cat">Soziales &amp; Wohnraum</span>
+          <h3>Sozialer Wohnungsbau AC</h3>
+          <p data-i18n="proj3_desc">Bündelung von Fördermitteln für grenznahe Sozialprojekte.</p>
+          <span class="status-badge" data-i18n="proj3_status">In Planung</span>
+        </div>
+        <button class="btn btn-navy" onclick="openModal('Sozialer Wohnungsbau AC')" data-i18n="proj_cta">Anfrage stellen</button>
+      </article>
+
+      <article class="project-card proj-natur">
+        <span class="project-icon" aria-hidden="true">🌬️</span>
+        <div>
+          <span class="cat" data-i18n="proj4_cat">Natur &amp; Umwelt</span>
+          <h3>Klimaanalyse Rurtal</h3>
+          <p data-i18n="proj4_desc">Grenzüberschreitende Analyse von Kaltluftströmen.</p>
+          <span class="status-badge" data-i18n="proj4_status">Gutachten</span>
+        </div>
+        <button class="btn btn-navy" onclick="openModal('Klimaanalyse Rurtal')" data-i18n="proj_cta">Anfrage stellen</button>
+      </article>
     </div>
-</nav>
-    <div style="text-align: center; margin: 40px 0;">
-        <h1 data-i18n="main_title">Von Gemeinden für Gemeinden</h1>
-        <p data-i18n="main_subtitle">MORO-Strategieprozess StädteRegion Aachen & Ostbelgien</p>
-    </div>
+  </section>
 
-    <div class="tab-container">
-        <button class="tab-button active" onclick="openTab(event, 'Info')" data-i18n="tab_info">Informationen</button>
-        <button class="tab-button" onclick="openTab(event, 'Geoportale')" data-i18n="tab_geo">Geoportale</button>
-        <button class="tab-button" onclick="openTab(event, 'Tool')" data-i18n="tab_tool">Immobilien-Tool</button>
-        <button class="tab-button" onclick="openTab(event, 'Kontakte')" data-i18n="tab_contacts">Gemeinden</button>
-        <button class="tab-button" onclick="openTab(event, 'Projekte')" data-i18n="tab_projects">Projekte</button>
-    </div>
+</main>
 
-    <main class="content-wrapper">
-        
-        <div id="Info" class="tab-content" style="display: block;">
-            <div class="info-section">
-                <h2 data-i18n="info_1_title">1. Status Quo & Flächenpotenziale</h2>
-                <p data-i18n="info_1_text">Das MORO-Konzept „Mehr Wohnraum schaffen“ hat gezeigt, dass die identifizierten Flächenpotenziale oft zweitrangig sind oder aufgrund schwieriger Eigentümerstrukturen kaum nutzbar bleiben. Aktuelle Bauvorhaben haben Vorrang, wodurch die tatsächliche Aktivierung dieser Flächen erst verzögert stattfinden kann.</p>
-                <div class="highlight-box" data-i18n="info_highlight">
-                    „Der Widerstand von Eigentümer:innen führt zu einer schwachen Innenentwicklung und einem stetigen Wachstum nach außen – ein Trend, der sowohl in Deutschland als auch in Belgien sichtbar ist.“
-                </div>
-            </div>
-
-            <div class="info-section">
-                <h2 data-i18n="info_2_title">2. Systemvergleich: Reaktiv vs. Proaktiv</h2>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px;">
-                    <div>
-                        <h4 style="color: #c0392b;" data-i18n="sys_de_title">Deutschland (Reaktiv)</h4>
-                        <p style="font-size: 0.9rem;" data-i18n="sys_de_text">Fokus auf Schutz der Naturräume und Infrastruktureffizienz. Instrumente wie der vorhabenbezogene B-Plan (§ 12 BauGB) reagieren auf private Initiativen. <strong>Folge:</strong> Hoher Zeitaufwand und Schwerfälligkeit.</p>
-                    </div>
-                    <div>
-                        <h4 style="color: #27ae60;" data-i18n="sys_be_title">Belgien (Proaktiv)</h4>
-                        <p style="font-size: 0.9rem;" data-i18n="sys_be_text">Angebotsplanung (ZACC-Zonen), um Eigenheimbau zu forcieren. Hohe Geschwindigkeit und einfache Eigentumsbildung. <strong>Folge:</strong> Starke Zersiedelung und hoher Flächenverbrauch.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="info-section">
-                <h2 data-i18n="info_3_title">3. Strategische Vision: RegFNP & Infrastruktur</h2>
-                <p data-i18n="info_3_text">Ein Transfer von Verantwortlichkeiten ist das Ziel: Die Übertragung des Flächennutzungsplans (FNP) auf die <strong>StädteRegion Aachen</strong> (analog zum RVR im Ruhrgebiet) würde Ressourcen bündeln und eine gesamtregionale Steuerung ermöglichen.</p>
-                <p data-i18n="info_3_sub"><strong>Zentrale Erkenntnis:</strong> Grenzüberschreitende Kooperation gelingt am besten über den <strong>gemeinsamen Ausbau der Infrastruktur und Mobilität</strong>, statt über den reinen Wohnungsbau. Nur eine verknüpfte Grenzregion kann den Wohnungsdruck nachhaltig bewältigen.</p>
-            </div>
-
-            <div class="info-section">
-                <h2 data-i18n="info_4_title">4. Ausblick: Innen- vor Außenentwicklung</h2>
-                <p data-i18n="info_4_text">Mit Blick auf die Prognosen ab 2035 (Bevölkerungsrückgang) ist die proaktive Ansprache der Eigentümerschaft unerlässlich. Der Leitfaden zur Eigentümeraktivierung dient hierbei als zentrales Werkzeug, um Leerständen vorausschauend vorzubeugen.</p>
-            </div>
-        </div>
-
-        <div id="Geoportale" class="tab-content">
-            <div class="grid-container">
-                <div class="card" style="border-top: 5px solid #00549f;">
-                    <h3>Geoportal StädteRegion</h3>
-                    <p>Zentrales Portal für B-Pläne, FNP und Katasterdaten der Region.</p>
-                    <a href="https://geoportal.staedteregion-aachen.de/" target="_blank" style="color: var(--active-tab); font-weight: bold; text-decoration: none; margin-top: 10px;">Portal öffnen &rarr;</a>
-                </div>
-
-                <div class="card" style="border-top: 5px solid #2ecc71;">
-                    <h3>TIM-online</h3>
-                    <p>Geobasisdaten NRW: Topographische Karten und Luftbilder im Detail.</p>
-                    <a href="https://www.tim-online.nrw.de/tim-online2/" target="_blank" style="color: var(--active-tab); font-weight: bold; text-decoration: none; margin-top: 10px;">Portal öffnen &rarr;</a>
-                </div>
-
-                <div class="card" style="border-top: 5px solid #3498db;">
-                    <h3>Bauportal.NRW</h3>
-                    <p>Zentrale Informationsplattform für alles rund um das Bauen in NRW.</p>
-                    <a href="https://bauportal.nrw/" target="_blank" style="color: var(--active-tab); font-weight: bold; text-decoration: none; margin-top: 10px;">Portal öffnen &rarr;</a>
-                </div>
-
-                <div class="card" style="border-top: 5px solid #27ae60;">
-                    <h3>Umweltportal NRW</h3>
-                    <p>Interaktive Karten zu Lärm, Wasser, Luft und Naturschutz lokal entdecken.</p>
-                    <a href="https://www.umweltportal.nrw.de/karten" target="_blank" style="color: var(--active-tab); font-weight: bold; text-decoration: none; margin-top: 10px;">Karten öffnen &rarr;</a>
-                </div>
-
-                <div class="card" style="border-top: 5px solid #f1c40f;">
-                    <h3>Solardachbörse AC</h3>
-                    <p>Solarpotenzialkataster und Dachbörse der StädteRegion Aachen.</p>
-                    <a href="https://www.solare-stadt.de/staedteregion-aachen/solardachboerse" target="_blank" style="color: var(--active-tab); font-weight: bold; text-decoration: none; margin-top: 10px;">Portal öffnen &rarr;</a>
-                </div>
-
-                <div class="card" style="border-top: 5px solid #ffcc00;">
-                    <h3>WalOnMap (Belgien)</h3>
-                    <p>Geoportail de la Wallonie: Sektorenplan und Geodaten für Wallonien.</p>
-                    <a href="https://geoportail.wallonie.be/walonmap" target="_blank" style="color: var(--active-tab); font-weight: bold; text-decoration: none; margin-top: 10px;">Karte öffnen &rarr;</a>
-                </div>
-
-                <div class="card" style="border-top: 5px solid #e74c3c;">
-                    <h3>Geo.be</h3>
-                    <p>Zentrales Geoportal der belgischen föderalen Institutionen.</p>
-                    <a href="https://www.geo.be/home?l=de" target="_blank" style="color: var(--active-tab); font-weight: bold; text-decoration: none; margin-top: 10px;">Portal öffnen &rarr;</a>
-                </div>
-
-                <div class="card" style="border-top: 5px solid #d32f2f;">
-                    <h3>BORIS.NRW</h3>
-                    <p>Bodenrichtwerte und Marktberichte für ganz Nordrhein-Westfalen.</p>
-                    <a href="https://www.boris.nrw.de" target="_blank" style="color: var(--active-tab); font-weight: bold; text-decoration: none; margin-top: 10px;">Werte prüfen &rarr;</a>
-                </div>
-            </div>
-        </div>
-
-        <div id="Tool" class="tab-content">
-            <div style="background: white; border-radius: 8px; overflow: hidden; min-height: 800px;">
-                <iframe id="seamless-tool" src="tool/index.html" style="width: 100%; border: none; min-height: 800px;"></iframe>
-            </div>
-        </div>
-
-<div id="Kontakte" class="tab-content">
-    <div class="grid-container">
-        <div class="card">
-            <h3>Stadt Aachen</h3>
-            <p>Zollernstraße 10</p>
-            <a href="https://www.aachen.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;" data-i18n="link_service">Service &rarr;</a>
-        </div>
-        
-        <div class="card">
-            <h3>Stolberg</h3>
-            <p>Rathausstraße 11</p>
-            <a href="https://www.stolberg.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;" data-i18n="link_service">Service &rarr;</a>
-        </div>
-
-        <div class="card">
-            <h3>Simmerath</h3>
-            <p>Rathausplatz 1</p>
-            <a href="https://www.simmerath.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;" data-i18n="link_service">Service &rarr;</a>
-        </div>
-
-        <div class="card">
-            <h3>Eschweiler</h3>
-            <p>Johannes-Rau-Platz 1</p>
-            <a href="https://www.eschweiler.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;" data-i18n="link_service">Service &rarr;</a>
-        </div>
-
-        <div class="card">
-            <h3>Monschau</h3>
-            <p>Laufenstraße 84</p>
-            <a href="https://www.monschau.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;" data-i18n="link_service">Service &rarr;</a>
-        </div>
-
-        <div class="card" style="border-right: 4px solid #ffcc00;">
-            <h3>Raeren (B)</h3>
-            <p>Hauptstraße 87</p>
-            <a href="https://www.raeren.be" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;" data-i18n="link_service">Service &rarr;</a>
-        </div>
-
-        <div class="card" style="border-right: 4px solid #ffcc00;">
-            <h3>Kelmis (B)</h3>
-            <p>Kirchstraße 31</p>
-            <a href="https://www.kelmis.be" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;" data-i18n="link_service">Service &rarr;</a>
-        </div>
-
-        <div class="card" style="border-right: 4px solid #ffcc00;">
-            <h3>Lontzen (B)</h3>
-            <p>Kirchstraße 46</p>
-            <a href="https://www.lontzen.be" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;" data-i18n="link_service">Service &rarr;</a>
-        </div>
-
-        <div class="card">
-            <h3>Alsdorf</h3>
-            <p>Hubertusstraße 17</p>
-            <a href="https://www.alsdorf.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;" data-i18n="link_service">Service &rarr;</a>
-        </div>
-
-        <div class="card">
-            <h3>Herzogenrath</h3>
-            <p>Rathausplatz 1</p>
-            <a href="https://www.herzogenrath.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;" data-i18n="link_service">Service &rarr;</a>
-        </div>
-
-        <div class="card">
-            <h3>Würselen</h3>
-            <p>Morlaixplatz 1</p>
-            <a href="https://www.wuerselen.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;" data-i18n="link_service">Service &rarr;</a>
-        </div>
-
-        <div class="card">
-            <h3>Roetgen</h3>
-            <p>Hauptstraße 95</p>
-            <a href="https://www.roetgen.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;" data-i18n="link_service">Service &rarr;</a>
-        </div>
-
-        <div class="card">
-            <h3>Baesweiler</h3>
-            <p>Mariastraße 2</p>
-            <a href="https://www.baesweiler.de" target="_blank" style="color: var(--active-tab); font-weight:bold; text-decoration:none;" data-i18n="link_service">Service &rarr;</a>
-        </div>
-    </div>
+<!-- ============ PROJEKT-ANFRAGE-MODAL ============ -->
+<div class="modal-backdrop" id="modal-backdrop" onclick="if(event.target===this)closeModal()">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <h2 id="modal-title" data-i18n="modal_title">Projekt-Anfrage</h2>
+    <p class="modal-sub" data-i18n="modal_sub">Vermittlung via StädteRegion Aachen – Ihre Anfrage wird an die zuständige Koordinierungsstelle weitergeleitet.</p>
+    <form id="request-form" novalidate>
+      <div class="field">
+        <label for="rq-project" data-i18n="modal_project">Projekt</label>
+        <input type="text" id="rq-project" name="project" readonly>
+      </div>
+      <div class="field" id="f-muni">
+        <label for="rq-muni" data-i18n="modal_muni">Ihre Kommune</label>
+        <select id="rq-muni" name="municipality"></select>
+      </div>
+      <div class="field" id="f-name">
+        <label for="rq-name" data-i18n="modal_name">Ansprechpartner:in</label>
+        <input type="text" id="rq-name" name="name" autocomplete="name" required>
+        <span class="field-error" data-i18n="modal_err_name">Bitte geben Sie einen Namen an.</span>
+      </div>
+      <div class="field" id="f-email">
+        <label for="rq-email" data-i18n="modal_email">Dienstliche E-Mail</label>
+        <input type="email" id="rq-email" name="email" autocomplete="email" required>
+        <span class="field-error" data-i18n="modal_err_email">Bitte geben Sie eine gültige E-Mail-Adresse an.</span>
+      </div>
+      <div class="field" id="f-msg">
+        <label for="rq-msg" data-i18n="modal_msg">Ihr Anliegen</label>
+        <textarea id="rq-msg" name="message" required></textarea>
+        <span class="field-error" data-i18n="modal_err_msg">Bitte beschreiben Sie Ihr Anliegen kurz.</span>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" onclick="closeModal()" data-i18n="modal_cancel">Abbrechen</button>
+        <button type="submit" class="btn btn-primary" data-i18n="modal_send">Anfrage absenden</button>
+      </div>
+    </form>
+  </div>
 </div>
-        <div id="Projekte" class="tab-content">
-            <div class="project-table-row">
-                <div class="project-col">
-                    <div class="col-title" data-i18n="prj_col_1">Infrastruktur & Mobilität</div>
-                    <div class="project-card infra">
-                        <span class="badge bg-infra" data-i18n="badge_strat">Strategisch</span>
-                        <h3 data-i18n="prj_1_title">Interkommunale Mobilitätsachse</h3>
-                        <p data-i18n="prj_1_desc">Ausbau der Anbindung Aachen-Umland zur Entlastung des Wohnungsdrucks.</p>
-                        <button class="btn-contact" onclick="openModal('Mobilitätsachse')" data-i18n="btn_req">Anfrage stellen</button>
-                    </div>
-                </div>
-                <div class="project-col">
-                    <div class="col-title" data-i18n="prj_col_2">Wohnen & Innenentwicklung</div>
-                    <div class="project-card wohnen">
-                        <span class="badge bg-wohnen" data-i18n="badge_pilot">Pilot</span>
-                        <h3 data-i18n="prj_2_title">Eigentümeraktivierung</h3>
-                        <p data-i18n="prj_2_desc">Anwendung des MORO-Leitfadens zur Mobilisierung von Innenpotenzialen.</p>
-                        <button class="btn-contact" onclick="openModal('Eigentümeraktivierung')" data-i18n="btn_req">Anfrage stellen</button>
-                    </div>
-                </div>
-                <div class="project-col">
-                    <div class="col-title" data-i18n="prj_col_3">Soziales & Wohnraum</div>
-                    <div class="project-card sozial">
-                        <span class="badge bg-sozial" data-i18n="badge_plan">In Planung</span>
-                        <h3 data-i18n="prj_3_title">Sozialer Wohnungsbau AC</h3>
-                        <p data-i18n="prj_3_desc">Bündelung von Fördermitteln für grenznahe Sozialprojekte.</p>
-                        <button class="btn-contact" onclick="openModal('Soziales Wohnen')" data-i18n="btn_req">Anfrage stellen</button>
-                    </div>
-                </div>
-                <div class="project-col">
-                    <div class="col-title" data-i18n="prj_col_4">Natur & Umwelt</div>
-                    <div class="project-card natur">
-                        <span class="badge bg-natur" data-i18n="badge_rep">Gutachten</span>
-                        <h3 data-i18n="prj_4_title">Klimaanalyse Rurtal</h3>
-                        <p data-i18n="prj_4_desc">Grenzüberschreitende Analyse von Kaltluftströmen.</p>
-                        <button class="btn-contact" onclick="openModal('Klimaanalyse')" data-i18n="btn_req">Anfrage stellen</button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-    </main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p data-i18n="footer_copy">© 2025 BAUKOMPASS · Stadtentwicklung &amp; Bürgerdialog</p>
+    <nav class="footer-links" aria-label="Rechtliches">
+      <a href="#" data-i18n="link_imprint">Impressum</a>
+      <a href="#" data-i18n="link_privacy">Datenschutz</a>
+      <a href="#" data-i18n="link_contact">Kontakt</a>
+    </nav>
+  </div>
+</footer>
 
-    <script>
-        const translations = {
-            "de": {
-                "nav_back": "← Zurück",
-                "main_title": "Von Gemeinden für Gemeinden",
-                "main_subtitle": "MORO-Strategieprozess StädteRegion Aachen & Ostbelgien",
-                "tab_info": "Informationen",
-                "tab_geo": "Geoportale",
-                "tab_tool": "Immobilien-Tool",
-                "tab_contacts": "Gemeinden",
-                "tab_projects": "Projekte",
-                "link_service": "Service →",
-                "modal_title": "Projekt-Anfrage",
-                "modal_desc": "Vermittlung via StädteRegion Aachen.",
-                "modal_submit": "Anfrage absenden",
-                "modal_cancel": "Abbrechen",
-                "info_1_title": "1. Status Quo & Flächenpotenziale",
-                "info_1_text": "Das MORO-Konzept „Mehr Wohnraum schaffen“ hat gezeigt, dass die identifizierten Flächenpotenziale oft zweitrangig sind oder aufgrund schwieriger Eigentümerstrukturen kaum nutzbar bleiben...",
-                "info_highlight": "„Der Widerstand von Eigentümer:innen führt zu einer schwachen Innenentwicklung...“",
-                "info_2_title": "2. Systemvergleich: Reaktiv vs. Proaktiv",
-                "sys_de_title": "Deutschland (Reaktiv)",
-                "sys_de_text": "Fokus auf Schutz der Naturräume und Infrastruktureffizienz...",
-                "sys_be_title": "Belgien (Proaktiv)",
-                "sys_be_text": "Angebotsplanung (ZACC-Zonen), um Eigenheimbau zu forcieren...",
-                "info_3_title": "3. Strategische Vision: RegFNP & Infrastruktur",
-                "info_3_text": "Ein Transfer von Verantwortlichkeiten ist das Ziel: Die Übertragung des Flächennutzungsplans (FNP) auf die StädteRegion Aachen...",
-                "info_3_sub": "Zentrale Erkenntnis: Grenzüberschreitende Kooperation gelingt am besten über den gemeinsamen Ausbau der Infrastruktur...",
-                "info_4_title": "4. Ausblick: Innen- vor Außenentwicklung",
-                "info_4_text": "Mit Blick auf die Prognosen ab 2035 (Bevölkerungsrückgang) ist die proaktive Ansprache der Eigentümerschaft unerlässlich.",
-                "prj_col_1": "Infrastruktur & Mobilität",
-                "prj_col_2": "Wohnen & Innenentwicklung",
-                "prj_col_3": "Soziales & Wohnraum",
-                "prj_col_4": "Natur & Umwelt",
-                "badge_strat": "Strategisch",
-                "badge_pilot": "Pilot",
-                "badge_plan": "In Planung",
-                "badge_rep": "Gutachten",
-                "prj_1_title": "Interkommunale Mobilitätsachse",
-                "prj_1_desc": "Ausbau der Anbindung Aachen-Umland zur Entlastung des Wohnungsdrucks.",
-                "prj_2_title": "Eigentümeraktivierung",
-                "prj_2_desc": "Anwendung des MORO-Leitfadens zur Mobilisierung von Innenpotenzialen.",
-                "prj_3_title": "Sozialer Wohnungsbau AC",
-                "prj_3_desc": "Bündelung von Fördermitteln für grenznahe Sozialprojekte.",
-                "prj_4_title": "Klimaanalyse Rurtal",
-                "prj_4_desc": "Grenzüberschreitende Analyse von Kaltluftströmen.",
-                "btn_req": "Anfrage stellen"
-            },
-            "en": {
-                "nav_back": "← Back",
-                "main_title": "From Municipalities for Municipalities",
-                "main_subtitle": "MORO Strategy Process StädteRegion Aachen & East Belgium",
-                "tab_info": "Information",
-                "tab_geo": "Geoportals",
-                "tab_tool": "Real Estate Tool",
-                "tab_contacts": "Municipalities",
-                "tab_projects": "Projects",
-                "link_service": "Service →",
-                "modal_title": "Project Inquiry",
-                "modal_desc": "Mediation via StädteRegion Aachen.",
-                "modal_submit": "Send Inquiry",
-                "modal_cancel": "Cancel",
-                "info_1_title": "1. Status Quo & Land Potential",
-                "info_1_text": "The MORO concept 'Creating more living space' has shown that identified potential remains secondary or unusable due to ownership structures...",
-                "info_highlight": "“Owner resistance leads to weak interior development...”",
-                "info_2_title": "2. System Comparison: Reactive vs. Proactive",
-                "sys_de_title": "Germany (Reactive)",
-                "sys_de_text": "Focus on nature protection and infrastructure efficiency...",
-                "sys_be_title": "Belgium (Proactive)",
-                "sys_be_text": "Supply planning (ZACC zones) to boost home ownership...",
-                "info_3_title": "3. Strategic Vision: RegFNP & Infrastructure",
-                "info_3_text": "Responsibility transfer: Shifting the FNP to the StädteRegion Aachen...",
-                "info_3_sub": "Key finding: Cross-border cooperation works best through joint infrastructure expansion...",
-                "info_4_title": "4. Outlook: Interior over Exterior Development",
-                "info_4_text": "Considering 2035 forecasts (demographic decline), proactive owner engagement is essential.",
-                "prj_col_1": "Infrastructure & Mobility",
-                "prj_col_2": "Housing & Interior Dev.",
-                "prj_col_3": "Social & Housing",
-                "prj_col_4": "Nature & Environment",
-                "badge_strat": "Strategic",
-                "badge_pilot": "Pilot",
-                "badge_plan": "In Planning",
-                "badge_rep": "Report",
-                "prj_1_title": "Inter-municipal Mobility Axis",
-                "prj_1_desc": "Expanding Aachen-surrounding connections to relieve housing pressure.",
-                "prj_2_title": "Owner Activation",
-                "prj_2_desc": "Using the MORO guide to mobilize interior potential.",
-                "prj_3_title": "Social Housing AC",
-                "prj_3_desc": "Pooling subsidies for cross-border social projects.",
-                "prj_4_title": "Rur Valley Climate Analysis",
-                "prj_4_desc": "Cross-border analysis of cold air flows.",
-                "btn_req": "Send Inquiry"
-            },
-            "fr": {
-                "nav_back": "← Retour",
-                "main_title": "Des Communes pour les Communes",
-                "main_subtitle": "Processus MORO StädteRegion Aachen & Belgique de l'Est",
-                "tab_info": "Informations",
-                "tab_geo": "Géoportails",
-                "tab_tool": "Outil Immobilier",
-                "tab_contacts": "Communes",
-                "tab_projects": "Projets",
-                "link_service": "Service →",
-                "modal_title": "Demande de Projet",
-                "modal_desc": "Médiation via StädteRegion Aachen.",
-                "modal_submit": "Envoyer",
-                "modal_cancel": "Annuler",
-                "info_1_title": "1. État des Lieux & Potentiel Foncier",
-                "info_1_text": "Le concept MORO 'Créer plus d'espace de vie' a montré que le potentiel identifié reste secondaire...",
-                "info_highlight": "« La résistance des propriétaires freine le développement interne... »",
-                "info_2_title": "2. Comparaison : Réactif vs Proactif",
-                "sys_de_title": "Allemagne (Réactif)",
-                "sys_de_text": "Focus sur la protection de la nature et l'efficacité des infrastructures...",
-                "sys_be_title": "Belgique (Proactif)",
-                "sys_be_text": "Planification de l'offre (zones ZACC) pour favoriser l'accession...",
-                "info_3_title": "3. Vision Stratégique : RegFNP & Infrastructure",
-                "info_3_text": "Transfert de responsabilités : déplacer le FNP vers la StädteRegion Aachen...",
-                "info_3_sub": "Constat clé : La coopération transfrontalière réussit mieux via l'expansion des infrastructures communes...",
-                "info_4_title": "4. Perspectives : Priorité au Développement Interne",
-                "info_4_text": "Vu les prévisions 2035 (déclin démographique), l'engagement proactif des propriétaires est vital.",
-                "prj_col_1": "Infrastructure & Mobilité",
-                "prj_col_2": "Logement & Dév. Interne",
-                "prj_col_3": "Social & Logement",
-                "prj_col_4": "Nature & Environnement",
-                "badge_strat": "Stratégique",
-                "badge_pilot": "Pilote",
-                "badge_plan": "En Planification",
-                "badge_rep": "Expertise",
-                "prj_1_title": "Axe de Mobilité Intercommunal",
-                "prj_1_desc": "Expansion des connexions pour alléger la pression immobilière.",
-                "prj_2_title": "Activation des Propriétaires",
-                "prj_2_desc": "Application du guide MORO pour mobiliser le potentiel interne.",
-                "prj_3_title": "Logement Social AC",
-                "prj_3_desc": "Mutualisation des aides pour projets sociaux transfrontaliers.",
-                "prj_4_title": "Analyse Climatique Rurtal",
-                "prj_4_desc": "Analyse transfrontalière des flux d'air froid.",
-                "btn_req": "Demander"
-            }
-        };
+<div class="toast-region" id="toast-region" role="status" aria-live="polite"></div>
+<button class="to-top" id="to-top" aria-label="Nach oben scrollen" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-        function changeLanguage(lang) {
-            localStorage.setItem('baukompass_lang', lang);
-            
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                if(btn.dataset.lang === lang) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
+<script>
+/* ============ DATEN: 13 KOMMUNEN ============ */
+const MUNICIPALITIES = [
+  { name:"Stadt Aachen",  addr:"Zollernstraße 10",       be:false, url:"https://serviceportal.aachen.de" },
+  { name:"Stolberg",      addr:"Rathausstraße 11",       be:false, url:"https://www.stolberg.de" },
+  { name:"Simmerath",     addr:"Rathausplatz 1",         be:false, url:"https://www.simmerath.de" },
+  { name:"Eschweiler",    addr:"Johannes-Rau-Platz 1",   be:false, url:"https://www.eschweiler.de" },
+  { name:"Monschau",      addr:"Laufenstraße 84",        be:false, url:"https://www.monschau.de" },
+  { name:"Raeren",        addr:"Hauptstraße 87",         be:true,  url:"https://www.raeren.be" },
+  { name:"Kelmis",        addr:"Kirchstraße 31",         be:true,  url:"https://www.kelmis.be" },
+  { name:"Lontzen",       addr:"Kirchstraße 46",         be:true,  url:"https://www.lontzen.be" },
+  { name:"Alsdorf",       addr:"Hubertusstraße 17",      be:false, url:"https://www.alsdorf.de" },
+  { name:"Herzogenrath",  addr:"Rathausplatz 1",         be:false, url:"https://www.herzogenrath.de" },
+  { name:"Würselen",      addr:"Morlaixplatz 1",         be:false, url:"https://www.wuerselen.de" },
+  { name:"Roetgen",       addr:"Hauptstraße 95",         be:false, url:"https://www.roetgen.de" },
+  { name:"Baesweiler",    addr:"Mariastraße 2",          be:false, url:"https://www.baesweiler.de" }
+];
 
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.dataset.i18n;
-                if(translations[lang] && translations[lang][key]) {
-                    if(el.tagName === 'INPUT' && el.hasAttribute('placeholder')) {
-                        el.placeholder = translations[lang][key];
-                    } else {
-                        el.innerText = translations[lang][key];
-                    }
-                }
-            });
-        }
-        window.addEventListener('load', () => {
-            const savedLang = localStorage.getItem('baukompass_lang') || 'de';
-            changeLanguage(savedLang);
-        });
+/* ============ ÜBERSETZUNGEN ============ */
+const translations = {
+  "de": {
+    "skip_link":"Zum Inhalt springen",
+    "nav_res":"Bewohner:innen","nav_own":"Eigentümer:innen","nav_mun":"Gemeinden",
+    "hero_eyebrow":"StädteRegion Aachen · Ostbelgien",
+    "hero_title_a":"Von Gemeinden","hero_title_b":"für Gemeinden",
+    "hero_desc":"MORO-Strategieprozess, Geoportale, Immobilien-Monitoring und interkommunale Projekte – gebündelt an einem Ort.",
+    "tab_info":"Informationen","tab_geo":"Geoportale","tab_tool":"Immobilien-Tool","tab_muni":"Gemeinden","tab_proj":"Projekte",
+    "info_title":"Strategische Grundlagen",
+    "info_sub":"Vier Bausteine des MORO-Strategieprozesses „Mehr Wohnraum schaffen“ für die Grenzregion.",
+    "info_key":"Zentrale Erkenntnis:",
+    "info_to_tool":"Zum Immobilien-Tool →",
+    "geo_title":"Geoportale &amp; Kartendienste",
+    "geo_sub":"Acht externe Fachportale für Planung, Umwelt und Bodenwerte – Deutschland und Belgien.",
+    "geo_open":"Portal öffnen","geo_open_map":"Karten öffnen","geo_check":"Werte prüfen",
+    "tool_eyebrow":"Kommunales Dashboard",
+    "tool_title":"Immobilien-Aktivierungs-Tool",
+    "tool_desc":"Das funktionale Herzstück für die Kommunalverwaltung: Leerstands-Monitoring, MORO-Zielerreichung und der Aktivierungs-Tracker nach dem 4-Stufen-Eskalationsmodell – live und interaktiv.",
+    "tool_feat1":"📈 KPI-Übersicht","tool_feat2":"🏘️ 13 Kommunen filterbar","tool_feat3":"🧮 Leerstandsquoten","tool_feat4":"🪜 Eskalationsstufen 0–3",
+    "tool_cta":"Dashboard öffnen →",
+    "tool_s1_k":"Schritt 1","tool_s1_t":"Daten &amp; Meldungen","tool_s1_d":"Gemeldete Leerstände aus den Bewohner:innen- und Eigentümer:innen-Formularen laufen zentral zusammen.",
+    "tool_s2_k":"Schritt 2","tool_s2_t":"Analyse &amp; Priorisierung","tool_s2_d":"Objekte werden nach Dringlichkeit und Eskalationsstufe sortiert – von Erstkontakt bis hoheitlichem Eingriff.",
+    "tool_s3_k":"Schritt 3","tool_s3_t":"Aktivierung &amp; Monitoring","tool_s3_d":"Fortschritte gegenüber den MORO-Zielen werden je Kommune visualisiert und vergleichbar gemacht.",
+    "muni_title":"Die 13 Kommunen der Kooperation",
+    "muni_sub":"StädteRegion Aachen und ostbelgische Partnergemeinden mit Anschrift und Bürgerservice.",
+    "muni_service":"Service",
+    "proj_title":"Interkommunale Projekte",
+    "proj_sub":"Laufende Kooperationen der Grenzregion – Anfragen werden über die StädteRegion Aachen vermittelt.",
+    "proj_cta":"Anfrage stellen",
+    "proj1_cat":"Infrastruktur &amp; Mobilität","proj1_desc":"Ausbau der Anbindung Aachen–Umland zur Entlastung des Wohnungsdrucks.","proj1_status":"Strategisch",
+    "proj2_cat":"Wohnen &amp; Innenentwicklung","proj2_desc":"Anwendung des MORO-Leitfadens zur Mobilisierung von Innenpotenzialen.","proj2_status":"Pilot",
+    "proj3_cat":"Soziales &amp; Wohnraum","proj3_desc":"Bündelung von Fördermitteln für grenznahe Sozialprojekte.","proj3_status":"In Planung",
+    "proj4_cat":"Natur &amp; Umwelt","proj4_desc":"Grenzüberschreitende Analyse von Kaltluftströmen.","proj4_status":"Gutachten",
+    "modal_title":"Projekt-Anfrage",
+    "modal_sub":"Vermittlung via StädteRegion Aachen – Ihre Anfrage wird an die zuständige Koordinierungsstelle weitergeleitet.",
+    "modal_project":"Projekt","modal_muni":"Ihre Kommune","modal_name":"Ansprechpartner:in","modal_email":"Dienstliche E-Mail","modal_msg":"Ihr Anliegen",
+    "modal_err_name":"Bitte geben Sie einen Namen an.","modal_err_email":"Bitte geben Sie eine gültige E-Mail-Adresse an.","modal_err_msg":"Bitte beschreiben Sie Ihr Anliegen kurz.",
+    "modal_cancel":"Abbrechen","modal_send":"Anfrage absenden",
+    "toast_sent":"Anfrage übermittelt – die StädteRegion Aachen meldet sich bei Ihnen.",
+    "footer_copy":"© 2025 BAUKOMPASS · Stadtentwicklung & Bürgerdialog",
+    "link_imprint":"Impressum","link_privacy":"Datenschutz","link_contact":"Kontakt",
+    "theme_dark":"Dunkelmodus aktiviert","theme_light":"Hellmodus aktiviert"
+  },
+  "en": {
+    "skip_link":"Skip to content",
+    "nav_res":"Residents","nav_own":"Owners","nav_mun":"Municipalities",
+    "hero_eyebrow":"Aachen city region · East Belgium",
+    "hero_title_a":"From municipalities","hero_title_b":"for municipalities",
+    "hero_desc":"MORO strategy process, geoportals, property monitoring and inter-municipal projects – bundled in one place.",
+    "tab_info":"Information","tab_geo":"Geoportals","tab_tool":"Property tool","tab_muni":"Municipalities","tab_proj":"Projects",
+    "info_title":"Strategic foundations",
+    "info_sub":"Four building blocks of the MORO strategy process “Creating more housing” for the border region.",
+    "info_key":"Key insight:",
+    "info_to_tool":"Open the property tool →",
+    "geo_title":"Geoportals &amp; map services",
+    "geo_sub":"Eight external portals for planning, environment and land values – Germany and Belgium.",
+    "geo_open":"Open portal","geo_open_map":"Open maps","geo_check":"Check values",
+    "tool_eyebrow":"Municipal dashboard",
+    "tool_title":"Property activation tool",
+    "tool_desc":"The functional core for municipal administration: vacancy monitoring, MORO target achievement and the activation tracker based on the 4-level escalation model – live and interactive.",
+    "tool_feat1":"📈 KPI overview","tool_feat2":"🏘️ Filter by 13 municipalities","tool_feat3":"🧮 Vacancy rates","tool_feat4":"🪜 Escalation levels 0–3",
+    "tool_cta":"Open dashboard →",
+    "tool_s1_k":"Step 1","tool_s1_t":"Data &amp; reports","tool_s1_d":"Reported vacancies from the resident and owner forms converge in one place.",
+    "tool_s2_k":"Step 2","tool_s2_t":"Analysis &amp; prioritization","tool_s2_d":"Properties are sorted by urgency and escalation level – from first contact to sovereign intervention.",
+    "tool_s3_k":"Step 3","tool_s3_t":"Activation &amp; monitoring","tool_s3_d":"Progress towards MORO targets is visualized and made comparable per municipality.",
+    "muni_title":"The 13 municipalities of the cooperation",
+    "muni_sub":"Aachen city region and East Belgian partner municipalities with address and citizen services.",
+    "muni_service":"Services",
+    "proj_title":"Inter-municipal projects",
+    "proj_sub":"Ongoing cooperations in the border region – requests are coordinated via the Aachen city region.",
+    "proj_cta":"Submit request",
+    "proj1_cat":"Infrastructure &amp; mobility","proj1_desc":"Improving the Aachen–hinterland connection to ease housing pressure.","proj1_status":"Strategic",
+    "proj2_cat":"Housing &amp; inner development","proj2_desc":"Applying the MORO guideline to mobilize inner-development potential.","proj2_status":"Pilot",
+    "proj3_cat":"Social affairs &amp; housing","proj3_desc":"Pooling subsidies for social projects near the border.","proj3_status":"In planning",
+    "proj4_cat":"Nature &amp; environment","proj4_desc":"Cross-border analysis of cold-air flows.","proj4_status":"Expert report",
+    "modal_title":"Project request",
+    "modal_sub":"Coordinated via the Aachen city region – your request will be forwarded to the responsible coordination office.",
+    "modal_project":"Project","modal_muni":"Your municipality","modal_name":"Contact person","modal_email":"Official email","modal_msg":"Your request",
+    "modal_err_name":"Please enter a name.","modal_err_email":"Please enter a valid email address.","modal_err_msg":"Please briefly describe your request.",
+    "modal_cancel":"Cancel","modal_send":"Send request",
+    "toast_sent":"Request submitted – the Aachen city region will get back to you.",
+    "footer_copy":"© 2025 BAUKOMPASS · Urban Development & Citizen Dialogue",
+    "link_imprint":"Imprint","link_privacy":"Privacy","link_contact":"Contact",
+    "theme_dark":"Dark mode enabled","theme_light":"Light mode enabled"
+  },
+  "fr": {
+    "skip_link":"Aller au contenu",
+    "nav_res":"Résidents","nav_own":"Propriétaires","nav_mun":"Communes",
+    "hero_eyebrow":"Région urbaine d'Aix-la-Chapelle · Belgique de l'Est",
+    "hero_title_a":"Des communes","hero_title_b":"pour les communes",
+    "hero_desc":"Processus stratégique MORO, géoportails, suivi immobilier et projets intercommunaux – réunis en un seul endroit.",
+    "tab_info":"Informations","tab_geo":"Géoportails","tab_tool":"Outil immobilier","tab_muni":"Communes","tab_proj":"Projets",
+    "info_title":"Fondements stratégiques",
+    "info_sub":"Quatre piliers du processus stratégique MORO « Créer plus de logements » pour la région frontalière.",
+    "info_key":"Constat central :",
+    "info_to_tool":"Ouvrir l'outil immobilier →",
+    "geo_title":"Géoportails &amp; services cartographiques",
+    "geo_sub":"Huit portails spécialisés pour la planification, l'environnement et les valeurs foncières – Allemagne et Belgique.",
+    "geo_open":"Ouvrir le portail","geo_open_map":"Ouvrir les cartes","geo_check":"Vérifier les valeurs",
+    "tool_eyebrow":"Tableau de bord communal",
+    "tool_title":"Outil d'activation immobilière",
+    "tool_desc":"Le cœur fonctionnel pour l'administration communale : suivi des logements vacants, atteinte des objectifs MORO et suivi de l'activation selon le modèle d'escalade à 4 niveaux – en direct et interactif.",
+    "tool_feat1":"📈 Aperçu des indicateurs","tool_feat2":"🏘️ Filtrer parmi 13 communes","tool_feat3":"🧮 Taux de vacance","tool_feat4":"🪜 Niveaux d'escalade 0–3",
+    "tool_cta":"Ouvrir le tableau de bord →",
+    "tool_s1_k":"Étape 1","tool_s1_t":"Données &amp; signalements","tool_s1_d":"Les logements vacants signalés via les formulaires des résidents et propriétaires convergent en un seul endroit.",
+    "tool_s2_k":"Étape 2","tool_s2_t":"Analyse &amp; priorisation","tool_s2_d":"Les biens sont triés par urgence et niveau d'escalade – du premier contact à l'intervention souveraine.",
+    "tool_s3_k":"Étape 3","tool_s3_t":"Activation &amp; suivi","tool_s3_d":"Les progrès vers les objectifs MORO sont visualisés et comparables par commune.",
+    "muni_title":"Les 13 communes de la coopération",
+    "muni_sub":"Région urbaine d'Aix-la-Chapelle et communes partenaires de Belgique de l'Est, avec adresse et services aux citoyens.",
+    "muni_service":"Services",
+    "proj_title":"Projets intercommunaux",
+    "proj_sub":"Coopérations en cours dans la région frontalière – les demandes sont coordonnées via la région urbaine d'Aix-la-Chapelle.",
+    "proj_cta":"Faire une demande",
+    "proj1_cat":"Infrastructure &amp; mobilité","proj1_desc":"Amélioration de la liaison Aix-la-Chapelle–périphérie pour réduire la pression sur le logement.","proj1_status":"Stratégique",
+    "proj2_cat":"Logement &amp; densification","proj2_desc":"Application du guide MORO pour mobiliser les potentiels de densification.","proj2_status":"Pilote",
+    "proj3_cat":"Social &amp; logement","proj3_desc":"Mutualisation des subventions pour des projets sociaux frontaliers.","proj3_status":"En planification",
+    "proj4_cat":"Nature &amp; environnement","proj4_desc":"Analyse transfrontalière des flux d'air froid.","proj4_status":"Expertise",
+    "modal_title":"Demande de projet",
+    "modal_sub":"Coordination via la région urbaine d'Aix-la-Chapelle – votre demande sera transmise au bureau de coordination compétent.",
+    "modal_project":"Projet","modal_muni":"Votre commune","modal_name":"Personne de contact","modal_email":"E-mail professionnel","modal_msg":"Votre demande",
+    "modal_err_name":"Veuillez indiquer un nom.","modal_err_email":"Veuillez indiquer une adresse e-mail valide.","modal_err_msg":"Veuillez décrire brièvement votre demande.",
+    "modal_cancel":"Annuler","modal_send":"Envoyer la demande",
+    "toast_sent":"Demande transmise – la région urbaine d'Aix-la-Chapelle vous recontactera.",
+    "footer_copy":"© 2025 BAUKOMPASS · Développement urbain & Dialogue citoyen",
+    "link_imprint":"Mentions légales","link_privacy":"Confidentialité","link_contact":"Contact",
+    "theme_dark":"Mode sombre activé","theme_light":"Mode clair activé"
+  }
+};
+let currentLang = 'de';
 
-        function openTab(evt, tabName) {
-            var i, tabcontent, tablinks;
-            tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; }
-            tablinks = document.getElementsByClassName("tab-button");
-            for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
-            document.getElementById(tabName).style.display = "block";
-            evt.currentTarget.className += " active";
-        }
+function changeLanguage(lang){
+  currentLang = lang;
+  localStorage.setItem('baukompass_lang', lang);
+  document.documentElement.lang = lang;
+  document.querySelectorAll('.lang-btn').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.lang === lang);
+  });
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.dataset.i18n;
+    if(translations[lang] && translations[lang][key]){
+      if(el.tagName==='INPUT' && el.hasAttribute('placeholder')){ el.placeholder = translations[lang][key]; }
+      else { el.innerHTML = translations[lang][key]; }
+    }
+  });
+}
+function t(key){ return (translations[currentLang]&&translations[currentLang][key]) || key; }
 
-        const modal = document.getElementById("contactModal");
-        function openModal(title) {
-            modal.style.display = "block";
-            document.getElementById("modalMessage").value = "Betreff: " + title + "\n\nSehr geehrte StädteRegion Aachen,\nwir interessieren uns für eine Kooperation im Rahmen des genannten Projekts...";
-        }
-        function closeModal() { modal.style.display = "none"; }
-        window.onclick = function(e) { if (e.target == modal) closeModal(); }
+/* ============ THEME ============ */
+function applyTheme(theme){
+  document.documentElement.setAttribute('data-theme', theme);
+  const btn = document.getElementById('theme-toggle');
+  if(btn) btn.textContent = theme==='dark' ? '☀️' : '🌙';
+  localStorage.setItem('baukompass_theme', theme);
+}
+function toggleTheme(){
+  const next = document.documentElement.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+  applyTheme(next);
+  showToast(next==='dark' ? t('theme_dark') : t('theme_light'));
+}
 
-        document.getElementById("projectForm").onsubmit = function(e) {
-            e.preventDefault();
-            alert("Ihre Anfrage wurde erfolgreich an die StädteRegion Aachen übermittelt.");
-            closeModal();
-        }
+/* ============ TOASTS ============ */
+function showToast(msg, icon='✓'){
+  const region = document.getElementById('toast-region');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerHTML = '<span aria-hidden="true">'+icon+'</span><span>'+msg+'</span>';
+  region.appendChild(toast);
+  setTimeout(()=>{ toast.classList.add('out'); setTimeout(()=>toast.remove(),320); }, 3200);
+}
 
-        window.addEventListener('message', function(e) {
-            if (e.data && e.data.type === 'resize-iframe') {
-                const iframe = document.getElementById('seamless-tool');
-                if (iframe) { iframe.style.height = e.data.height + 'px'; }
-            }
-        });
-    </script>
+/* ============ HEADER / NAV / SCROLL ============ */
+function toggleMenu(){
+  const nav = document.getElementById('main-nav');
+  const btn = document.getElementById('menu-btn');
+  const open = nav.classList.toggle('open');
+  btn.setAttribute('aria-expanded', open);
+  btn.textContent = open ? '✕' : '☰';
+}
+window.addEventListener('scroll', ()=>{
+  document.getElementById('site-header').classList.toggle('scrolled', window.scrollY > 8);
+  document.getElementById('to-top').classList.toggle('show', window.scrollY > 480);
+}, {passive:true});
+
+/* Smooth page transitions */
+document.querySelectorAll('a[data-nav]').forEach(a=>{
+  a.addEventListener('click', e=>{
+    e.preventDefault();
+    const href = a.getAttribute('href');
+    document.body.classList.add('leaving');
+    setTimeout(()=>{ window.location.href = href; }, 230);
+  });
+});
+
+/* ============ TABS ============ */
+const TAB_IDS = ['info','geo','tool','muni','proj'];
+function switchTab(id, pushHash=true){
+  TAB_IDS.forEach(tid=>{
+    const btn = document.getElementById('tab-'+tid);
+    const panel = document.getElementById('panel-'+tid);
+    const active = tid===id;
+    btn.setAttribute('aria-selected', active);
+    btn.tabIndex = active ? 0 : -1;
+    panel.classList.toggle('active', active);
+    panel.hidden = !active;
+  });
+  if(pushHash){ history.replaceState(null,'','#'+id); }
+}
+/* Pfeiltasten-Navigation im Tablist (Barrierefreiheit) */
+document.querySelector('.tabs').addEventListener('keydown', e=>{
+  if(e.key!=='ArrowRight' && e.key!=='ArrowLeft') return;
+  const idx = TAB_IDS.findIndex(tid=>document.getElementById('tab-'+tid).getAttribute('aria-selected')==='true');
+  const next = e.key==='ArrowRight' ? (idx+1)%TAB_IDS.length : (idx-1+TAB_IDS.length)%TAB_IDS.length;
+  switchTab(TAB_IDS[next]);
+  document.getElementById('tab-'+TAB_IDS[next]).focus();
+});
+
+/* ============ GEMEINDEN-GRID RENDERN ============ */
+function renderMunicipalities(){
+  const grid = document.getElementById('muni-grid');
+  grid.innerHTML = MUNICIPALITIES.map(m=>`
+    <article class="muni-card">
+      ${m.be ? '<span class="be-badge">🇧🇪 BE</span>' : ''}
+      <h3>${m.name}</h3>
+      <span class="addr">${m.addr}</span>
+      <a href="${m.url}" target="_blank" rel="noopener" aria-label="${m.name}: ${t('muni_service')}">${t('muni_service')}</a>
+    </article>
+  `).join('');
+}
+
+/* ============ MODAL ============ */
+let lastFocused = null;
+function openModal(projectName){
+  lastFocused = document.activeElement;
+  document.getElementById('rq-project').value = projectName;
+  /* Kommunen-Select befüllen, Fokus-Region vorauswählen */
+  const sel = document.getElementById('rq-muni');
+  sel.innerHTML = MUNICIPALITIES.map(m=>`<option value="${m.name}">${m.name}${m.be?' (B)':''}</option>`).join('');
+  const focusRegion = localStorage.getItem('baukompass_fokus_region');
+  if(focusRegion && MUNICIPALITIES.some(m=>m.name===focusRegion)) sel.value = focusRegion;
+  document.querySelectorAll('#request-form .field').forEach(f=>f.classList.remove('invalid'));
+  document.getElementById('request-form').reset();
+  document.getElementById('rq-project').value = projectName;
+  if(focusRegion && MUNICIPALITIES.some(m=>m.name===focusRegion)) sel.value = focusRegion;
+  const bd = document.getElementById('modal-backdrop');
+  bd.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(()=>document.getElementById('rq-muni').focus(), 60);
+  document.addEventListener('keydown', escClose);
+}
+function closeModal(){
+  document.getElementById('modal-backdrop').classList.remove('open');
+  document.body.style.overflow = '';
+  document.removeEventListener('keydown', escClose);
+  if(lastFocused) lastFocused.focus();
+}
+function escClose(e){ if(e.key==='Escape') closeModal(); }
+
+document.getElementById('request-form').addEventListener('submit', e=>{
+  e.preventDefault();
+  const name = document.getElementById('rq-name');
+  const email = document.getElementById('rq-email');
+  const msg = document.getElementById('rq-msg');
+  let valid = true;
+  const check = (fieldId, ok)=>{
+    document.getElementById(fieldId).classList.toggle('invalid', !ok);
+    if(!ok) valid = false;
+  };
+  check('f-name', name.value.trim().length > 1);
+  check('f-email', /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim()));
+  check('f-msg', msg.value.trim().length > 4);
+  if(!valid) return;
+  /* Gewählte Kommune als Fokus-Region merken */
+  localStorage.setItem('baukompass_fokus_region', document.getElementById('rq-muni').value);
+  closeModal();
+  showToast(t('toast_sent'), '📨');
+});
+
+/* ============ INIT ============ */
+window.addEventListener('load', ()=>{
+  applyTheme(localStorage.getItem('baukompass_theme') || 'light');
+  changeLanguage(localStorage.getItem('baukompass_lang') || 'de');
+  renderMunicipalities();
+  /* Deep-Link auf Tab via Hash, z. B. gemeinden.html#tool */
+  const hash = location.hash.replace('#','');
+  if(TAB_IDS.includes(hash)) switchTab(hash, false);
+});
+/* Service-Links neu beschriften bei Sprachwechsel */
+const origChangeLanguage = changeLanguage;
+changeLanguage = function(lang){
+  origChangeLanguage(lang);
+  if(document.getElementById('muni-grid').children.length) renderMunicipalities();
+};
+</script>
 </body>
 </html>
 
