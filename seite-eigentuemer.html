@@ -1,843 +1,633 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Für Eigentümer:innen - BAUKOMPASS</title>
-    <style>
-        /* --- DESIGN-SYSTEM --- */
-        :root {
-            --bg-color: #f8f1d9;
-            --text-color: #222;
-            --accent-color: #2c3e50; /* Dunkelblau */
-            --highlight-color: #27ae60; /* Grün für Förderung */
-            --alert-color: #e67e22; /* Orange für Alarme */
-        }
-        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; }
-
-        /* Navigation */
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: white; border-bottom: 1px solid #e0e0e0; }
-        .nav-links a { text-decoration: none; color: var(--text-color); font-weight: bold; font-size: 0.9rem; text-transform: uppercase; }
-        .logo { font-weight: 900; font-size: 1.5rem; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; color: black; }
-
-        /* Language Switcher */
-        .lang-switch { display: flex; gap: 10px; }
-        .lang-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; opacity: 0.5; transition: opacity 0.2s; padding: 0; }
-        .lang-btn:hover, .lang-btn.active { opacity: 1; transform: scale(1.1); }
-
-        /* Layout */
-        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
-        .header-section { text-align: center; margin-bottom: 50px; }
-        .header-section h1 { font-size: 2.5rem; color: var(--accent-color); margin-bottom: 10px; }
-        .header-section p { font-size: 1.2rem; color: #555; }
-
-        /* Grid & Cards */
-        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 30px; margin-bottom: 40px; }
-        .service-card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 5px solid var(--accent-color); transition: transform 0.2s; }
-        .service-card:hover { transform: translateY(-3px); }
-        .service-card h3 { margin-top: 0; color: var(--accent-color); display: flex; align-items: center; gap: 10px; }
-
-        /* Specific Elements (Funding, Energy, etc.) */
-        .funding-item { background: #f4f9f4; border: 1px solid #c8e6c9; padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .funding-badge { background: var(--highlight-color); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
-        .btn-fund { background: white; border: 1px solid var(--highlight-color); color: var(--highlight-color); padding: 5px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .btn-fund:hover { background: var(--highlight-color); color: white; }
-        
-        .craftsman-search { display: flex; gap: 10px; margin-bottom: 20px; }
-        .craftsman-list { list-style: none; padding: 0; }
-        .craftsman-li { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
-        .craftsman-tag { background: #eee; color: #555; font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; }
-
-        .energy-box { background: linear-gradient(135deg, #2c3e50, #34495e); color: white; padding: 30px; border-radius: 12px; margin-bottom: 40px; text-align: center; }
-        .energy-box h3 { color: white; justify-content: center; }
-        .energy-meter { height: 20px; background: rgba(255,255,255,0.2); border-radius: 10px; margin: 20px auto; max-width: 600px; position: relative; overflow: hidden; }
-        .energy-fill { height: 100%; background: linear-gradient(90deg, #e74c3c, #f1c40f, #2ecc71); width: 40%; transition: width 1s ease; }
-        .energy-btn { background: #2ecc71; color: white; border: none; padding: 10px 20px; font-size: 1rem; border-radius: 5px; cursor: pointer; font-weight: bold; }
-
-        .alert-section { background: white; padding: 40px; border-radius: 12px; text-align: center; border: 2px dashed var(--alert-color); max-width: 700px; margin: 0 auto 60px; }
-        .input-group { display: flex; gap: 10px; max-width: 500px; margin: 20px auto; }
-        input, select { padding: 0 12px; border: 1px solid #ccc; border-radius: 4px; width: 100%; height: 48px; box-sizing: border-box; vertical-align: middle; }
-        button { box-sizing: border-box; }
-        .btn-alert { background: var(--alert-color); color: white; border: none; padding: 0 25px; height: 48px; border-radius: 4px; cursor: pointer; font-weight: bold; white-space: nowrap; }
-        
-        .vacancy-form label { display: block; margin-top: 10px; font-weight: bold; font-size: 0.9rem; }
-        .btn-submit { background: var(--accent-color); color: white; width: 100%; padding: 12px; height: auto; border: none; border-radius: 4px; margin-top: 20px; cursor: pointer; font-weight: bold; }
-
-        .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background: #f0f7f4; padding: 15px; border-radius: 8px; margin: 20px 0; border: 1px solid #dcdcdc; }
-        .kpi-item { text-align: center; }
-        .kpi-value { display: block; font-weight: 800; font-size: 1.1rem; color: #2c3e50; }
-        .kpi-label { font-size: 0.75rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        .comment-section { border-top: 1px solid #eee; margin-top: 20px; padding-top: 15px; }
-        .comment-list { list-style: none; padding: 0; margin-bottom: 15px; }
-        .comment-bubble { background: #f9f9f9; padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size: 0.9rem; border-left: 3px solid #ccc; }
-        .comment-author { font-weight: bold; font-size: 0.8rem; color: #555; display: block; margin-bottom: 2px;}
-        .comment-form { display: flex; gap: 10px; }
-        .comment-input { flex-grow: 1; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9rem; }
-        .btn-comment { background: #7f8c8d; color: white; border: none; padding: 0 15px; height: 48px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
-        .btn-comment:hover { background: #2c3e50; }
-
-        /* Modal Styles */
-        #location-modal { transition: opacity 0.3s ease-in-out; position: fixed; inset: 0; z-index: 100; background-color: rgba(15, 23, 42, 0.8); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 1rem; }
-        #location-modal.hidden { opacity: 0; pointer-events: none; }
-        .modal-content { background: white; border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); max-width: 28rem; width: 100%; padding: 2rem; border-top: 4px solid var(--alert-color); position: relative; }
-        .hidden { display: none !important; }
-
-       /* --- VIERFACH-LEPORELLO SIDEBAR --- */
-.info-sidebar {
-    position: fixed;
-    top: 0;
-    right: -1650px; /* Parkposition weit außerhalb */
-    width: 400px;
-    height: 100vh;
-    background: #fff;
-    box-shadow: -5px 0 15px rgba(0,0,0,0.1);
-    transition: right 0.4s ease-in-out, width 0.4s ease-in-out;
-    z-index: 1000;
-    display: flex;
-    overflow: hidden;
-    border-left: 5px solid var(--accent-color);
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Für Eigentümer:innen – BAUKOMPASS</title>
+<meta name="description" content="Sanierungs-Rechner, Fördergelder, rechtliche Hinweise und Kooperationsmodelle für Eigentümer:innen in der Grenzregion Aachen / Ostbelgien.">
+<style>
+/* ============ DESIGN TOKENS ============ */
+:root{
+  --primary:#1a2e4a; --primary-soft:#24405f; --accent:#2a9d8f; --accent-soft:#e6f4f2;
+  --bg:#f5f7fa; --surface:#ffffff; --surface-2:#eef2f6;
+  --text:#1c2733; --text-soft:#5b6b7b; --border:#dde4ec;
+  --warn:#e07b39; --warn-soft:#fdf1e6; --danger:#c0392b; --danger-soft:#fdeeec; --ok:#27ae60; --ok-soft:#eaf7ef;
+  --shadow:0 2px 10px rgba(26,46,74,.07); --shadow-lg:0 12px 32px rgba(26,46,74,.14);
+  --radius:14px;
 }
-
-/* Zustände für die Faltung */
-.info-sidebar.open { right: 0 !important; width: 400px; }
-.info-sidebar.step-1 { width: 800px; }
-.info-sidebar.step-2 { width: 1200px; }
-.info-sidebar.step-3 { width: 1600px; }
-
-.sidebar-panel {
-    width: 400px;
-    height: 100vh;
-    padding: 35px;
-    box-sizing: border-box;
-    overflow-y: auto;
-    flex-shrink: 0;
-    border-right: 1px solid #eee;
+[data-theme="dark"]{
+  --primary:#9fc3e8; --primary-soft:#16263c; --accent:#3fc1b0; --accent-soft:#11332f;
+  --bg:#0f1722; --surface:#172230; --surface-2:#1e2c3d;
+  --text:#e8eef5; --text-soft:#9bacbe; --border:#2a3a4d;
+  --warn-soft:#3a2a17; --danger-soft:#3a1d19; --ok-soft:#16301f;
+  --shadow:0 2px 10px rgba(0,0,0,.35); --shadow-lg:0 12px 32px rgba(0,0,0,.5);
 }
-
-/* Button-Positionen & Basis-Design */
-.sidebar-toggle { 
-    position: fixed;
-    top: 50%;
-    right: 0; /* Standardposition am rechten Rand */
-    transform: translateY(-50%);
-    background: var(--accent-color);
-    color: #fff;
-    border: none;
-    padding: 25px 15px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    z-index: 2000; /* Muss über der Sidebar liegen */
-    border-radius: 8px 0 0 8px;
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    font-weight: bold;
-    box-shadow: -4px 0px 15px rgba(0,0,0,0.2);
-    transition: right 0.4s ease-in-out; /* Weicher Übergang beim Mitwandern */
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  background:var(--bg); color:var(--text); line-height:1.65; animation:pageFade .45s ease both;
 }
+@keyframes pageFade{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}html{scroll-behavior:auto}}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent); outline-offset:2px; border-radius:4px}
+h2.section-title{max-width:1140px; margin:46px auto 22px; padding:0 24px; font-size:1.45rem; color:var(--primary); display:flex; align-items:center; gap:12px}
+h2.section-title::before{content:""; flex:none; width:10px; height:30px; border-radius:4px; background:var(--accent)}
 
-/* Dynamische Positionen, wenn die Sidebar-Stufen öffnen */
-.sidebar-toggle.open { right: 400px; }
-.sidebar-toggle.step-1 { right: 800px; }
-.sidebar-toggle.step-2 { right: 1200px; }
-.sidebar-toggle.step-3 { right: 1600px; }
+/* ============ HEADER ============ */
+.site-header{position:sticky; top:0; z-index:600; background:var(--surface); border-bottom:1px solid var(--border); transition:box-shadow .25s}
+.site-header.scrolled{box-shadow:var(--shadow-lg)}
+.nav-inner{max-width:1280px; margin:0 auto; padding:14px 24px; display:flex; align-items:center; gap:18px}
+.nav-back{font-size:.78rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-soft); text-decoration:none; white-space:nowrap}
+.nav-back:hover{color:var(--accent)}
+.logo{margin:0 auto; font-weight:900; font-size:1.25rem; letter-spacing:.18em; text-transform:uppercase; text-decoration:none; color:var(--text); display:flex; align-items:center; gap:8px}
+.nav-tools{display:flex; align-items:center; gap:6px}
+.lang-btn,.theme-toggle,.burger{background:none; border:1px solid transparent; border-radius:8px; padding:6px 9px; font:inherit; font-size:.82rem; font-weight:700; color:var(--text-soft); cursor:pointer; transition:color .2s, background .2s}
+.lang-btn:hover,.theme-toggle:hover{color:var(--text); background:var(--surface-2)}
+.lang-btn[aria-pressed="true"]{color:#fff; background:var(--accent)}
+.theme-toggle{font-size:1rem; line-height:1}
+.burger{display:none; font-size:1.25rem}
+@media (max-width:760px){
+  .nav-inner{flex-wrap:wrap; padding:12px 16px}
+  .nav-back{display:none}
+  .logo{margin:0; font-size:1.05rem}
+  .burger{display:block; margin-left:auto}
+  .nav-tools{display:none; width:100%; justify-content:center; padding-top:10px; border-top:1px solid var(--border); margin-top:10px}
+  .nav-tools.open{display:flex}
+  .mobile-back{display:block!important}
+}
+.mobile-back{display:none}
 
-        /* Mobile */
-        @media (max-width: 768px) {
-            .nav-links a { font-size: 0.7rem !important; }
-            .logo { font-size: 1.2rem; }
-            nav { padding: 15px 20px; }
-            .grid-2, .legal-grid, .kpi-grid { grid-template-columns: 1fr !important; }
-            .container { padding: 0 15px; margin-top: 20px; }
-            .service-card, .energy-box, .alert-section { padding: 20px !important; }
-            .header-section h1 { font-size: 1.8rem; }
-            .input-group { flex-direction: column; }
-            .input-group input, .input-group button { width: 100% !important; margin-bottom: 10px; }
-            .energy-form > div { grid-template-columns: 1fr !important; }
-            .service-card > div[style*="height: 200px"] { height: 150px !important; }
-        }
-        .hidden { display: none !important; }
-        
-    </style>
+/* ============ HERO ============ */
+.hero{background:linear-gradient(135deg,#1a2e4a 0%,#234668 60%,#2a9d8f 140%); color:#fff; text-align:center; padding:60px 20px 52px}
+[data-theme="dark"] .hero{background:linear-gradient(135deg,#101d30 0%,#16314a 60%,#1d6e64 140%)}
+.hero h1{margin:0 0 10px; font-size:clamp(1.7rem,4vw,2.5rem); font-weight:800; letter-spacing:-.01em}
+.hero p{margin:0 auto; max-width:640px; font-size:1.05rem; opacity:.88}
+.hero .loc{font-weight:800; color:#ffd98e}
+
+.container{max-width:1140px; margin:0 auto; padding:36px 24px 90px}
+@media (max-width:760px){.container{padding:24px 16px 80px}}
+.grid-2{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr)); gap:24px; margin-bottom:24px}
+
+/* ============ CARDS ============ */
+.service-card{
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+  box-shadow:var(--shadow); padding:28px; border-top:4px solid var(--primary);
+  transition:transform .2s, box-shadow .2s;
+}
+.service-card:hover{transform:translateY(-2px); box-shadow:var(--shadow-lg)}
+.service-card h3{margin:0 0 8px; font-size:1.1rem; color:var(--primary); display:flex; align-items:center; gap:9px}
+.muted{color:var(--text-soft); font-size:.9rem}
+
+/* ============ FORMS / BUTTONS ============ */
+input,select,textarea{
+  width:100%; padding:11px 13px; font:inherit; font-size:.93rem; color:var(--text);
+  background:var(--surface-2); border:1px solid var(--border); border-radius:9px;
+}
+label{display:block; font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:.07em; color:var(--text-soft); margin-bottom:5px}
+.btn{display:inline-block; border:none; border-radius:9px; padding:11px 18px; font:inherit; font-size:.9rem; font-weight:700; cursor:pointer; text-align:center; text-decoration:none; transition:filter .2s, transform .1s}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--accent); color:#fff}
+.btn-primary:hover{filter:brightness(1.08)}
+.btn-dark{background:var(--primary); color:#fff}
+[data-theme="dark"] .btn-dark{background:var(--primary-soft); color:var(--text)}
+.btn-warn{background:var(--warn); color:#fff}
+.btn-outline{background:var(--surface); color:var(--accent); border:1.5px solid var(--accent)}
+.btn-outline:hover{background:var(--accent); color:#fff}
+.btn-block{display:block; width:100%}
+.btn-ghost{background:none; color:var(--text-soft)}
+.btn-ghost:hover{color:var(--text)}
+
+/* ============ SANIERUNGS-RECHNER ============ */
+.energy-box{
+  background:linear-gradient(140deg,#16283f,#1a2e4a 55%,#1f5a52);
+  color:#fff; border-radius:var(--radius); box-shadow:var(--shadow-lg);
+  padding:34px; margin-bottom:26px;
+}
+.energy-box h3{margin:0 0 6px; font-size:1.25rem; display:flex; align-items:center; gap:10px}
+.energy-box .muted{color:rgba(255,255,255,.72)}
+.calc-progress{display:flex; align-items:center; gap:10px; margin:20px 0 14px; font-size:.78rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:rgba(255,255,255,.65)}
+.calc-progress .pstep{display:flex; align-items:center; gap:7px}
+.calc-progress .pdot{width:24px; height:24px; border-radius:50%; display:grid; place-items:center; background:rgba(255,255,255,.18); font-size:.72rem; transition:background .3s}
+.calc-progress .pstep.done .pdot,.calc-progress .pstep.current .pdot{background:var(--accent); color:#fff}
+.calc-progress .pline{flex:1; height:2px; background:rgba(255,255,255,.18); border-radius:2px; position:relative; overflow:hidden}
+.calc-progress .pline::after{content:""; position:absolute; inset:0; background:var(--accent); transform:translateX(-100%); transition:transform .5s}
+.calc-progress.step2 .pline::after{transform:none}
+.energy-form{background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18); border-radius:12px; padding:24px}
+.energy-form label{color:rgba(255,255,255,.75)}
+.energy-form .row{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+@media (max-width:680px){.energy-form .row{grid-template-columns:1fr}}
+.energy-form input,.energy-form select{background:#fff; color:#1c2733; border-color:transparent}
+/* Energie-Label A–H */
+.energy-label{display:flex; gap:4px; max-width:560px; margin:22px auto 8px}
+.energy-step{
+  flex:1; padding:8px 0; text-align:center; font-weight:800; font-size:.85rem; color:#fff;
+  border-radius:6px; opacity:.32; transform:scale(.94); transition:opacity .4s, transform .4s, box-shadow .4s;
+}
+.energy-step.lit{opacity:1; transform:scale(1.08); box-shadow:0 0 0 2.5px #fff, 0 6px 16px rgba(0,0,0,.35)}
+.e-A{background:#1e8e3e}.e-B{background:#4caf50}.e-C{background:#8bc34a}.e-D{background:#cddc39; color:#3a3a00}
+.e-E{background:#ffc107; color:#4a3500}.e-F{background:#ff9800}.e-G{background:#f4511e}.e-H{background:#d32f2f}
+#simulation-result{display:none; margin-top:26px; border-top:1px solid rgba(255,255,255,.25); padding-top:20px; text-align:center; animation:panelIn .5s ease}
+@keyframes panelIn{from{opacity:0; transform:translateY(8px)}to{opacity:1; transform:none}}
+#energy-class-text{font-size:1.2rem; font-weight:800; margin:6px 0 2px}
+#value-text{color:#7df0c8; font-weight:800; font-size:1.3rem; margin:8px 0 2px}
+
+/* ============ EIGENTÜMER-TYP ============ */
+.type-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin:18px 0}
+.type-btn{
+  padding:16px 14px; border-radius:11px; border:1.5px solid var(--border); background:var(--surface-2);
+  font:inherit; font-weight:700; font-size:.92rem; color:var(--text); cursor:pointer;
+  transition:border-color .2s, background .2s, transform .15s;
+}
+.type-btn:hover{transform:translateY(-2px); border-color:var(--accent)}
+.type-btn[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:#fff}
+#strategy-content{display:none; padding:18px 20px; background:var(--accent-soft); border:1px solid var(--accent); border-radius:11px; animation:panelIn .3s ease}
+#strategy-content h4{margin:0 0 6px; color:var(--primary)}
+#strategy-content p{margin:0; font-size:.92rem}
+
+/* ============ FÖRDERUNG ============ */
+.funding-item{
+  background:var(--ok-soft); border:1px solid color-mix(in srgb, var(--ok) 35%, transparent);
+  padding:15px 17px; border-radius:11px; margin-bottom:13px;
+  display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap;
+}
+.funding-badge{display:inline-block; margin-top:4px; background:var(--ok); color:#fff; padding:2px 9px; border-radius:999px; font-size:.74rem; font-weight:800}
+
+/* ============ HANDWERKER ============ */
+.craftsman-search{display:flex; gap:10px; margin:14px 0 18px}
+.craftsman-search input{flex:1}
+.craftsman-list{list-style:none; padding:0; margin:0}
+.craftsman-li{padding:15px 4px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; gap:12px}
+.craftsman-li:last-child{border-bottom:none}
+.craftsman-tag{display:inline-block; background:var(--surface-2); color:var(--text-soft); font-size:.72rem; font-weight:700; padding:2px 8px; border-radius:999px; margin-top:4px}
+
+/* ============ AKKORDEONS / RECHT ============ */
+.legal-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr)); gap:16px}
+details.legal{background:var(--danger-soft); border:1px solid color-mix(in srgb, var(--danger) 25%, transparent); border-radius:11px; padding:0; overflow:hidden}
+details.legal summary{
+  list-style:none; cursor:pointer; padding:15px 18px; font-weight:800; color:var(--danger);
+  display:flex; justify-content:space-between; align-items:center; gap:10px;
+}
+details.legal summary::-webkit-details-marker{display:none}
+details.legal summary::after{content:"+"; font-size:1.2rem; font-weight:800; transition:transform .25s}
+details.legal[open] summary::after{transform:rotate(45deg)}
+details.legal .legal-body{padding:0 18px 16px; font-size:.92rem}
+
+/* ============ BETTER PRACTICE ============ */
+.case-card{padding:0; overflow:hidden; display:flex; flex-direction:column; border-top:none}
+.case-head{height:160px; display:flex; align-items:center; justify-content:center; font-size:2.8rem; color:#fff; position:relative; background:linear-gradient(135deg,#1a2e4a,#2a9d8f)}
+.case-head.alt{background:linear-gradient(135deg,#22384f,#1f5a52)}
+.case-badge{position:absolute; top:12px; right:14px; background:var(--ok); color:#fff; padding:4px 11px; border-radius:999px; font-size:.74rem; font-weight:800}
+.case-body{padding:24px; display:flex; flex-direction:column; flex-grow:1}
+.kpi-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; background:var(--surface-2); border:1px solid var(--border); padding:14px; border-radius:11px; margin:16px 0}
+@media (max-width:480px){.kpi-grid{grid-template-columns:1fr 1fr}}
+.kpi-item{text-align:center}
+.kpi-value{display:block; font-weight:800; font-size:1.08rem; color:var(--primary)}
+.kpi-value.ok{color:var(--ok)}
+.kpi-label{font-size:.68rem; color:var(--text-soft); text-transform:uppercase; letter-spacing:.05em}
+.comment-section{border-top:1px solid var(--border); margin-top:auto; padding-top:14px}
+.comment-list{list-style:none; padding:0; margin:0 0 12px}
+.comment-bubble{background:var(--surface-2); padding:10px 13px; border-radius:10px; margin-bottom:8px; font-size:.88rem; border-left:3px solid var(--accent)}
+.comment-author{font-weight:800; font-size:.78rem; color:var(--text-soft); display:block; margin-bottom:2px}
+.comment-form{display:flex; gap:8px}
+.comment-form input{flex:1}
+
+/* ============ DE/BE FACHWISSEN ============ */
+.border-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr)); gap:18px; margin-top:14px; font-size:.9rem}
+.border-box{padding:16px 18px; border-radius:0 10px 10px 0; background:var(--surface-2); border-left:5px solid}
+.border-box.de{border-color:#de2110}.border-box.be{border-color:#ffce00}
+.border-box.de strong{color:#de2110}.border-box.be strong{color:#b8950b}
+[data-theme="dark"] .border-box.de strong{color:#ff6f61}
+[data-theme="dark"] .border-box.be strong{color:#ffd95e}
+
+/* ============ BAU-ALARM ============ */
+.alert-section{background:var(--surface); border:2px dashed var(--warn); border-radius:var(--radius); padding:34px; text-align:center; max-width:760px; margin:30px auto 0}
+.alert-section h3{color:var(--warn); margin:0 0 8px}
+.input-group{display:flex; gap:10px; max-width:560px; margin:18px auto 0}
+@media (max-width:680px){.input-group{flex-direction:column}}
+
+/* ============ ESKALATIONS-STEPPER ============ */
+.stepper{display:grid; grid-template-columns:repeat(4,1fr); gap:0; counter-reset:step; position:relative; margin-top:22px}
+@media (max-width:760px){.stepper{grid-template-columns:1fr 1fr; gap:14px}}
+.step-node{position:relative; padding:14px 10px 0; text-align:center; background:none; border:none; cursor:pointer; font:inherit}
+.step-node .dot{
+  width:48px; height:48px; border-radius:50%; margin:0 auto 10px; display:grid; place-items:center;
+  font-weight:800; font-size:1rem; color:#fff; transition:transform .2s, box-shadow .2s; position:relative; z-index:2;
+}
+.step-node:hover .dot{transform:scale(1.1)}
+.step-node[aria-expanded="true"] .dot{box-shadow:0 0 0 4px var(--accent-soft), var(--shadow-lg)}
+.step-node .s-title{font-weight:800; font-size:.9rem; color:var(--text)}
+.step-node .s-sub{font-size:.76rem; color:var(--text-soft)}
+.dot-0{background:var(--accent)} .dot-1{background:var(--warn)} .dot-2{background:var(--danger)} .dot-3{background:#222}
+[data-theme="dark"] .dot-3{background:#5a6b80}
+.stepper::before{content:""; position:absolute; top:38px; left:12%; right:12%; height:3px; background:var(--border); z-index:1}
+@media (max-width:760px){.stepper::before{display:none}}
+
+/* Slide-Out */
+.slideout-backdrop{position:fixed; inset:0; z-index:850; background:rgba(12,20,32,.45); opacity:0; pointer-events:none; transition:opacity .3s}
+.slideout-backdrop.open{opacity:1; pointer-events:auto}
+.slideout{
+  position:fixed; top:0; right:0; height:100dvh; width:min(440px,94vw); z-index:860;
+  background:var(--surface); box-shadow:var(--shadow-lg); border-left:5px solid var(--accent);
+  transform:translateX(105%); transition:transform .35s ease; display:flex; flex-direction:column;
+}
+.slideout.open{transform:none}
+.slideout-head{padding:22px 26px 14px; display:flex; justify-content:space-between; align-items:flex-start; gap:12px}
+.slideout-head h2{margin:0; font-size:1.2rem; color:var(--primary); border-bottom:3px solid var(--accent); padding-bottom:8px}
+.slideout-close{background:none; border:none; font-size:1.6rem; line-height:1; cursor:pointer; color:var(--text-soft)}
+.slideout-body{padding:0 26px 26px; overflow-y:auto; flex:1}
+.law-box{background:var(--surface-2); border-left:5px solid var(--accent); border-radius:0 9px 9px 0; padding:12px 15px; margin-bottom:12px; font-size:.9rem}
+.law-box.warn{border-color:var(--warn)} .law-box.danger{border-color:var(--danger)} .law-box.dark{border-color:#222}
+[data-theme="dark"] .law-box.dark{border-color:#5a6b80}
+.law-box strong{display:block; margin-bottom:3px}
+.law-box p{margin:0; color:var(--text-soft)}
+.slideout-nav{display:flex; gap:10px; margin-top:18px}
+.slideout-nav .btn{flex:1}
+
+/* ============ LOCATION MODAL ============ */
+.modal-backdrop{position:fixed; inset:0; z-index:900; background:rgba(12,20,32,.7); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; padding:18px; opacity:0; pointer-events:none; transition:opacity .25s}
+.modal-backdrop.open{opacity:1; pointer-events:auto}
+.modal{background:var(--surface); border-radius:18px; box-shadow:var(--shadow-lg); width:100%; max-width:440px; padding:30px; border-top:5px solid var(--warn); transform:translateY(14px); transition:transform .25s}
+.modal-backdrop.open .modal{transform:none}
+.modal h2{margin:0 0 4px; font-size:1.3rem; color:var(--primary); text-align:center}
+.modal .sub{margin:0 0 18px; font-size:.85rem; color:var(--text-soft); text-align:center}
+.modal .icon{display:block; text-align:center; font-size:2.4rem; margin-bottom:8px}
+.field{margin-bottom:14px}
+#location-error{display:none; color:var(--danger); font-size:.8rem; text-align:center; background:var(--danger-soft); padding:9px; border-radius:8px; margin-bottom:12px}
+#location-error.show{display:block}
+
+/* ============ TOAST / TO-TOP / FOOTER ============ */
+.toast-zone{position:fixed; bottom:22px; left:50%; transform:translateX(-50%); z-index:1200; display:flex; flex-direction:column; gap:8px; align-items:center; pointer-events:none}
+.toast{background:var(--primary); color:#fff; padding:12px 22px; border-radius:999px; font-size:.9rem; font-weight:600; box-shadow:var(--shadow-lg); animation:toastIn .3s ease, toastOut .3s ease 3.4s forwards}
+[data-theme="dark"] .toast{background:var(--accent); color:#06211d}
+@keyframes toastIn{from{opacity:0; transform:translateY(14px)}to{opacity:1}}
+@keyframes toastOut{to{opacity:0; transform:translateY(8px)}}
+.to-top{position:fixed; right:22px; bottom:22px; z-index:700; width:46px; height:46px; border:none; border-radius:50%; background:var(--primary); color:#fff; font-size:1.15rem; cursor:pointer; box-shadow:var(--shadow-lg); opacity:0; pointer-events:none; transition:opacity .25s, transform .25s; transform:translateY(8px)}
+[data-theme="dark"] .to-top{background:var(--accent); color:#06211d}
+.to-top.visible{opacity:1; pointer-events:auto; transform:none}
+footer{background:var(--primary); color:rgba(255,255,255,.82); padding:28px 24px; text-align:center; font-size:.85rem}
+[data-theme="dark"] footer{background:#0b1420; color:var(--text-soft)}
+
+/* ============ PRINT (Recht & Förderung) ============ */
+@media print{
+  body *{visibility:hidden}
+  #print-area, #print-area *{visibility:visible}
+  #print-area{position:absolute; left:0; top:0; width:100%}
+  details.legal{break-inside:avoid}
+  details.legal summary::after{display:none}
+  .btn,.comment-section{display:none!important}
+  body{background:#fff}
+}
+</style>
 </head>
-<body id="main-body" style="overflow: hidden;">
+<body>
 
-    <div id="location-modal">
-        <div class="modal-content">
-            <div style="text-align: center; margin-bottom: 1.5rem;">
-                <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">🌍</span>
-                <h2 style="font-size: 1.5rem; font-weight: bold; color: var(--accent-color); margin: 0;" data-i18n="modal_title">Willkommen!</h2>
-                <p style="color: #666; font-size: 0.875rem; margin-top: 0.5rem;" data-i18n="modal_desc">Bitte wählen Sie Ihre Region für lokale Förderprogramme.</p>
-            </div>
-            <form id="location-form" onsubmit="handleLocationSubmit(event)" style="display: flex; flex-direction: column; gap: 1rem;">
-                <div>
-                    <label style="display: block; font-size: 0.75rem; font-weight: bold; color: #666; text-transform: uppercase; margin-bottom: 0.25rem;" data-i18n="lbl_country">Land</label>
-                    <select id="country-select" style="width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #ccc;">
-                        <option value="DE">Deutschland 🇩🇪</option>
-                        <option value="BE">Belgien 🇧🇪</option>
-                        <option value="NL">Niederlande 🇳🇱</option>
-                    </select>
-                </div>
-                <div>
-                    <label style="display: block; font-size: 0.75rem; font-weight: bold; color: #666; text-transform: uppercase; margin-bottom: 0.25rem;" data-i18n="lbl_zip">Postleitzahl</label>
-                    <input id="plz-input" type="text" placeholder="z.B. 52152" required style="width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #ccc;">
-                </div>
-                <div id="location-error" class="hidden" style="color: #ef4444; font-size: 0.75rem; text-align: center; background: #fef2f2; padding: 0.5rem; border-radius: 0.25rem;" data-i18n="modal_error">
-                    Diese PLZ liegt leider außerhalb unseres Pilotgebiets.
-                </div>
-                <button type="submit" style="width: 100%; background: var(--alert-color); color: white; font-weight: bold; padding: 0.75rem; border-radius: 0.5rem; border: none; cursor: pointer; transition: transform 0.1s;" data-i18n="btn_enter">
-                    Zum Bereich
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <nav>
-        <div class="nav-links">
-            <a href="index.html" data-i18n="nav_back">&larr; ZURÜCK ZUR ÜBERSICHT</a>
-        </div>
-        <a href="index.html" class="logo">BAUKOMPASS</a>
-        <div class="lang-switch">
-            <button onclick="changeLanguage('de')" class="lang-btn active" data-lang="de">DE</button>
-            <button onclick="changeLanguage('en')" class="lang-btn" data-lang="en">EN</button>
-            <button onclick="changeLanguage('fr')" class="lang-btn" data-lang="fr">FR</button>
-        </div>
-    </nav>
-
-    <header class="header-section">
-        <h1 data-i18n="header_title">Werte erhalten, Zukunft sichern</h1>
-        <p><span data-i18n="header_sub">Ihr zentrales Portal für Sanierung und Förderung</span> <span id="header-location-display" style="font-weight: bold; color: var(--alert-color);"></span></p>
-    </header>
-
-    <div class="container">
-
-        <section class="energy-box">
-            <h3 data-i18n="calc_title">🌱 Sanierungs-Rechner</h3>
-            <p data-i18n="calc_desc">Geben Sie Ihre Gebäudedaten ein, um das individuelle Wertsteigerungspotenzial zu ermitteln.</p>
-            
-            <div class="energy-form" style="text-align: left; max-width: 600px; margin: 25px auto; background: rgba(255,255,255,0.1); padding: 25px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; align-items: end;">
-                    <div>
-                        <label style="display:block; margin-bottom:5px; font-size:0.85rem; color:#ddd;" data-i18n="lbl_year">Baujahr</label>
-                        <input type="number" id="inp-year" placeholder="z.B. 1975" style="background:white; color:#333; margin-bottom:0;">
-                    </div>
-                    <div>
-                        <label style="display:block; margin-bottom:5px; font-size:0.85rem; color:#ddd;" data-i18n="lbl_type">Gebäudetyp</label>
-                        <select id="inp-type" style="background:white; color:#333; margin-bottom:0;">
-                            <option data-i18n="opt_house">Einfamilienhaus</option>
-                            <option data-i18n="opt_row">Reihenhaus</option>
-                            <option data-i18n="opt_multi">Mehrfamilienhaus</option>
-                            <option data-i18n="opt_timber">Fachwerkhaus</option>
-                        </select>
-                    </div>
-                </div>
-                <div style="margin-top: 15px;">
-                    <label style="display:block; margin-bottom:5px; font-size:0.85rem; color:#ddd;" data-i18n="lbl_insulation">Aktueller Dämm-Standard</label>
-                    <select id="inp-insulation" style="background:white; color:#333;">
-                        <option value="none" data-i18n="opt_ins_none">Unbekannt / Keine Dämmung</option>
-                        <option value="old" data-i18n="opt_ins_old">Altbestand (vor 1995)</option>
-                        <option value="partial" data-i18n="opt_ins_partial">Teilgedämmt (z.B. nur Dach)</option>
-                        <option value="good" data-i18n="opt_ins_good">Gut (nach 2005)</option>
-                    </select>
-                </div>
-                <button class="energy-btn" style="width:100%; margin-top:20px;" onclick="calculateRenovation()" data-i18n="btn_analyze">Analyse starten</button>
-            </div>
-
-<section class="service-card" style="border-top-color: var(--alert-color); background: #fffcf5;">
-    <h3 style="color: var(--accent-color); text-align: center;">
-        <span data-i18n="type_title">🔍 Welcher Eigentümer-Typ sind Sie?</span>
-    </h3>
-    <p style="font-size: 0.9rem; text-align: center; color: #555; margin-bottom: 20px;" data-i18n="type_desc">
-        Klicken Sie auf Ihre Lebenslage für passende Strategien aus dem Forschungsbericht.
-    </p>
-    
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 20px;">
-        <button class="btn-fund" onclick="showStrategy('senioren')" style="padding: 15px; height: auto; width: 100%;">Senioren / Inaktive</button>
-        <button class="btn-fund" onclick="showStrategy('erben')" style="padding: 15px; height: auto; width: 100%;">Erbengemeinschaften</button>
-        <button class="btn-fund" onclick="showStrategy('anleger')" style="padding: 15px; height: auto; width: 100%;">Kapitalanleger</button>
-    </div>
-
-    <div id="strategy-content" style="display:none; padding: 20px; background: white; border-radius: 8px; border: 1px solid #ddd; animation: fadeIn 0.3s;">
-        <h4 id="strategy-title" style="margin-top: 0; color: var(--accent-color);"></h4>
-        <div id="strategy-text" style="font-size: 0.9rem; color: #444;"></div>
-    </div>
-</section>
-            
-            <div id="simulation-result" style="display:none; margin-top:30px; border-top:1px solid rgba(255,255,255,0.3); padding-top:20px; animation: fadeEffect 1s;">
-                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 5px;"><span data-i18n="res_prefix">Ergebnis für Ihr</span> <span id="res-type">Haus</span> (Bj. <span id="res-year"></span>):</p>
-                <div class="energy-meter">
-                    <div class="energy-fill" id="energy-bar" style="width: 20%; background: #e74c3c;"></div>
-                </div>
-                <p id="energy-text" style="font-size: 1.1rem; margin-bottom: 5px; font-weight: bold;">Energieklasse H</p>
-                <p id="value-text" style="color: #2ecc71; font-weight: 800; font-size: 1.4rem; margin-top: 10px;"></p>
-                <p style="font-size: 0.8rem; margin-top: 5px; opacity: 0.7;" data-i18n="res_disclaimer">*Basierend auf regionalen Durchschnittswerten.</p>
-            </div>
-        </section>
-
-        <div class="grid-2">
-            
-            <div class="service-card" style="border-top-color: var(--highlight-color);">
-                <h3 data-i18n="fund_title">💰 Verfügbare Fördergelder</h3>
-                <p style="font-size:0.9rem; margin-bottom:20px;" data-i18n="fund_desc">Aktuelle Programme für Ihre Region:</p>
-                <div class="funding-item">
-                    <div><strong>KfW 261 (Wohngebäude)</strong><br><span class="funding-badge" data-i18n="fund_badge_1">Bis zu 45% Zuschuss</span></div>
-                    <button class="btn-fund" onclick="alert('Sie werden zum KfW-Portal weitergeleitet...')" data-i18n="btn_info">Info</button>
-                </div>
-                <div class="funding-item">
-                    <div><strong>BAFA Heizungstausch</strong><br><span class="funding-badge" data-i18n="fund_badge_2">Bis zu 70% Förderung</span></div>
-                    <button class="btn-fund" onclick="alert('Antragsassistent wird gestartet...')" data-i18n="btn_help">Hilfe</button>
-                </div>
-                <div class="funding-item">
-                    <div><strong data-i18n="fund_local_title">Kommunales Fassadenprogramm</strong><br><span class="funding-badge" data-i18n="fund_badge_3">Zuschuss: 5.000€</span></div>
-                    <button class="btn-fund" onclick="alert('Formular wird heruntergeladen...')" data-i18n="btn_apply">Antrag</button>
-                </div>
-            </div>
-
-            <div class="service-card">
-                <h3 data-i18n="craft_title">🛠️ Handwerker in der Nähe</h3>
-               <p data-i18n="craft_desc">Experten im Umkreis von 10km.</p>
-                <div class="craftsman-search">
-                    <input type="text" data-i18n="craft_placeholder" placeholder="PLZ oder Gewerk">
-                    <button style="background:#ddd; border:none; padding:0 15px; border-radius:4px;">🔍</button>
-                </div>
-                <ul class="craftsman-list">
-                    <li class="craftsman-li">
-                        <div><strong>Elektro Müller GmbH</strong><br><span class="craftsman-tag">Photovoltaik</span> <span class="craftsman-tag">Smart Home</span></div>
-                        <a href="#" style="color:var(--accent-color); font-weight:bold;" data-i18n="link_call">Anrufen</a>
-                    </li>
-                    <li class="craftsman-li">
-                        <div><strong>Dachdeckerei Schmidt</strong><br><span class="craftsman-tag" data-i18n="tag_insulation">Dämmung</span> <span class="craftsman-tag" data-i18n="tag_renovation">Sanierung</span></div>
-                        <a href="#" style="color:var(--accent-color); font-weight:bold;" data-i18n="link_call">Anrufen</a>
-                    </li>
-                </ul>
-                <p style="text-align:center; font-size:0.8rem; color:#888; margin-top:10px;" data-i18n="craft_footer">Geprüfte Partner der Kommune</p>
-            </div>
-
-            <div class="service-card">
-                <h3 data-i18n="vacancy_title">🏚️ Leerstand & Umnutzung</h3>
-                <p style="font-size:0.9rem; margin-bottom:20px;" data-i18n="vacancy_desc">Haben Sie eine ungenutzte Immobilie? Melden Sie sie freiwillig für Förder-Programme.</p>
-                <form class="vacancy-form" onsubmit="event.preventDefault(); alert('Vielen Dank!');">
-                    <label data-i18n="lbl_prop_type">Art der Immobilie</label>
-                    <select>
-                        <option data-i18n="opt_vacant_home">Wohnhaus</option>
-                        <option data-i18n="opt_commercial">Gewerbe</option>
-                        <option>Potenzial für Zwischennutzung</option>
-                    </select>
-                    <button type="submit" class="btn-submit" data-i18n="btn_submit_confidential">Vertraulich absenden</button>
-                </form>
-            </div>
-
-            <div class="service-card" style="background: #fdfdfd;">
-                <h3 data-i18n="coop_title">🤝 Modelle & Partnerschaft</h3>
-                <p data-i18n="coop_desc" style="font-size:0.9rem; margin-bottom:15px;">Wir bieten passgenaue Modelle für Ihre Situation:</p>
-                <ul style="padding-left:20px; color:#555; font-size: 0.85rem;">
-                    <li style="margin-bottom:8px;"><strong>Verkauf/Aktivierung:</strong> Unterstützung bei der Vermittlung an Investoren.</li>
-                    <li style="margin-bottom:8px;"><strong>Verrentung (Viager):</strong> Lebenslange Rente und barrierefreie Ersatzwohnung.</li>
-                    <li style="margin-bottom:8px;"><strong>Verpachtung:</strong> Sie behalten das Eigentum, profitieren aber von gesicherten Erträgen.</li>
-                    <li style="margin-bottom:8px;"><strong>Genossenschaften:</strong> Unterstützung beim gemeinschaftlichen Erwerb.</li>
-                    <li style="margin-bottom:8px;"><strong>Zwischennutzung (Occupation précaire):</strong> Kurzfristige Belebung zur Vermeidung von Vandalismus und Senkung laufender Kosten[cite: 359].</li>
-                    <li style="margin-bottom:8px;"><strong>Öffentlich-Private Partnerschaft:</strong> Entlastung von baulichen und administrativen Risiken durch die Kommune[cite: 31, 358].</li>
-                </ul>
-                <button class="btn-submit" style="background-color: #2c3e50; margin-top:10px;" onclick="alert('Terminbuchungssystem öffnet sich...')">Beratung buchen</button>
-            </div>
-
-            <div id="local-resources" class="service-card hidden" style="border-top-color: #3498db; grid-column: 1 / -1;">
-                </div>
-
-        </div> 
-     <h2 data-i18n="legal_title">Rechtssicher Eigentum halten</h2>
-        <section class="service-card" style="border-top-color: #c0392b; margin-bottom: 60px;">
-            <h3 data-i18n="rights_title">⚖️ Rechte, Pflichten & Fristen</h3>
-            <p style="margin-bottom: 20px;" data-i18n="rights_desc">Vermeiden Sie Bußgelder und Haftungsrisiken. Hier sind die wichtigsten Punkte, die Sie als Eigentümer beachten müssen.</p>
-            <div class="legal-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                <details style="background: #fff5f5; padding: 15px; border-radius: 8px; cursor: pointer;">
-                    <summary style="font-weight: bold; color: #c0392b;" data-i18n="duty_safe_title">Verkehrssicherungspflicht</summary>
-                    <p style="font-size: 0.9rem; margin-top: 10px;" data-i18n="duty_safe_desc">Sie haften für Schäden durch Glatteis oder herabfallende Ziegel. <br><strong>Pflicht:</strong> Räum- und Streupflicht (7-20 Uhr), Baumkontrolle.</p>
-                </details>
-                <details style="background: #fff5f5; padding: 15px; border-radius: 8px; cursor: pointer;">
-                    <summary style="font-weight: bold; color: #c0392b;" data-i18n="duty_energy_title">Energetische Nachrüstpflichten (GEG)</summary>
-                    <p style="font-size: 0.9rem; margin-top: 10px;" data-i18n="duty_energy_desc">Bei Eigentümerwechsel greifen oft Pflichten binnen 2 Jahren. <br><strong>Pflicht:</strong> Dämmung oberste Geschossdecke, Austausch 30+ Jahre alter Standardkessel.</p>
-                </details>
-                <details style="background: #fff5f5; padding: 15px; border-radius: 8px; cursor: pointer;">
-                   <summary data-i18n="duty_turbo_title">Bau-Turbo (§ 246e BauGB)
-                    </summary>
-                    <p style="font-size: 0.9rem; margin-top: 10px;">
-                    In Gebieten mit angespanntem Wohnungsmarkt können Abweichungen von Bebauungsplänen den Wohnungsbau beschleunigen.
-                    <br><strong>Hinweis:</strong> In Deutschland wird zudem die Grundsteuer C für baureife, ungenutzte Grundstücke als Lenkungsmittel eingesetzt.
-                    </p>
-                </details>
-                <details style="background: #fff5f5; padding: 15px; border-radius: 8px; cursor: pointer;">
-                    <summary style="font-weight: bold; color: #c0392b;" data-i18n="duty_clean_title">Straßenreinigung & Rückschnitt</summary>
-                    <p style="font-size: 0.9rem; margin-top: 10px;" data-i18n="duty_clean_desc">Pflanzen dürfen nicht in den Gehweg ragen. Gehwege sind oft vom Anlieger zu reinigen. <br><strong>Pflicht:</strong> Rückschnitt bis Grundstücksgrenze, Kehrpflicht.</p>
-                </details>
-            </div>
-            <p style="font-size: 0.8rem; color: #888; margin-top: 20px; text-align: center;" data-i18n="legal_disclaimer">Keine Rechtsberatung. Bitte prüfen Sie die lokale Ortssatzung.</p>
-        </section>
-
-        <h2 style="text-align: center; margin-bottom: 30px;" data-i18n="practice_title">Better Practice: Von Nachbarn lernen</h2>
-        <section class="grid-2">
-            <div class="service-card" style="padding: 0; overflow: hidden; border: none; display: flex; flex-direction: column;">
-                <div style="height: 200px; background: #2c3e50; display: flex; align-items: center; justify-content: center; color: white; position: relative;">
-                    <span style="font-size: 3rem;">🏚️ ➔ 🏡</span>
-                    <span style="position: absolute; top: 10px; right: 10px; background: #27ae60; color: white; padding: 4px 8px; font-size: 0.8rem; border-radius: 4px; font-weight: bold;" data-i18n="badge_done">Abgeschlossen 2024</span>
-                </div>
-                <div style="padding: 25px; display: flex; flex-direction: column; flex-grow: 1;">
-                    <h3 style="margin-top: 0;" data-i18n="ex_1_title">Scheune zu Loft-Wohnen</h3>
-                    <p style="color: #555; font-size: 0.9rem;" data-i18n="ex_1_desc">"Die alte Scheune stand 10 Jahre leer. Durch die Umnutzung entstanden zwei moderne Mietwohnungen."</p>
-                    <div class="kpi-grid">
-                        <div class="kpi-item"><span class="kpi-value">340 T€</span><span class="kpi-label" data-i18n="kpi_cost">Gesamtkosten</span></div>
-                        <div class="kpi-item"><span class="kpi-value" style="color: #27ae60;">85 T€</span><span class="kpi-label" data-i18n="kpi_fund">Förderanteil</span></div>
-                        <div class="kpi-item"><span class="kpi-value">12 J.</span><span class="kpi-label" data-i18n="kpi_amort">Amortisation</span></div>
-                    </div>
-                    <div class="comment-section">
-                        <p style="font-size: 0.85rem; font-weight: bold; margin-bottom: 10px;" data-i18n="comments_title">Fragen & Kommentare:</p>
-                        <ul class="comment-list" id="comments-1">
-                            <li class="comment-bubble"><span class="comment-author">Markus B.</span> <span data-i18n="comment_1">Gibt es Probleme mit dem Denkmalschutz bei den großen Fenstern?</span></li>
-                        </ul>
-                        <div class="comment-form">
-                            <input type="text" id="input-1" class="comment-input" placeholder="Frage stellen..." data-i18n="placeholder_ask">
-                            <button class="btn-comment" onclick="addComment('1')" data-i18n="btn_send">Senden</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="service-card" style="padding: 0; overflow: hidden; border: none; display: flex; flex-direction: column;">
-                <div style="height: 200px; background: #34495e; display: flex; align-items: center; justify-content: center; color: white; position: relative;">
-                    <span style="font-size: 3rem;">📉 ⚡</span>
-                    <span style="position: absolute; top: 10px; right: 10px; background: #27ae60; color: white; padding: 4px 8px; font-size: 0.8rem; border-radius: 4px; font-weight: bold;" data-i18n="badge_ongoing">Laufend</span>
-                </div>
-                <div style="padding: 25px; display: flex; flex-direction: column; flex-grow: 1;">
-                    <h3 style="margin-top: 0;" data-i18n="ex_2_title">Energetische Kernsanierung</h3>
-                    <p style="color: #555; font-size: 0.9rem;" data-i18n="ex_2_desc">"Baujahr 1970. Durch Wärmepumpe und Dämmung haben wir die Nebenkosten um 70% gesenkt."</p>
-                    <div class="kpi-grid">
-                        <div class="kpi-item"><span class="kpi-value">120 T€</span><span class="kpi-label" data-i18n="kpi_invest">Investition</span></div>
-                        <div class="kpi-item"><span class="kpi-value" style="color: #27ae60;">45 %</span><span class="kpi-label" data-i18n="kpi_quota">Förderquote</span></div>
-                        <div class="kpi-item"><span class="kpi-value">9 J.</span><span class="kpi-label" data-i18n="kpi_rent">Rentabilität</span></div>
-                    </div>
-                    <div class="comment-section">
-                        <p style="font-size: 0.85rem; font-weight: bold; margin-bottom: 10px;" data-i18n="comments_title">Fragen & Kommentare:</p>
-                        <ul class="comment-list" id="comments-2">
-                            <li class="comment-bubble"><span class="comment-author">Familie K.</span> <span data-i18n="comment_2">Welchen Energieberater hatten Sie? Wir suchen auch noch.</span></li>
-                        </ul>
-                        <div class="comment-form">
-                            <input type="text" id="input-2" class="comment-input" placeholder="Frage stellen..." data-i18n="placeholder_ask">
-                            <button class="btn-comment" onclick="addComment('2')" data-i18n="btn_send">Senden</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-<section class="service-card" style="border-top-color: #34495e; margin-top: 30px;">
-    <h3 data-i18n="cross_border_title">🌍 Grenzüberschreitendes Fachwissen </h3>
-    <p style="font-size: 0.9rem;" data-i18n="cross_border_desc">Unterschiede verstehen – Chancen nutzen im Grenzraum Aachen-Belgien.</p>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; font-size: 0.85rem; margin-top: 15px;">
-        <div style="padding: 15px; border-left: 4px solid #de2110; background: #fdfdfd;">
-            <strong style="color: #de2110;">Deutschland (BauGB):</strong><br>
-            Dezentrale Struktur mit kommunaler Planungshoheit. Fokus auf reaktive Instrumente wie vorhabenbezogene Bebauungspläne.
-        </div>
-        <div style="padding: 15px; border-left: 4px solid #ffce00; background: #fdfdfd;">
-            <strong style="color: #d4ac0d;">Belgien (CoDT):</strong><br>
-            Zentralisierter Sektorenplan der Region Wallonie. Hohe Flexibilität bei konkreten Genehmigungen durch das Prinzip der „guten räumlichen Ordnung“.
-        </div>
-    </div>
-</section>
-        
-        <section class="alert-section">
-            <h3 style="color: var(--alert-color);" data-i18n="alarm_title">🔔 Bau-Alarm: Nichts verpassen!</h3>
-            <p data-i18n="alarm_desc">Werden Sie benachrichtigt, wenn in Ihrem direkten Umfeld (Radius 200m) neue Bauprojekte in die Offenlage gehen oder Bebauungspläne geändert werden.</p>
-            <div class="input-group">
-                <input type="text" placeholder="Ihre Adresse" data-i18n="ph_address">
-                <input type="email" placeholder="Ihre E-Mail" data-i18n="ph_email">
-                <button class="btn-alert" onclick="alert('Adresse gespeichert!')" data-i18n="btn_activate">Aktivieren</button>
-            </div>
-        </section>
-
-    </div>
-
-    <button class="sidebar-toggle" id="sidebar-btn" onclick="toggleSidebar()" data-i18n="sidebar_toggle">WARUM KOOPERATION?</button>
-
-<div class="info-sidebar" id="info-sidebar">
-    <div class="sidebar-panel">
-        <button onclick="toggleSidebar()" style="float:right; border:none; background:none; font-size:2rem; cursor:pointer;">&times;</button>
-        <h2 style="color:var(--accent-color); border-bottom: 3px solid var(--highlight-color); padding-bottom: 10px;" data-i18n="st0_title">Stufe 0: Kooperation</h2>
-        <p data-i18n="st0_desc">Priorität der Freiwilligkeit: Beratung und Entlastung.</p>
-        
-        <div style="background:#f0f7ff; padding:15px; border-radius:10px; margin: 20px 0; border: 1px solid #d1e3f8;">
-            <strong style="display:block; margin-bottom:10px; color:#2980b9;" data-i18n="st0_benefits_title">💡 Vorteile:</strong>
-            <ul style="font-size:0.9rem; padding-left:20px; color: #2c3e50;">
-                <li style="margin-bottom:10px;" data-i18n="st0_ben_de"><strong>DE:</strong> § 13a BauGB (Beschleunigte Verfahren).</li>
-                <li data-i18n="st0_ben_be"><strong>BE:</strong> 6% MwSt für Renovierungen (>10 J.).</li>
-            </ul>
-        </div>
-        
-        <div id="contact-section">
-            <p id="contact-intro" style="font-weight:bold;" data-i18n="contact_title">Ihr Kontakt vor Ort:</p>
-            <div id="contact-details" class="hidden">
-                <p>📞 <span id="contact-phone"></span><br>
-                📧 <a id="contact-email" href="#"></a></p>
-                <a id="contact-link" href="#" target="_blank" class="btn-submit" data-i18n="btn_portal">Gemeinde-Portal</a>
-            </div>
-        </div>
-        <button class="btn-submit" onclick="changeFold(1)" style="background:var(--alert-color);" data-i18n="btn_st1">⚠️ STUFE 1: FINANZEN</button>
-    </div>
-
-    <div class="sidebar-panel" style="background:#fffcf5;">
-        <h2 style="color:#e67e22; border-bottom: 3px solid #f39c12; padding-bottom: 10px;" data-i18n="st1_title">Stufe 1: Finanzen</h2>
-        <p data-i18n="st1_desc">Erhöhung der Haltekosten ungenutzter Flächen.</p>
-        <div style="display:grid; gap:15px; margin-top:20px; font-size:0.9rem;">
-            <div style="background:white; padding:12px; border-left:6px solid #e67e22;">
-                <strong data-i18n="st1_de_label">Deutschland (DE)</strong>
-                <p data-i18n="st1_de_text">Grundsteuer C & Sanierungs-AfA.</p>
-            </div>
-            <div style="background:white; padding:12px; border-left:6px solid #3498db;">
-                <strong data-i18n="st1_be_label">Belgien (BE)</strong>
-                <p data-i18n="st1_be_text">Leerstandsabgabe & Planungswertabgabe.</p>
-            </div>
-        </div>
-        <button class="btn-submit" onclick="changeFold(2)" style="background:#c0392b;" data-i18n="btn_st2">⚖️ STUFE 2: RECHT</button>
-        <button onclick="changeFold(0)" class="btn-back" data-i18n="btn_back_coop">← Zurück</button>
-    </div>
-
-    <div class="sidebar-panel" style="background:#fff5f5;">
-        <h2 style="color:#c0392b; border-bottom: 3px solid #e74c3c; padding-bottom: 10px;" data-i18n="st2_title">Stufe 2: Ordnungsrecht</h2>
-        <p data-i18n="st2_desc">Gesetzliche Gebote zur Sicherung des Gemeinwohls.</p>
-        <div style="display:grid; gap:15px; margin-top:20px; font-size:0.9rem;">
-            <div style="background:white; padding:12px; border-left:6px solid #c0392b;">
-                <strong data-i18n="st2_de_label">Deutschland (DE)</strong>
-                <p data-i18n="st2_de_text">Baugebot (§ 176 BauGB) & Modernisierung.</p>
-            </div>
-            <div style="background:white; padding:12px; border-left:6px solid #3498db;">
-                <strong data-i18n="st2_be_label">Belgien (BE)</strong>
-                <p data-i18n="st2_be_text">Injonction urbanistique & Vorkaufsrecht.</p>
-            </div>
-        </div>
-        <button class="btn-submit" onclick="changeFold(3)" style="background:#222;" data-i18n="btn_st3">🚫 STUFE 3: ZUGRIFF</button>
-        <button onclick="changeFold(1)" class="btn-back" data-i18n="btn_back">← Zurück</button>
-    </div>
-
-    <div class="sidebar-panel" style="background:#f8f9fa;">
-        <h2 style="color:#222; border-bottom: 3px solid #333; padding-bottom: 10px;" data-i18n="st3_title">Stufe 3: Ultima Ratio</h2>
-        <p data-i18n="st3_desc">Stärkste Eingriffe bei dauerhafter Blockade.</p>
-        <div style="display:grid; gap:15px; margin-top:20px; font-size:0.9rem;">
-            <div style="background:white; padding:12px; border-left:8px solid #222;">
-                <strong data-i18n="st3_be_label">Belgien (BE)</strong>
-                <p data-i18n="st3_be_text">Droit de Gestion Publique (Öffentl. Verwaltung).</p>
-            </div>
-            <div style="background:white; padding:12px; border-left:8px solid #e74c3c;">
-                <strong data-i18n="st3_cross_label">Grenzüberschreitend</strong>
-                <p data-i18n="st3_cross_text">Enteignung (Expropriation) als letztes Mittel.</p>
-            </div>
-        </div>
-        <button onclick="changeFold(2)" class="btn-back" style="margin-top:20px;" data-i18n="btn_back">← Zurück</button>
-    </div>
-</div>
+<!-- ===== REGIONSWAHL MODAL ===== -->
+<div class="modal-backdrop open" id="location-modal" role="dialog" aria-modal="true" aria-labelledby="locTitle">
+  <div class="modal">
+    <span class="icon" aria-hidden="true">🌍</span>
+    <h2 id="locTitle" data-i18n="modal_title">Willkommen!</h2>
+    <p class="sub" data-i18n="modal_desc">Bitte wählen Sie Ihre Region für lokale Förderprogramme.</p>
+    <form id="location-form">
+      <div class="field">
+        <label for="country-select" data-i18n="lbl_country">Land</label>
+        <select id="country-select">
+          <option value="DE">Deutschland 🇩🇪</option>
+          <option value="BE">Belgien 🇧🇪</option>
+          <option value="NL">Niederlande 🇳🇱</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="plz-input" data-i18n="lbl_zip">Postleitzahl</label>
+        <input id="plz-input" type="text" placeholder="z.B. 52152" required inputmode="numeric" autocomplete="postal-code">
+      </div>
+      <p id="location-error" role="alert" data-i18n="modal_error">Diese PLZ liegt leider außerhalb unseres Pilotgebiets.</p>
+      <button type="submit" class="btn btn-warn btn-block" data-i18n="btn_enter">Zum Bereich</button>
+    </form>
+  </div>
 </div>
 
-    <script>
-// --- TRANSLATION LOGIC ---
-const translations = {
-    "de": {
-        "sidebar_toggle": "ℹ️ WARUM KOOPERATION?",
-        "st0_title": "Stufe 0: Kooperation",
-        "st0_desc": "Priorität der Freiwilligkeit: Fokus auf aktivierende Beratung und Entlastung.",
-        "st0_benefits_title": "💡 Ihre Vorteile:",
-        "st0_ben_de": "<strong>Deutschland:</strong> Beschleunigte Verfahren (§ 13a BauGB) für Innenentwicklung.",
-        "st0_ben_be": "<strong>Belgien:</strong> Reduzierter MwSt-Satz von 6% bei Renovierung (> 10 Jahre).",
-        "btn_portal": "Gemeinde-Portal",
-        "btn_st1": "⚠️ STUFE 1: FINANZIELLE HEBEL",
-        "st1_title": "Stufe 1: Finanzen",
-        "st1_desc": "Erhöhung der wirtschaftlichen Kosten für ungenutzte Flächen.",
-        "st1_de_label": "Deutschland (DE)",
-        "st1_de_text": "Grundsteuer C & Sanierungs-AfA (§ 7h/7i EStG).",
-        "st1_be_label": "Belgien (BE)",
-        "st1_be_text": "Leerstandsabgabe & Planungswertabgabe (Art. D.VI.48 CoDT).",
-        "btn_st2": "⚖️ STUFE 2: ORDNUNGSRECHT",
-        "st2_title": "Stufe 2: Ordnungsrecht",
-        "st2_desc": "Gesetzliche Gebote zur Sicherung städtebaulicher Ziele.",
-        "st2_de_label": "Deutschland (DE)",
-        "st2_de_text": "Baugebot (§ 176 BauGB) & Modernisierungsgebot.",
-        "st2_be_label": "Belgien (BE)",
-        "st2_be_text": "Injonction urbanistique & Vorkaufsrecht (Droit de préemption).",
-        "btn_st3": "🚫 STUFE 3: HOHEITLICHER ZUGRIFF",
-        "st3_title": "Stufe 3: Ultima Ratio",
-        "st3_desc": "Stärkste Eingriffe bei dauerhafter Blockade der Ortsentwicklung.",
-        "st3_be_label": "Belgien (BE)",
-        "st3_be_text": "Droit de Gestion Publique: Öffentliche Verwaltung zur Reaktivierung.",
-        "st3_cross_label": "Grenzüberschreitend",
-        "st3_cross_text": "Enteignung (Expropriation) als letztes Mittel.",
-        "btn_back": "← Zurück",
-        "btn_back_coop": "← Zurück zur Beratung",
-        "contact_title": "Ihr Kontakt vor Ort:",
-        "modal_title": "Willkommen!", "modal_desc": "Bitte wählen Sie Ihre Region.", "lbl_country": "Land", "lbl_zip": "PLZ", "modal_error": "PLZ nicht im Pilotgebiet.", "btn_enter": "Zum Bereich",
-        "nav_back": "← ZURÜCK", "header_title": "Werte erhalten, Zukunft sichern", "header_sub": "Portal für Sanierung und Förderung",
-        "calc_title": "🌱 Sanierungs-Rechner", "calc_desc": "Gebäudedaten eingeben für Potenzial-Analyse.",
-        "type_title": "🔍 Welcher Eigentümer-Typ sind Sie?", "type_desc": "Passgenaue Strategien für Ihre Lebenslage.",
-        "lbl_year": "Baujahr", "lbl_type": "Gebäudetyp", "opt_house": "Einfamilienhaus", "opt_row": "Reihenhaus", "opt_multi": "Mehrfamilienhaus", "opt_timber": "Fachwerkhaus",
-        "lbl_insulation": "Aktueller Dämm-Standard", "opt_ins_none": "Unbekannt / Keine", "opt_ins_old": "Altbestand (vor 1995)", "opt_ins_partial": "Teilgedämmt", "opt_ins_good": "Gut (nach 2005)",
-        "btn_analyze": "Analyse starten", "res_prefix": "Ergebnis für Ihr", "res_disclaimer": "*Basierend auf Durchschnittswerten.",
-        "fund_title": "💰 Fördergelder", "fund_desc": "Programme für Ihre Region:",
-        "fund_badge_1": "Bis zu 45% Zuschuss", "btn_info": "Info", "fund_badge_2": "Bis zu 70% Förderung", "btn_help": "Hilfe",
-        "fund_local_title": "Kommunales Fassadenprogramm", "fund_badge_3": "Zuschuss: 5.000€", "btn_apply": "Antrag",
-        "craft_title": "🛠️ Handwerker", "craft_desc": "Experten im Umkreis von 10km.",
-        "craft_placeholder": "PLZ oder Gewerk", "link_call": "Anrufen", "tag_insulation": "Dämmung", "tag_renovation": "Sanierung", "craft_footer": "Geprüfte Partner der Kommune",
-        "vacancy_title": "🏚️ Leerstand & Umnutzung", "vacancy_desc": "Ungenutzte Immobilie melden für Förder-Programme.",
-        "lbl_prop_type": "Art der Immobilie", "opt_vacant_home": "Wohnhaus", "opt_commercial": "Gewerbe", "btn_submit_confidential": "Vertraulich absenden",
-        "coop_title": "🤝 Modelle & Partnerschaft", "coop_desc": "Passgenaue Modelle für Ihre Situation:",
-        "cross_border_title": "🌍 Fachwissen", "cross_border_desc": "Chancen im Grenzraum Aachen-Belgien nutzen.",
-        "legal_title": "Rechtssicher Eigentum halten", "rights_title": "⚖️ Rechte & Pflichten", "rights_desc": "Vermeiden Sie Bußgelder und Risiken.",
-        "duty_safe_title": "Verkehrssicherungspflicht", "duty_energy_title": "Nachrüstpflichten (GEG)", "duty_clean_title": "Straßenreinigung", "duty_turbo_title": "Bau-Turbo (§ 246e BauGB)",
-        "legal_disclaimer": "Keine Rechtsberatung. Lokale Satzung prüfen.",
-        "practice_title": "Better Practice: Von Nachbarn lernen",
-        "ex_1_title": "Scheune zu Loft-Wohnen", "ex_1_desc": "Die alte Scheune stand 10 Jahre leer. Durch die Umnutzung entstanden zwei moderne Mietwohnungen.", "ex_2_title": "Energetische Kernsanierung", "ex_2_desc": "Baujahr 1970. Durch Wärmepumpe und Dämmung haben wir die Nebenkosten um 70% gesenkt.",
-        "kpi_cost": "Gesamtkosten", "kpi_fund": "Förderanteil", "kpi_amort": "Amortisation", "kpi_invest": "Investition", "kpi_quota": "Förderquote", "kpi_rent": "Rentabilität",
-        "comments_title": "Fragen & Kommentare:", "placeholder_ask": "Frage stellen...", "btn_send": "Senden", "comment_1": "Gibt es Probleme mit dem Denkmalschutz bei den großen Fenstern?", "comment_2": "Welchen Energieberater hatten Sie? Wir suchen auch noch.",
-        "alarm_title": "🔔 Bau-Alarm", "alarm_desc": "Benachrichtigung bei neuen Projekten.",
-        "ph_address": "Ihre Adresse", "ph_email": "Ihre E-Mail", "btn_activate": "Aktivieren",
-        "badge_done": "Abgeschlossen 2024", "badge_ongoing": "Laufend"
-    },
-    "en": {
-        "sidebar_toggle": "ℹ️ WHY COOPERATE?",
-        "st0_title": "Level 0: Cooperation",
-        "st0_desc": "Voluntary priority: Focus on advisory services and support.",
-        "st0_benefits_title": "💡 Your Benefits:",
-        "st0_ben_de": "<strong>Germany:</strong> Accelerated procedures (§ 13a BauGB) for urban development.",
-        "st0_ben_be": "<strong>Belgium:</strong> Reduced VAT rate of 6% for renovations (> 10 years).",
-        "btn_portal": "Municipal Portal",
-        "btn_st1": "⚠️ LEVEL 1: FINANCIAL LEVERAGE",
-        "st1_title": "Level 1: Finances",
-        "st1_desc": "Increasing economic costs for unused areas.",
-        "st1_de_label": "Germany (DE)",
-        "st1_de_text": "Property Tax C & Renovation Depreciation (§ 7h/7i EStG).",
-        "st1_be_label": "Belgium (BE)",
-        "st1_be_text": "Vacancy tax & Value capture levy (Art. D.VI.48 CoDT).",
-        "btn_st2": "⚖️ LEVEL 2: REGULATORY LAW",
-        "st2_title": "Level 2: Regulatory Law",
-        "st2_desc": "Legal mandates to secure urban planning goals.",
-        "st2_de_label": "Germany (DE)",
-        "st2_de_text": "Building order (§ 176 BauGB) & Modernization order.",
-        "st2_be_label": "Belgium (BE)",
-        "st2_be_text": "Urban injunction & Right of pre-emption (Droit de préemption).",
-        "btn_st3": "🚫 LEVEL 3: SOVEREIGN ACCESS",
-        "st3_title": "Level 3: Ultima Ratio",
-        "st3_desc": "Strongest interventions in case of permanent blockade.",
-        "st3_be_label": "Belgium (BE)",
-        "st3_be_text": "Public Management Right: Public management for reactivation.",
-        "st3_cross_label": "Cross-border",
-        "st3_cross_text": "Expropriation as a last resort.",
-        "btn_back": "← Back",
-        "btn_back_coop": "← Back to advice",
-        "contact_title": "Local Contact:",
-        "modal_title": "Welcome!", "modal_desc": "Please select your region.", "lbl_country": "Country", "lbl_zip": "Zip", "modal_error": "Area not supported.", "btn_enter": "Enter Area",
-        "nav_back": "← BACK", "header_title": "Preserve Value, Secure Future", "header_sub": "Portal for Renovation and Funding",
-        "calc_title": "🌱 Renovation Calculator", "calc_desc": "Enter data for potential analysis.",
-        "type_title": "🔍 Your Owner Type?", "type_desc": "Get tailored strategies.",
-        "lbl_year": "Year", "lbl_type": "Type", "opt_house": "Single House", "opt_row": "Terraced", "opt_multi": "Multi-Family", "opt_timber": "Timber",
-        "lbl_insulation": "Insulation", "opt_ins_none": "None", "opt_ins_old": "Old", "opt_ins_partial": "Partial", "opt_ins_good": "Good",
-        "btn_analyze": "Analyze", "res_prefix": "Result", "res_disclaimer": "*Regional average.",
-        "fund_title": "💰 Funding", "fund_desc": "Local programs:",
-        "fund_badge_1": "Up to 45% grant", "btn_info": "Info", "fund_badge_2": "Up to 70% funding", "btn_help": "Help",
-        "fund_local_title": "Facade Program", "fund_badge_3": "Grant: €5,000", "btn_apply": "Apply",
-        "craft_title": "🛠️ Craftsmen", "craft_desc": "Experts within 10km.",
-        "craft_placeholder": "Zip or trade", "link_call": "Call", "tag_insulation": "Insulation", "tag_renovation": "Renovation", "craft_footer": "Verified Partners",
-        "vacancy_title": "🏚️ Vacancy", "vacancy_desc": "Report unused property.",
-        "lbl_prop_type": "Property Type", "opt_vacant_home": "Residential", "opt_commercial": "Commercial", "btn_submit_confidential": "Submit",
-        "coop_title": "🤝 Models", "coop_desc": "Models for your situation:",
-        "cross_border_title": "🌍 Expertise", "cross_border_desc": "Opportunities in the border region.",
-        "legal_title": "Legal Safety", "rights_title": "⚖️ Rights & Duties", "rights_desc": "Avoid fines and risks.",
-        "duty_safe_title": "Public Safety", "duty_energy_title": "Retrofitting", "duty_clean_title": "Cleaning", "duty_turbo_title": "Building Turbo",
-        "legal_disclaimer": "No legal advice.",
-        "practice_title": "Better Practice",
-        "ex_1_title": "Barn to Loft", "ex_1_desc": "The old barn was empty for 10 years. Conversion created two modern apartments.", "ex_2_title": "Energy Renovation", "ex_2_desc": "Built in 1970. Heat pump and insulation reduced utility costs by 70%.",
-        "kpi_cost": "Total Cost", "kpi_fund": "Grant Share", "kpi_amort": "Amortization", "kpi_invest": "Investment", "kpi_quota": "Grant Quota", "kpi_rent": "Profitability",
-        "comments_title": "Comments:", "placeholder_ask": "Ask...", "btn_send": "Send", "comment_1": "Are there heritage protection issues with the large windows?", "comment_2": "Which energy consultant did you have? We are looking too.",
-        "alarm_title": "🔔 Alarm", "alarm_desc": "Project alerts.",
-        "ph_address": "Address", "ph_email": "Email", "btn_activate": "Activate",
-        "badge_done": "Completed 2024", "badge_ongoing": "Ongoing"
-    },
-    "fr": {
-        "sidebar_toggle": "ℹ️ POURQUOI COOPÉRER ?",
-        "st0_title": "Niveau 0 : Coopération",
-        "st0_desc": "Priorité au volontariat : conseil et accompagnement.",
-        "st0_benefits_title": "💡 Vos avantages :",
-        "st0_ben_de": "<strong>Allemagne :</strong> Procédures accélérées (§ 13a BauGB) pour l'urbanisme.",
-        "st0_ben_be": "<strong>Belgique :</strong> Taux de TVA réduit de 6% (maisons > 10 ans).",
-        "btn_portal": "Portail communal",
-        "btn_st1": "⚠️ NIVEAU 1 : LEVIER FINANCIER",
-        "st1_title": "Niveau 1 : Finances",
-        "st1_desc": "Augmentation des coûts économiques pour les surfaces non utilisées.",
-        "st1_de_label": "Allemagne (DE)",
-        "st1_de_text": "Taxe foncière C & Amortissement fiscal (§ 7h/7i EStG).",
-        "st1_be_label": "Belgique (BE)",
-        "st1_be_text": "Taxe logements inoccupés & Taxe sur la plus-value (CoDT).",
-        "btn_st2": "⚖️ NIVEAU 2 : DROIT RÉGLEMENTAIRE",
-        "st2_title": "Niveau 2 : Droit",
-        "st2_desc": "Mandats légaux pour sécuriser les objectifs d'urbanisme.",
-        "st2_de_label": "Allemagne (DE)",
-        "st2_de_text": "Ordre de construire (§ 176 BauGB) & Modernisation.",
-        "st2_be_label": "Belgique (BE)",
-        "st2_be_text": "Injonction urbanistique & Droit de préemption.",
-        "btn_st3": "🚫 NIVEAU 3 : ACCÈS SOUVERAIN",
-        "st3_title": "Niveau 3 : Ultima Ratio",
-        "st3_desc": "Interventions fortes en cas de blocage permanent.",
-        "st3_be_label": "Belgique (BE)",
-        "st3_be_text": "Droit de Gestion Publique pour la réactivation sociale.",
-        "st3_cross_label": "Transfrontalier",
-        "st3_cross_text": "Expropriation en dernier recours.",
-        "btn_back": "← Retour",
-        "btn_back_coop": "← Conseil",
-        "contact_title": "Contact local :",
-        "modal_title": "Bienvenue !", "modal_desc": "Choisissez votre région.", "lbl_country": "Pays", "lbl_zip": "CP", "modal_error": "Zone non supportée.", "btn_enter": "Accéder",
-        "nav_back": "← RETOUR", "header_title": "Préserver la valeur", "header_sub": "Portail pour aides et rénovation",
-        "calc_title": "🌱 Calculateur", "calc_desc": "Analysez votre potentiel.",
-        "type_title": "🔍 Votre profil ?", "type_desc": "Stratégies adaptées.",
-        "lbl_year": "Année", "lbl_type": "Type", "opt_house": "Maison", "opt_row": "Mitoyenne", "opt_multi": "Immeuble", "opt_timber": "Colombages",
-        "lbl_insulation": "Isolation", "opt_ins_none": "Aucune", "opt_ins_old": "Ancien", "opt_ins_partial": "Partiel", "opt_ins_good": "Bon",
-        "btn_analyze": "Analyser", "res_prefix": "Résultat", "res_disclaimer": "*Moyenne régionale.",
-        "fund_title": "💰 Aides", "fund_desc": "Programmes locaux :",
-        "fund_badge_1": "Subvention 45%", "btn_info": "Info", "fund_badge_2": "Aide 70%", "btn_help": "Aide",
-        "fund_local_title": "Programme façade", "fund_badge_3": "Prime: 5.000€", "btn_apply": "Demander",
-        "craft_title": "🛠️ Artisans", "craft_desc": "Experts à 10km.",
-        "craft_placeholder": "Code postal", "link_call": "Appeler", "tag_insulation": "Isolation", "tag_renovation": "Rénovation", "craft_footer": "Partenaires vérifiés",
-        "vacancy_title": "🏚️ Vacance", "vacancy_desc": "Signalez un bien.",
-        "lbl_prop_type": "Type de bien", "opt_vacant_home": "Résidentiel", "opt_commercial": "Commercial", "btn_submit_confidential": "Envoyer",
-        "coop_title": "🤝 Modèles", "coop_desc": "Modèles für Sie :",
-        "cross_border_title": "🌍 Expertise", "cross_border_desc": "Opportunités transfrontalières.",
-        "legal_title": "Sécurité juridique", "rights_title": "⚖️ Droits & Devoirs", "rights_desc": "Évitez les risques.",
-        "duty_safe_title": "Sécurité", "duty_energy_title": "Énergie", "duty_clean_title": "Nettoyage", "duty_turbo_title": "Turbo-construction",
-        "legal_disclaimer": "Pas de conseil juridique.",
-        "practice_title": "Better Practice",
-        "ex_1_title": "Grange en Loft", "ex_1_desc": "L'ancienne grange était vide depuis 10 ans. La conversion a créé deux appartements modernes.", "ex_2_title": "Rénovation", "ex_2_desc": "Construit en 1970. La pompe à chaleur et l'isolation ont réduit les frais de 70%.",
-        "kpi_cost": "Coût total", "kpi_fund": "Part prime", "kpi_amort": "Amortissement", "kpi_invest": "Investissement", "kpi_quota": "Aide quote-part", "kpi_rent": "Rentabilité",
-        "comments_title": "Commentaires:", "placeholder_ask": "Question...", "btn_send": "Envoyer", "comment_1": "Y a-t-il des problèmes de protection du patrimoine avec les grandes fenêtres?", "comment_2": "Quel consultant en énergie aviez-vous? Nous cherchons aussi.",
-        "alarm_title": "🔔 Alarme", "alarm_desc": "Nouveaux projets.",
-        "ph_address": "Adresse", "ph_email": "Email", "btn_activate": "Activer",
-        "badge_done": "Terminé 2024", "badge_ongoing": "En cours"
-    }
-};
-const plzDatabase = {
-    "DE": { "52152": "Simmerath", "52062": "Aachen", "52159": "Roetgen" },
-    "BE": { "4730": "Raeren", "4731": "Raeren-Eynatten", "4720": "Kelmis" },
-    "NL": { "6291": "Vaals" }
-};
+<header class="site-header" id="siteHeader">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-back" data-i18n="nav_back">← Zurück zur Übersicht</a>
+    <a href="index.html" class="logo" aria-label="BAUKOMPASS – Startseite">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="#2a9d8f" stroke-width="2"/><path d="M15.5 8.5 13 13l-4.5 2.5L11 11l4.5-2.5Z" fill="#2a9d8f"/></svg>
+      BAUKOMPASS
+    </a>
+    <button class="burger" id="burgerBtn" aria-expanded="false" aria-controls="navTools" aria-label="Menü öffnen">☰</button>
+    <div class="nav-tools" id="navTools">
+      <a href="index.html" class="nav-back mobile-back" data-i18n="nav_back">← Zurück</a>
+      <button class="lang-btn" data-lang="de" aria-pressed="true" onclick="changeLanguage('de')">DE</button>
+      <button class="lang-btn" data-lang="en" aria-pressed="false" onclick="changeLanguage('en')">EN</button>
+      <button class="lang-btn" data-lang="fr" aria-pressed="false" onclick="changeLanguage('fr')">FR</button>
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Dark Mode umschalten">🌙</button>
+    </div>
+  </div>
+</header>
 
-function toggleSidebar() {
-    const sidebar = document.getElementById('info-sidebar');
-    const btn = document.getElementById('sidebar-btn');
-    sidebar.classList.toggle('open');
-    btn.classList.toggle('open');
-    if (!sidebar.classList.contains('open')) {
-        changeFold(0);
-    }
-}
+<section class="hero">
+  <h1 data-i18n="header_title">Werte erhalten, Zukunft sichern</h1>
+  <p><span data-i18n="header_sub">Ihr zentrales Portal für Sanierung und Förderung</span> <span id="header-location-display" class="loc"></span></p>
+</section>
 
-function changeFold(level) {
-    const sidebar = document.getElementById('info-sidebar');
-    const btn = document.getElementById('sidebar-btn');
-    sidebar.classList.remove('step-1', 'step-2', 'step-3');
-    btn.classList.remove('step-1', 'step-2', 'step-3');
-    if (level > 0) {
-        sidebar.classList.add('step-' + level);
-        btn.classList.add('step-' + level);
-    }
-}
+<div class="container">
 
-function updateLocalResources(country, city) {
-    const contacts = {
-        "Raeren": { phone: "+32 87 85 89 40", email: "urbanisme@raeren.be", url: "https://www.raeren.be" },
-        "Simmerath": { phone: "+49 2473 607-0", email: "info@simmerath.de", url: "https://www.simmerath.de" }
-    };
-    const cityKey = city.includes('Raeren') ? "Raeren" : city;
-    if (contacts[cityKey]) {
-        document.getElementById('contact-phone').innerText = contacts[cityKey].phone;
-        document.getElementById('contact-email').innerText = contacts[cityKey].email;
-        document.getElementById('contact-email').href = "mailto:" + contacts[cityKey].email;
-        document.getElementById('contact-link').href = contacts[cityKey].url;
-        document.getElementById('contact-details').classList.remove('hidden');
-    }
-}
+  <!-- ===== SANIERUNGS-RECHNER ===== -->
+  <section class="energy-box" aria-labelledby="calcTitle">
+    <h3 id="calcTitle"><span aria-hidden="true">🌱</span> <span data-i18n="calc_title">Sanierungs-Rechner</span></h3>
+    <p class="muted" data-i18n="calc_desc">Geben Sie Ihre Gebäudedaten ein, um das individuelle Wertsteigerungspotenzial zu ermitteln.</p>
 
-function changeLanguage(lang) {
-    currentLang = lang;
-    localStorage.setItem('baukompass_lang', lang);
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.lang === lang);
-    });
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.dataset.i18n;
-        if(translations[lang] && translations[lang][key]) {
-            el.innerHTML = translations[lang][key];
-        }
-    });
-}
+    <div class="calc-progress" id="calcProgress" aria-hidden="true">
+      <div class="pstep current" id="pstep1"><span class="pdot">1</span><span data-i18n="prog_input">Eingabe</span></div>
+      <div class="pline"></div>
+      <div class="pstep" id="pstep2"><span class="pdot">2</span><span data-i18n="prog_result">Ergebnis</span></div>
+    </div>
 
-function handleLocationSubmit(event) {
-    event.preventDefault();
-    const country = document.getElementById('country-select').value;
-    const plz = document.getElementById('plz-input').value.trim();
-    const city = plzDatabase[country] ? plzDatabase[country][plz] : null;
-    if (city) {
-        document.getElementById('header-location-display').innerText = "in " + city;
-        document.getElementById('location-modal').classList.add('hidden');
-        document.getElementById('main-body').style.overflow = 'auto';
-        localStorage.setItem('baukompass_location_city', city);
-        localStorage.setItem('baukompass_location_country', country);
-        updateLocalResources(country, city);
-    } else {
-        document.getElementById('location-error').classList.remove('hidden');
-    }
-}
+    <div class="energy-form">
+      <div class="row">
+        <div>
+          <label for="inp-year" data-i18n="lbl_year">Baujahr</label>
+          <input type="number" id="inp-year" placeholder="z.B. 1975" min="1800" max="2026">
+        </div>
+        <div>
+          <label for="inp-type" data-i18n="lbl_type">Gebäudetyp</label>
+          <select id="inp-type">
+            <option data-i18n="opt_house">Einfamilienhaus</option>
+            <option data-i18n="opt_row">Reihenhaus</option>
+            <option data-i18n="opt_multi">Mehrfamilienhaus</option>
+            <option data-i18n="opt_timber">Fachwerkhaus</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:15px">
+        <label for="inp-insulation" data-i18n="lbl_insulation">Aktueller Dämm-Standard</label>
+        <select id="inp-insulation">
+          <option value="none" data-i18n="opt_ins_none">Unbekannt / Keine Dämmung</option>
+          <option value="old" data-i18n="opt_ins_old">Altbestand (vor 1995)</option>
+          <option value="partial" data-i18n="opt_ins_partial">Teilgedämmt (z.B. nur Dach)</option>
+          <option value="good" data-i18n="opt_ins_good">Gut (nach 2005)</option>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-block" style="margin-top:20px" onclick="calculateRenovation()" data-i18n="btn_analyze">Analyse starten</button>
+    </div>
 
-function showStrategy(type) {
-    const container = document.getElementById('strategy-content');
-    const content = {
-        'senioren': { title: 'Senioren', text: 'Immobilienverrentung & Beratung.' },
-        'erben': { title: 'Erben', text: 'Moderation & Reaktivierung.' },
-        'anleger': { title: 'Anleger', text: 'Förderanreize & Baugebot.' }
-    };
-    document.getElementById('strategy-title').innerText = content[type].title;
-    document.getElementById('strategy-text').innerHTML = content[type].text;
-    container.style.display = 'block';
-}
+    <div id="simulation-result" aria-live="polite">
+      <p class="muted" style="margin:0"><span data-i18n="res_prefix">Ergebnis für Ihr</span> <strong id="res-type">Haus</strong> (Bj. <span id="res-year"></span>):</p>
+      <div class="energy-label" role="img" aria-label="Energieklassen-Skala A bis H">
+        <span class="energy-step e-A">A</span><span class="energy-step e-B">B</span>
+        <span class="energy-step e-C">C</span><span class="energy-step e-D">D</span>
+        <span class="energy-step e-E">E</span><span class="energy-step e-F">F</span>
+        <span class="energy-step e-G">G</span><span class="energy-step e-H">H</span>
+      </div>
+      <p id="energy-class-text">Energieklasse H</p>
+      <p id="value-text"></p>
+      <p class="muted" style="font-size:.78rem; margin:4px 0 0" data-i18n="res_disclaimer">*Basierend auf regionalen Durchschnittswerten.</p>
+    </div>
+  </section>
 
-function calculateRenovation() {
-    const year = document.getElementById('inp-year').value;
-    if (!year) return alert("Bitte Jahr eingeben");
-    document.getElementById('simulation-result').style.display = 'block';
-    document.getElementById('energy-bar').style.width = "80%";
-}
+  <!-- ===== EIGENTÜMER-TYP ===== -->
+  <section class="service-card" style="border-top-color:var(--warn); margin-bottom:24px" aria-labelledby="typeTitle">
+    <h3 id="typeTitle" style="justify-content:center"><span data-i18n="type_title">🔍 Welcher Eigentümer-Typ sind Sie?</span></h3>
+    <p class="muted" style="text-align:center; margin-top:0" data-i18n="type_desc">Klicken Sie auf Ihre Lebenslage für passende Strategien aus dem Forschungsbericht.</p>
+    <div class="type-grid">
+      <button class="type-btn" data-type="senioren" aria-pressed="false" onclick="showStrategy('senioren')" data-i18n="type_seniors">Senioren / Inaktive</button>
+      <button class="type-btn" data-type="erben" aria-pressed="false" onclick="showStrategy('erben')" data-i18n="type_heirs">Erbengemeinschaften</button>
+      <button class="type-btn" data-type="anleger" aria-pressed="false" onclick="showStrategy('anleger')" data-i18n="type_investors">Kapitalanleger</button>
+    </div>
+    <div id="strategy-content" aria-live="polite">
+      <h4 id="strategy-title"></h4>
+      <p id="strategy-text"></p>
+    </div>
+  </section>
 
-function addComment(id) {
-    const input = document.getElementById('input-' + id);
-    if (input.value.trim() === "") return;
-    alert("Kommentar gespeichert.");
-    input.value = "";
-}
+  <div class="grid-2" id="print-area">
 
-window.addEventListener('load', () => {
-    changeLanguage(localStorage.getItem('baukompass_lang') || 'de');
-    const city = localStorage.getItem('baukompass_location_city');
-    if (city) {
-        document.getElementById('header-location-display').innerText = "in " + city;
-        document.getElementById('location-modal').classList.add('hidden');
-        document.getElementById('main-body').style.overflow = 'auto';
-        updateLocalResources(localStorage.getItem('baukompass_location_country'), city);
-    }
-});
-    </script>
+    <!-- ===== FÖRDERGELDER ===== -->
+    <section class="service-card" style="border-top-color:var(--ok)" aria-labelledby="fundTitle">
+      <h3 id="fundTitle" data-i18n="fund_title">💰 Verfügbare Fördergelder</h3>
+      <p class="muted" data-i18n="fund_desc">Aktuelle Programme für Ihre Region:</p>
+      <div class="funding-item">
+        <div><strong>KfW 261 (Wohngebäude)</strong><br><span class="funding-badge" data-i18n="fund_badge_1">Bis zu 45% Zuschuss</span></div>
+        <button class="btn btn-outline" onclick="showToast(t('toast_kfw'))" data-i18n="btn_info">Info</button>
+      </div>
+      <div class="funding-item">
+        <div><strong>BAFA Heizungstausch</strong><br><span class="funding-badge" data-i18n="fund_badge_2">Bis zu 70% Förderung</span></div>
+        <button class="btn btn-outline" onclick="showToast(t('toast_bafa'))" data-i18n="btn_help">Hilfe</button>
+      </div>
+      <div class="funding-item">
+        <div><strong data-i18n="fund_local_title">Kommunales Fassadenprogramm</strong><br><span class="funding-badge" data-i18n="fund_badge_3">Zuschuss: 5.000€</span></div>
+        <button class="btn btn-outline" onclick="showToast(t('toast_form'))" data-i18n="btn_apply">Antrag</button>
+      </div>
+      <button class="btn btn-ghost btn-block" onclick="window.print()" style="margin-top:6px" data-i18n="btn_print">🖨 Übersicht drucken</button>
+    </section>
+
+    <!-- ===== HANDWERKER ===== -->
+    <section class="service-card" aria-labelledby="craftTitle">
+      <h3 id="craftTitle" data-i18n="craft_title">🛠️ Handwerker in der Nähe</h3>
+      <p class="muted" data-i18n="craft_desc">Experten im Umkreis von 10km.</p>
+      <div class="craftsman-search">
+        <input type="text" data-i18n="craft_placeholder" placeholder="PLZ oder Gewerk" aria-label="Handwerker suchen">
+        <button class="btn btn-dark" aria-label="Suchen" onclick="showToast(t('toast_search'))">🔍</button>
+      </div>
+      <ul class="craftsman-list">
+        <li class="craftsman-li">
+          <div><strong>Elektro Müller GmbH</strong><br><span class="craftsman-tag">Photovoltaik</span> <span class="craftsman-tag">Smart Home</span></div>
+          <a href="tel:+492471123456" class="btn btn-outline" data-i18n="link_call">Anrufen</a>
+        </li>
+        <li class="craftsman-li">
+          <div><strong>Dachdeckerei Schmidt</strong><br><span class="craftsman-tag" data-i18n="tag_insulation">Dämmung</span> <span class="craftsman-tag" data-i18n="tag_renovation">Sanierung</span></div>
+          <a href="tel:+492473987654" class="btn btn-outline" data-i18n="link_call">Anrufen</a>
+        </li>
+      </ul>
+      <p class="muted" style="text-align:center; font-size:.78rem" data-i18n="craft_footer">Geprüfte Partner der Kommune</p>
+    </section>
+
+    <!-- ===== LEERSTAND ===== -->
+    <section class="service-card" aria-labelledby="vacTitle">
+      <h3 id="vacTitle" data-i18n="vacancy_title">🏚️ Leerstand & Umnutzung</h3>
+      <p class="muted" data-i18n="vacancy_desc">Haben Sie eine ungenutzte Immobilie? Melden Sie sie freiwillig für Förder-Programme.</p>
+      <form id="vacancyForm">
+        <label for="vacType" data-i18n="lbl_prop_type">Art der Immobilie</label>
+        <select id="vacType">
+          <option data-i18n="opt_vacant_home">Wohnhaus</option>
+          <option data-i18n="opt_commercial">Gewerbe</option>
+          <option data-i18n="opt_interim">Potenzial für Zwischennutzung</option>
+        </select>
+        <button type="submit" class="btn btn-dark btn-block" style="margin-top:16px" data-i18n="btn_submit_confidential">Vertraulich absenden</button>
+      </form>
+    </section>
+
+    <!-- ===== KOOPERATIONSMODELLE ===== -->
+    <section class="service-card" aria-labelledby="coopTitle">
+      <h3 id="coopTitle" data-i18n="coop_title">🤝 Modelle & Partnerschaft</h3>
+      <p class="muted" data-i18n="coop_desc">Wir bieten passgenaue Modelle für Ihre Situation:</p>
+      <ul style="padding-left:20px; font-size:.88rem; color:var(--text-soft); margin:0 0 16px">
+        <li style="margin-bottom:8px"><strong data-i18n="m1_b">Verkauf/Aktivierung:</strong> <span data-i18n="m1_t">Unterstützung bei der Vermittlung an Investoren.</span></li>
+        <li style="margin-bottom:8px"><strong data-i18n="m2_b">Verrentung (Viager):</strong> <span data-i18n="m2_t">Lebenslange Rente und barrierefreie Ersatzwohnung.</span></li>
+        <li style="margin-bottom:8px"><strong data-i18n="m3_b">Verpachtung:</strong> <span data-i18n="m3_t">Sie behalten das Eigentum, profitieren aber von gesicherten Erträgen.</span></li>
+        <li style="margin-bottom:8px"><strong data-i18n="m4_b">Genossenschaften:</strong> <span data-i18n="m4_t">Unterstützung beim gemeinschaftlichen Erwerb.</span></li>
+        <li style="margin-bottom:8px"><strong data-i18n="m5_b">Zwischennutzung (Occupation précaire):</strong> <span data-i18n="m5_t">Kurzfristige Belebung zur Vermeidung von Vandalismus und Senkung laufender Kosten.</span></li>
+        <li style="margin-bottom:8px"><strong data-i18n="m6_b">Öffentlich-Private Partnerschaft:</strong> <span data-i18n="m6_t">Entlastung von baulichen und administrativen Risiken durch die Kommune.</span></li>
+      </ul>
+      <button class="btn btn-dark btn-block" onclick="showToast(t('toast_booking'))" data-i18n="btn_book">Beratung buchen</button>
+    </section>
+
+    <!-- ===== RECHTLICHE HINWEISE ===== -->
+    <section class="service-card" style="border-top-color:var(--danger); grid-column:1/-1" aria-labelledby="rightsTitle">
+      <h3 id="rightsTitle" data-i18n="rights_title">⚖️ Rechte, Pflichten & Fristen</h3>
+      <p class="muted" data-i18n="rights_desc">Vermeiden Sie Bußgelder und Haftungsrisiken. Hier sind die wichtigsten Punkte, die Sie als Eigentümer beachten müssen.</p>
+      <div class="legal-grid">
+        <details class="legal">
+          <summary data-i18n="duty_safe_title">Verkehrssicherungspflicht</summary>
+          <div class="legal-body" data-i18n="duty_safe_desc">Sie haften für Schäden durch Glatteis oder herabfallende Ziegel. <br><strong>Pflicht:</strong> Räum- und Streupflicht (7–20 Uhr), Baumkontrolle.</div>
+        </details>
+        <details class="legal">
+          <summary data-i18n="duty_energy_title">Energetische Nachrüstpflichten (GEG)</summary>
+          <div class="legal-body" data-i18n="duty_energy_desc">Bei Eigentümerwechsel greifen oft Pflichten binnen 2 Jahren. <br><strong>Pflicht:</strong> Dämmung oberste Geschossdecke, Austausch 30+ Jahre alter Standardkessel.</div>
+        </details>
+        <details class="legal">
+          <summary data-i18n="duty_turbo_title">Bau-Turbo (§ 246e BauGB)</summary>
+          <div class="legal-body" data-i18n="duty_turbo_desc">In Gebieten mit angespanntem Wohnungsmarkt können Abweichungen von Bebauungsplänen den Wohnungsbau beschleunigen. <br><strong>Hinweis:</strong> In Deutschland wird zudem die Grundsteuer C für baureife, ungenutzte Grundstücke als Lenkungsmittel eingesetzt.</div>
+        </details>
+        <details class="legal">
+          <summary data-i18n="duty_clean_title">Straßenreinigung & Rückschnitt</summary>
+          <div class="legal-body" data-i18n="duty_clean_desc">Pflanzen dürfen nicht in den Gehweg ragen. Gehwege sind oft vom Anlieger zu reinigen. <br><strong>Pflicht:</strong> Rückschnitt bis Grundstücksgrenze, Kehrpflicht.</div>
+        </details>
+      </div>
+      <p class="muted" style="text-align:center; font-size:.78rem; margin-bottom:0" data-i18n="legal_disclaimer">Keine Rechtsberatung. Bitte prüfen Sie die lokale Ortssatzung.</p>
+    </section>
+  </div>
+
+  <!-- ===== BETTER PRACTICE ===== -->
+  <h2 class="section-title" style="padding:0; margin-left:0; margin-right:0; max-width:none" data-i18n="practice_title">Better Practice: Von Nachbarn lernen</h2>
+  <div class="grid-2">
+    <article class="service-card case-card">
+      <div class="case-head"><span aria-hidden="true">🏚️ ➔ 🏡</span><span class="case-badge" data-i18n="badge_done">Abgeschlossen 2024</span></div>
+      <div class="case-body">
+        <h3 style="margin-top:0" data-i18n="ex_1_title">Scheune zu Loft-Wohnen</h3>
+        <p class="muted" data-i18n="ex_1_desc">"Die alte Scheune stand 10 Jahre leer. Durch die Umnutzung entstanden zwei moderne Mietwohnungen."</p>
+        <div class="kpi-grid">
+          <div class="kpi-item"><span class="kpi-value">340 T€</span><span class="kpi-label" data-i18n="kpi_cost">Gesamtkosten</span></div>
+          <div class="kpi-item"><span class="kpi-value ok">85 T€</span><span class="kpi-label" data-i18n="kpi_fund">Förderanteil</span></div>
+          <div class="kpi-item"><span class="kpi-value">12 J.</span><span class="kpi-label" data-i18n="kpi_amort">Amortisation</span></div>
+        </div>
+        <div class="comment-section">
+          <p style="font-size:.84rem; font-weight:800; margin:0 0 10px" data-i18n="comments_title">Fragen & Kommentare:</p>
+          <ul class="comment-list" id="comments-1">
+            <li class="comment-bubble"><span class="comment-author">Markus B.</span> <span data-i18n="comment_1">Gibt es Probleme mit dem Denkmalschutz bei den großen Fenstern?</span></li>
+          </ul>
+          <div class="comment-form">
+            <input type="text" id="input-1" placeholder="Frage stellen..." data-i18n="placeholder_ask" aria-label="Kommentar schreiben">
+            <button class="btn btn-dark" onclick="addComment('1')" data-i18n="btn_send">Senden</button>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="service-card case-card">
+      <div class="case-head alt"><span aria-hidden="true">📉 ⚡</span><span class="case-badge" data-i18n="badge_ongoing">Laufend</span></div>
+      <div class="case-body">
+        <h3 style="margin-top:0" data-i18n="ex_2_title">Energetische Kernsanierung</h3>
+        <p class="muted" data-i18n="ex_2_desc">"Baujahr 1970. Durch Wärmepumpe und Dämmung haben wir die Nebenkosten um 70% gesenkt."</p>
+        <div class="kpi-grid">
+          <div class="kpi-item"><span class="kpi-value">120 T€</span><span class="kpi-label" data-i18n="kpi_invest">Investition</span></div>
+          <div class="kpi-item"><span class="kpi-value ok">45 %</span><span class="kpi-label" data-i18n="kpi_quota">Förderquote</span></div>
+          <div class="kpi-item"><span class="kpi-value">9 J.</span><span class="kpi-label" data-i18n="kpi_rent">Rentabilität</span></div>
+        </div>
+        <div class="comment-section">
+          <p style="font-size:.84rem; font-weight:800; margin:0 0 10px" data-i18n="comments_title">Fragen & Kommentare:</p>
+          <ul class="comment-list" id="comments-2">
+            <li class="comment-bubble"><span class="comment-author">Familie K.</span> <span data-i18n="comment_2">Welchen Energieberater hatten Sie? Wir suchen auch noch.</span></li>
+          </ul>
+          <div class="comment-form">
+            <input type="text" id="input-2" placeholder="Frage stellen..." data-i18n="placeholder_ask" aria-label="Kommentar schreiben">
+            <button class="btn btn-dark" onclick="addComment('2')" data-i18n="btn_send">Senden</button>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <!-- ===== GRENZÜBERSCHREITENDES FACHWISSEN ===== -->
+  <section class="service-card" style="border-top-color:var(--primary); margin-top:24px" aria-labelledby="cbTitle">
+    <h3 id="cbTitle" data-i18n="cross_border_title">🌍 Grenzüberschreitendes Fachwissen</h3>
+    <p class="muted" data-i18n="cross_border_desc">Unterschiede verstehen – Chancen nutzen im Grenzraum Aachen-Belgien.</p>
+    <div class="border-grid">
+      <div class="border-box de">
+        <strong>Deutschland (BauGB):</strong><br>
+        <span data-i18n="cb_de_text">Dezentrale Struktur mit kommunaler Planungshoheit. Fokus auf reaktive Instrumente wie vorhabenbezogene Bebauungspläne.</span>
+      </div>
+      <div class="border-box be">
+        <strong>Belgien (CoDT):</strong><br>
+        <span data-i18n="cb_be_text">Zentralisierter Sektorenplan der Region Wallonie. Hohe Flexibilität bei konkreten Genehmigungen durch das Prinzip der „guten räumlichen Ordnung“.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ESKALATIONS-STEPPER ===== -->
+  <section class="service-card" style="border-top-color:var(--accent); margin-top:24px" aria-labelledby="escTitle">
+    <h3 id="escTitle" data-i18n="esc_title">🪜 Warum Kooperation? Das 4-Stufen-Modell</h3>
+    <p class="muted" data-i18n="esc_desc">Von freiwilliger Beratung bis zur Ultima Ratio: Klicken Sie auf eine Stufe für Details zu den Instrumenten in DE & BE.</p>
+    <div class="stepper">
+      <button class="step-node" aria-expanded="false" onclick="openStage(0)">
+        <span class="dot dot-0">0</span>
+        <span class="s-title" data-i18n="st0_short">Kooperation</span><br>
+        <span class="s-sub" data-i18n="st0_sub">Freiwilligkeit</span>
+      </button>
+      <button class="step-node" aria-expanded="false" onclick="openStage(1)">
+        <span class="dot dot-1">1</span>
+        <span class="s-title" data-i18n="st1_short">Finanzen</span><br>
+        <span class="s-sub" data-i18n="st1_sub">Haltekosten</span>
+      </button>
+      <button class="step-node" aria-expanded="false" onclick="openStage(2)">
+        <span class="dot dot-2">2</span>
+        <span class="s-title" data-i18n="st2_short">Ordnungsrecht</span><br>
+        <span class="s-sub" data-i18n="st2_sub">Gebote</span>
+      </button>
+      <button class="step-node" aria-expanded="false" onclick="openStage(3)">
+        <span class="dot dot-3">3</span>
+        <span class="s-title" data-i18n="st3_short">Ultima Ratio</span><br>
+        <span class="s-sub" data-i18n="st3_sub">Zugriff</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===== BAU-ALARM ===== -->
+  <section class="alert-section" aria-labelledby="alarmTitle">
+    <h3 id="alarmTitle" data-i18n="alarm_title">🔔 Bau-Alarm: Nichts verpassen!</h3>
+    <p class="muted" data-i18n="alarm_desc">Werden Sie benachrichtigt, wenn in Ihrem direkten Umfeld (Radius 200m) neue Bauprojekte in die Offenlage gehen oder Bebauungspläne geändert werden.</p>
+    <div class="input-group">
+      <input type="text" placeholder="Ihre Adresse" data-i18n="ph_address" aria-label="Adresse">
+      <input type="email" placeholder="Ihre E-Mail" data-i18n="ph_email" aria-label="E-Mail">
+      <button class="btn btn-warn" onclick="showToast(t('toast_alarm'))" data-i18n="btn_activate">Aktivieren</button>
+    </div>
+  </section>
+
+</div>
+
+<!-- ===== SLIDE-OUT: STUFEN-DETAILS ===== -->
+<div class="slideout-backdrop" id="slideBackdrop" onclick="closeStage()"></div>
+<aside class="slideout" id="slideout" role="dialog" aria-modal="true" aria-labelledby="slideTitle">
+  <div class="slideout-head">
+    <h2 id="slideTitle"></h2>
+    <button class="slideout-close" onclick="closeStage()" aria-label="Schließen">×</button>
+  </div>
+  <div class="slideout-body" id="slideBody"></div>
+</aside>
+
+<button class="to-top" id="toTop" aria-label="Nach oben scrollen" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="toast-zone" id="toastZone" aria-live="polite"></div>
+
+<footer>
+  <strong>BAUKOMPASS</strong> · <span data-i18n="footer_line">Interkommunale Bauentwicklung – StädteRegion Aachen & Ostbelgien</span> · 2025
+</footer>
+
+<script>
+/* SCRIPT_PLACEHOLDER */
+</script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
 
 
 
