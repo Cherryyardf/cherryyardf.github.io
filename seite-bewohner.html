@@ -1,478 +1,783 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Baukompass - Bürgerbeteiligung</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        /* Design-Anpassung an das Baukompass-Bild */
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #FDFBF7; 
-            color: #1e293b; 
-        }
-        
-        .gauge-container { position: relative; width: 100%; max-width: 400px; margin: 0 auto; height: 250px; }
-        .barometer-btn { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
-        .barometer-btn:hover { transform: scale(1.05); }
-        .barometer-btn:active { transform: scale(0.95); }
-        
-        .prio-card { transition: all 0.3s ease; cursor: pointer; border: 1px solid transparent; }
-        .prio-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); border-color: #cbd5e1; }
-        .prio-card.selected { border-color: #f97316; background-color: #fff7ed; }
-        
-        .action-btn { transition: background-color 0.2s; }
-        .action-btn:hover { background-color: #f97316; color: white; border-color: #f97316; }
-        
-        #location-modal { transition: opacity 0.3s ease-in-out; }
-        #location-modal.hidden { opacity: 0; pointer-events: none; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="BAUKOMPASS Bürgerbeteiligung – Stimmungsbarometer, Mängelmelder und Quartiersangebote.">
+<title>Für Bewohner:innen – BAUKOMPASS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ============ DESIGN TOKENS ============ */
+:root{
+  --navy:#1a2e4a; --navy-deep:#12233c; --navy-soft:#23446b;
+  --teal:#2a9d8f; --teal-dark:#1f7a70; --teal-soft:rgba(42,157,143,.12);
+  --bg:#f4f7fa; --surface:#ffffff; --surface-2:#eaf0f5;
+  --text:#1c2733; --text-2:#56687a; --border:#dce5ed;
+  --amber:#e9c46a; --red:#e76f51; --green:#2f9e62;
+  --shadow-sm:0 1px 3px rgba(18,35,60,.08);
+  --shadow-md:0 6px 24px rgba(18,35,60,.10);
+  --radius:14px; --header-h:68px;
+}
+[data-theme="dark"]{
+  --navy:#27496f; --navy-deep:#0c1626; --navy-soft:#33598a;
+  --teal:#3cb8a9; --teal-dark:#2a9d8f; --teal-soft:rgba(60,184,169,.14);
+  --bg:#0e1726; --surface:#16243a; --surface-2:#1d2f4b;
+  --text:#e9eff6; --text-2:#9db0c4; --border:#28405f;
+  --green:#3fc37e;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.4);
+  --shadow-md:0 8px 28px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+body{
+  margin:0;font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;
+  animation:pageFade .45s ease both;transition:background-color .3s,color .3s;
+  display:flex;flex-direction:column;min-height:100vh;
+}
+@keyframes pageFade{from{opacity:0}to{opacity:1}}
+body.leaving{opacity:0;transition:opacity .25s ease}
+body.modal-open{overflow:hidden}
+a{color:var(--teal-dark)}
+:focus-visible{outline:3px solid var(--teal);outline-offset:2px;border-radius:4px}
+h1,h2,h3,h4{line-height:1.25;letter-spacing:-.01em}
 
-       /* --- EINHEITLICHE SPRACHUMSCHALTER STYLES --- */
-        .lang-switch {
-            display: flex;
-            gap: 10px;
-        }
+/* ============ HEADER ============ */
+.site-header{position:sticky;top:0;z-index:90;height:var(--header-h);
+  background:color-mix(in srgb,var(--surface) 88%,transparent);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);transition:box-shadow .25s,background-color .3s}
+.site-header.scrolled{box-shadow:var(--shadow-md)}
+.header-inner{max-width:1180px;margin:0 auto;height:100%;padding:0 20px;display:flex;align-items:center;gap:14px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);font-weight:900;letter-spacing:.14em;font-size:1rem;text-transform:uppercase}
+.brand small{display:block;font-size:.6rem;font-weight:700;letter-spacing:.18em;color:var(--teal-dark)}
+[data-theme="dark"] .brand small{color:var(--teal)}
+.brand .brand-text{display:flex;flex-direction:column;line-height:1.25}
+.back-link{text-decoration:none;color:var(--text-2);font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:8px 12px;border-radius:8px;transition:all .2s;white-space:nowrap}
+.back-link:hover{color:var(--teal-dark);background:var(--teal-soft)}
+.header-tools{display:flex;align-items:center;gap:8px;margin-left:auto}
+.phase-pill{font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:var(--teal-soft);color:var(--teal-dark);border:1px solid color-mix(in srgb,var(--teal) 35%,transparent);padding:6px 13px;border-radius:99px;white-space:nowrap}
+[data-theme="dark"] .phase-pill{color:var(--teal)}
+.lang-switch{display:flex;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:3px;gap:2px}
+.lang-btn{border:0;background:none;color:var(--text-2);font:inherit;font-size:.72rem;font-weight:800;padding:5px 9px;border-radius:6px;cursor:pointer;transition:all .2s}
+.lang-btn:hover{color:var(--text)}
+.lang-btn.active{background:var(--navy);color:#fff;box-shadow:var(--shadow-sm)}
+[data-theme="dark"] .lang-btn.active{background:var(--teal)}
+.theme-toggle{width:38px;height:38px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);cursor:pointer;display:grid;place-items:center;font-size:1rem;transition:transform .2s;color:var(--text)}
+.theme-toggle:hover{transform:rotate(15deg)}
+.accent-line{height:3px;background:linear-gradient(90deg,var(--navy) 0%,var(--teal) 55%,var(--amber) 100%)}
 
-        .lang-btn {
-            background: none; 
-            border: none; 
-            font-size: 1.5rem; 
-            cursor: pointer;
-            opacity: 0.5; 
-            transition: opacity 0.2s, transform 0.2s; 
-            padding: 0;
-            color: #222;
-            font-weight: normal;
-        }
+/* ============ LAYOUT / CARDS ============ */
+main{flex-grow:1;max-width:1080px;margin:0 auto;padding:42px 20px 80px;width:100%}
+.section{margin-bottom:56px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-sm);transition:box-shadow .25s,transform .25s,border-color .25s}
+.card:hover{box-shadow:var(--shadow-md)}
+.section-head{display:flex;align-items:center;gap:16px;margin-bottom:26px}
+.section-head .icon{width:50px;height:50px;border-radius:13px;display:grid;place-items:center;font-size:1.4rem;background:var(--teal-soft);border:1px solid color-mix(in srgb,var(--teal) 30%,transparent);flex-shrink:0}
+.section-head h2{margin:0;font-size:1.45rem;font-weight:800}
+.section-head p{margin:3px 0 0;color:var(--text-2);font-size:.92rem}
 
-        .lang-btn:hover, .lang-btn.active { 
-            opacity: 1; 
-            transform: scale(1.1); 
-            color: #222; 
-        }
-        
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #FDFBF7; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-    </style>
+/* ============ HERO ============ */
+.page-hero{text-align:center;max-width:720px;margin:14px auto 60px}
+.page-hero h1{font-size:clamp(1.9rem,4.6vw,2.9rem);font-weight:900;margin:0 0 16px}
+.page-hero h1 .city{color:var(--teal-dark);border-bottom:4px solid color-mix(in srgb,var(--teal) 45%,transparent);padding:0 4px}
+[data-theme="dark"] .page-hero h1 .city{color:var(--teal)}
+.page-hero p{color:var(--text-2);font-size:1.08rem;margin:0}
+
+/* ============ QUICK CARDS (Event / Leih-Bar) ============ */
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.quick-card{position:relative;padding:26px;overflow:hidden;display:flex;gap:18px;align-items:flex-start}
+.quick-badge{position:absolute;top:0;right:0;font-size:.62rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;border-bottom-left-radius:12px}
+.badge-soon{background:var(--surface-2);color:var(--text-2)}
+.badge-avail{background:color-mix(in srgb,var(--green) 16%,var(--surface));color:var(--green)}
+.quick-icon{width:56px;height:56px;border-radius:13px;display:grid;place-items:center;flex-shrink:0;font-weight:800;border:1px solid var(--border)}
+.icon-date{background:color-mix(in srgb,var(--amber) 18%,var(--surface));color:var(--text);flex-direction:column;display:flex;align-items:center;justify-content:center;line-height:1.1}
+.icon-date small{font-size:.62rem;text-transform:uppercase;font-weight:800;color:var(--text-2)}
+.icon-date strong{font-size:1.3rem}
+.icon-bike{background:var(--teal-soft);font-size:1.5rem}
+.quick-card h3{margin:0 0 4px;font-size:1.05rem;font-weight:800}
+.quick-card p{margin:0 0 13px;color:var(--text-2);font-size:.88rem}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;cursor:pointer;font:inherit;font-weight:700;border-radius:10px;transition:all .2s;text-decoration:none}
+.btn-primary{background:var(--navy);color:#fff;padding:11px 22px;font-size:.88rem}
+.btn-primary:hover{background:var(--teal-dark);transform:translateY(-1px)}
+.btn-teal{background:var(--teal);color:#fff;padding:11px 22px;font-size:.88rem}
+.btn-teal:hover{background:var(--teal-dark);transform:translateY(-1px)}
+.btn-small{padding:8px 16px;font-size:.78rem}
+.btn-ghost{background:none;color:var(--teal-dark);padding:8px 4px;font-size:.85rem;font-weight:800}
+.btn-ghost:hover{color:var(--teal)}
+
+/* ============ BAROMETER ============ */
+.baro-card{padding:34px;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.baro-card h2{margin:0 0 6px;font-size:1.45rem;font-weight:800}
+.baro-card>div>p{color:var(--text-2);margin:0 0 28px}
+.mood-row{display:flex;gap:14px;margin-bottom:18px}
+.mood-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:9px;background:none;border:0;cursor:pointer;font:inherit;padding:0}
+.mood-face{width:64px;height:64px;border-radius:18px;display:grid;place-items:center;font-size:1.8rem;border:1.5px solid var(--border);background:var(--surface-2);transition:all .22s}
+.mood-btn:hover .mood-face{transform:translateY(-4px) scale(1.05)}
+.mood-btn span{font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2);transition:color .2s}
+.mood-btn[data-mood="0"]:hover .mood-face,.mood-btn[data-mood="0"].voted .mood-face{border-color:var(--red);background:color-mix(in srgb,var(--red) 14%,var(--surface))}
+.mood-btn[data-mood="1"]:hover .mood-face,.mood-btn[data-mood="1"].voted .mood-face{border-color:var(--amber);background:color-mix(in srgb,var(--amber) 18%,var(--surface))}
+.mood-btn[data-mood="2"]:hover .mood-face,.mood-btn[data-mood="2"].voted .mood-face{border-color:var(--green);background:color-mix(in srgb,var(--green) 14%,var(--surface))}
+.mood-btn.voted .mood-face{transform:scale(1.1);box-shadow:var(--shadow-md)}
+.vote-msg{font-size:.88rem;font-weight:700;color:var(--teal-dark);opacity:0;transition:opacity .3s;min-height:1.4em}
+[data-theme="dark"] .vote-msg{color:var(--teal)}
+.gauge-wrap{text-align:center}
+.gauge-svg{width:min(100%,310px);height:auto}
+.gauge-track{stroke:var(--surface-2)}
+.gauge-value{stroke:url(#gaugeGradient);stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(.25,.8,.3,1)}
+.gauge-num{font-size:2.4rem;font-weight:900;fill:var(--text)}
+.gauge-label{font-size:.72rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;fill:var(--text-2)}
+.gauge-foot{font-size:.78rem;color:var(--text-2);margin-top:-8px}
+.gauge-foot strong{font-variant-numeric:tabular-nums;color:var(--text)}
+
+/* ============ PRIO CARDS ============ */
+.prio-title{text-align:center;font-size:1.45rem;font-weight:800;margin:0 0 28px}
+.prio-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.prio-card{padding:32px 24px;text-align:center;cursor:pointer;position:relative;user-select:none}
+.prio-card .check{position:absolute;top:14px;right:14px;width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:grid;place-items:center;font-size:.7rem;color:transparent;transition:all .22s}
+.prio-card.selected{border-color:var(--teal);transform:translateY(-4px);box-shadow:var(--shadow-md)}
+.prio-card.selected .check{background:var(--teal);border-color:var(--teal);color:#fff}
+.prio-icon{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font-size:1.5rem;margin:0 auto 18px;background:var(--surface-2);border:1px solid var(--border);transition:all .22s}
+.prio-card:hover .prio-icon,.prio-card.selected .prio-icon{background:var(--teal-soft);border-color:color-mix(in srgb,var(--teal) 40%,transparent)}
+.prio-card h3{margin:0 0 8px;font-size:1rem;font-weight:800}
+.prio-card p{margin:0;font-size:.82rem;color:var(--text-2)}
+
+/* ============ FORMS ============ */
+label{display:block;font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2);margin-bottom:7px}
+.input,select,textarea{
+  width:100%;padding:13px 15px;border-radius:10px;border:1.5px solid var(--border);
+  background:var(--surface-2);color:var(--text);font:inherit;font-size:.92rem;
+  transition:border-color .2s,background-color .2s;
+}
+.input:focus,select:focus,textarea:focus{outline:none;border-color:var(--teal);background:var(--surface)}
+textarea{resize:vertical}
+.report-card{padding:34px}
+.report-grid{display:grid;grid-template-columns:2fr 1fr;gap:36px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+.field{margin-bottom:18px}
+.progress-wrap{margin-bottom:22px}
+.progress-meta{display:flex;justify-content:space-between;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);margin-bottom:7px}
+.progress-bar{height:7px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--teal),var(--teal-dark));border-radius:99px;transition:width .4s ease}
+.last-report{background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:22px}
+.last-report h4{margin:0 0 16px;font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text-2);border-bottom:1px solid var(--border);padding-bottom:10px}
+.last-row{display:flex;gap:12px;align-items:flex-start}
+.last-check{width:26px;height:26px;border-radius:50%;background:color-mix(in srgb,var(--green) 16%,var(--surface));color:var(--green);display:grid;place-items:center;font-size:.75rem;flex-shrink:0;margin-top:2px}
+.last-row strong{display:block;font-size:.9rem}
+.status-done{font-size:.78rem;font-weight:700;color:var(--green)}
+.last-date{font-size:.74rem;color:var(--text-2)}
+
+/* ============ ALARM + HANDWERKER ============ */
+.duo-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.alarm-card{padding:30px;background:linear-gradient(135deg,var(--navy) 0%,var(--navy-deep) 100%);color:#eaf1f8;border:0}
+.alarm-card h3{margin:0 0 8px;font-size:1.15rem;font-weight:800;color:#fff}
+.alarm-card p{margin:0 0 20px;font-size:.88rem;color:#b9c8d8}
+.alarm-input-row{display:flex;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:7px}
+.alarm-input-row input{flex-grow:1;background:none;border:0;color:#fff;font:inherit;font-size:.9rem;padding:8px 10px;min-width:0}
+.alarm-input-row input::placeholder{color:#8da2b8}
+.alarm-input-row input:focus{outline:none}
+.craft-card{padding:30px}
+.craft-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:10px}
+.craft-head h3{margin:0;font-size:1.15rem;font-weight:800}
+.radius-tag{font-size:.64rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);padding:5px 10px;border-radius:7px;white-space:nowrap}
+.craft-search{position:relative;margin-bottom:18px}
+.craft-search .input{padding-right:42px}
+.craft-search span{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--text-2)}
+.craft-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 15px;border:1px solid var(--border);border-radius:12px;margin-bottom:10px;transition:all .2s}
+.craft-item:hover{background:var(--surface-2);border-color:color-mix(in srgb,var(--teal) 35%,var(--border))}
+.craft-left{display:flex;align-items:center;gap:13px}
+.craft-avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-size:.74rem;font-weight:800;flex-shrink:0}
+.av-em{background:color-mix(in srgb,var(--amber) 22%,var(--surface));color:#9a6b00;border:1px solid color-mix(in srgb,var(--amber) 45%,transparent)}
+[data-theme="dark"] .av-em{color:var(--amber)}
+.av-ds{background:color-mix(in srgb,var(--red) 14%,var(--surface));color:var(--red);border:1px solid color-mix(in srgb,var(--red) 35%,transparent)}
+.craft-item strong{font-size:.9rem;display:block}
+.craft-tags{display:flex;gap:5px;margin-top:4px;flex-wrap:wrap}
+.craft-tags span{font-size:.62rem;font-weight:700;background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);padding:2px 8px;border-radius:5px}
+.call-btn{width:38px;height:38px;border-radius:50%;border:0;cursor:pointer;background:var(--teal-soft);color:var(--teal-dark);font-size:1rem;transition:all .2s;flex-shrink:0}
+.call-btn:hover{background:var(--teal);color:#fff;transform:scale(1.08)}
+
+/* ============ LEERSTAND CTA ============ */
+.empty-cta{padding:48px 30px;text-align:center;background:linear-gradient(135deg,var(--navy-deep) 0%,var(--navy) 70%,var(--teal-dark) 180%);color:#fff;border:0;position:relative;overflow:hidden}
+.empty-cta::before{content:"";position:absolute;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,.05);top:-120px;left:-80px}
+.empty-cta h3{margin:0 0 10px;font-size:1.5rem;font-weight:800;position:relative}
+.empty-cta p{margin:0 auto 24px;max-width:480px;color:#bccbdb;font-size:.92rem;position:relative}
+.empty-cta .btn{position:relative}
+
+/* ============ LOCATION MODAL ============ */
+.modal-backdrop{position:fixed;inset:0;z-index:120;background:rgba(12,22,38,.62);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;padding:18px;animation:pageFade .3s ease}
+.modal-backdrop.hidden{display:none}
+.modal-box{background:var(--surface);border-radius:18px;max-width:430px;width:100%;padding:34px;box-shadow:var(--shadow-md);border-top:5px solid var(--teal);animation:modalIn .4s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes modalIn{from{opacity:0;transform:translateY(26px) scale(.96)}to{opacity:1;transform:none}}
+.modal-box .modal-icon{font-size:2.4rem;display:block;text-align:center;margin-bottom:8px}
+.modal-box h2{margin:0 0 6px;text-align:center;font-size:1.4rem;font-weight:800}
+.modal-box>p{text-align:center;color:var(--text-2);font-size:.88rem;margin:0 0 24px}
+.modal-error{display:none;color:var(--red);background:color-mix(in srgb,var(--red) 10%,var(--surface));border:1px solid color-mix(in srgb,var(--red) 30%,transparent);font-size:.78rem;font-weight:700;text-align:center;padding:10px;border-radius:9px;margin-bottom:16px}
+.modal-error.show{display:block;animation:pageFade .25s ease}
+
+/* ============ FOOTER / TOAST / TOP ============ */
+.site-footer{background:var(--navy-deep);color:#c4d0de;padding:42px 20px;margin-top:auto}
+.footer-inner{max-width:1080px;margin:0 auto;display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between}
+.footer-inner p{margin:0;font-size:.85rem}
+.footer-links{display:flex;gap:22px}
+.footer-links a{color:#c4d0de;text-decoration:none;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;transition:color .2s}
+.footer-links a:hover{color:var(--teal)}
+.toast-region{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast{background:var(--navy-deep);color:#fff;padding:13px 22px;border-radius:11px;font-size:.9rem;font-weight:600;box-shadow:var(--shadow-md);display:flex;gap:10px;align-items:center;animation:toastIn .3s ease both;border-left:4px solid var(--teal);max-width:min(92vw,440px)}
+.toast.out{animation:toastOut .3s ease both}
+@keyframes toastIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes toastOut{to{opacity:0;transform:translateY(14px)}}
+.to-top{position:fixed;right:22px;bottom:22px;z-index:110;width:46px;height:46px;border-radius:50%;background:var(--navy);color:#fff;border:0;cursor:pointer;font-size:1.15rem;box-shadow:var(--shadow-md);opacity:0;visibility:hidden;transform:translateY(12px);transition:all .3s ease}
+.to-top.show{opacity:1;visibility:visible;transform:translateY(0)}
+.to-top:hover{background:var(--teal-dark)}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:900px){
+  .quick-grid,.baro-card,.report-grid,.duo-grid{grid-template-columns:1fr}
+  .prio-grid{grid-template-columns:1fr;gap:14px}
+  .phase-pill{display:none}
+  .baro-card{gap:28px;padding:26px}
+  .report-card{padding:26px}
+}
+@media (max-width:560px){
+  .field-row{grid-template-columns:1fr}
+  .brand .brand-text small{display:none}
+  .back-link{padding:8px 6px}
+}
+@media print{
+  .site-header,.site-footer,.to-top,.toast-region,.modal-backdrop{display:none}
+  body{background:#fff;color:#000}
+  .card{box-shadow:none;border:1px solid #999}
+}
+</style>
 </head>
-<body class="flex flex-col min-h-screen overflow-hidden" id="main-body">
+<body id="main-body">
 
-    <div id="location-modal" class="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-8 border-t-4 border-orange-500 animate-bounce-in relative">
-             <div class="text-center mb-6">
-                <span class="text-4xl mb-2 block">🏗️</span>
-                <h2 class="text-2xl font-bold text-slate-800" data-i18n="modal_title">Willkommen im Quartier!</h2>
-                <p class="text-slate-500 text-sm mt-2" data-i18n="modal_desc">Damit wir Sie mit Ihrer Nachbarschaft verbinden können, benötigen wir kurz Ihre Region.</p>
-            </div>
-            <form id="location-form" onsubmit="handleLocationSubmit(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1" data-i18n="lbl_country">Land</label>
-                    <select id="country-select" class="w-full p-3 rounded-lg bg-slate-50 border border-slate-200 focus:border-orange-500 outline-none transition-colors text-slate-700">
-                        <option value="DE">Deutschland 🇩🇪</option>
-                        <option value="BE">Belgien 🇧🇪</option>
-                        <option value="NL">Niederlande 🇳🇱</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1" data-i18n="lbl_zip">Postleitzahl</label>
-                    <input id="plz-input" type="text" placeholder="z.B. 52152" class="w-full p-3 rounded-lg bg-slate-50 border border-slate-200 focus:border-orange-500 outline-none transition-colors text-slate-700" required>
-                </div>
-                <div id="location-error" class="hidden text-red-500 text-xs text-center font-bold bg-red-50 p-2 rounded" data-i18n="modal_error">
-                    Diese PLZ liegt leider außerhalb unseres Pilotgebiets.
-                </div>
-                <button type="submit" class="w-full bg-slate-800 text-white font-bold py-3 rounded-lg hover:bg-orange-600 transition-colors active:scale-95 shadow-lg" data-i18n="btn_enter">
-                    Zum Quartier
-                </button>
-            </form>
+<!-- ===== LOCATION MODAL ===== -->
+<div id="location-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="loc-title">
+  <div class="modal-box">
+    <span class="modal-icon" aria-hidden="true">🏗️</span>
+    <h2 id="loc-title" data-i18n="modal_title">Willkommen im Quartier!</h2>
+    <p data-i18n="modal_desc">Damit wir Sie mit Ihrer Nachbarschaft verbinden können, benötigen wir kurz Ihre Region.</p>
+    <form id="location-form" onsubmit="handleLocationSubmit(event)">
+      <div class="field">
+        <label for="country-select" data-i18n="lbl_country">Land</label>
+        <select id="country-select">
+          <option value="DE">Deutschland 🇩🇪</option>
+          <option value="BE">Belgien 🇧🇪</option>
+          <option value="NL">Niederlande 🇳🇱</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="plz-input" data-i18n="lbl_zip">Postleitzahl</label>
+        <input id="plz-input" class="input" type="text" placeholder="z.B. 52152" required autocomplete="postal-code">
+      </div>
+      <div id="location-error" class="modal-error" data-i18n="modal_error">Diese PLZ liegt leider außerhalb unseres Pilotgebiets.</div>
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center" data-i18n="btn_enter">Zum Quartier</button>
+    </form>
+  </div>
+</div>
+
+<!-- ===== HEADER ===== -->
+<header class="site-header" id="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="back-link" data-nav data-i18n="nav_back">← Zurück</a>
+    <a href="index.html" class="brand" data-nav aria-label="BAUKOMPASS – Startseite">
+      <svg width="28" height="28" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+        <circle cx="15" cy="15" r="13.5" stroke="var(--teal)" stroke-width="2.4"/>
+        <path d="M15 4.5 L18 15 L15 25.5 L12 15 Z" fill="var(--navy)"/>
+        <path d="M15 4.5 L18 15 H12 Z" fill="var(--teal)"/>
+        <circle cx="15" cy="15" r="2" fill="var(--surface)"/>
+      </svg>
+      <span class="brand-text">BAUKOMPASS<small id="header-location" data-i18n="nav_subtitle">Region wählen...</small></span>
+    </a>
+    <div class="header-tools">
+      <span class="phase-pill" data-i18n="nav_phase">Phase: Bürger-Dialog</span>
+      <div class="lang-switch" role="group" aria-label="Sprache wählen">
+        <button onclick="changeLanguage('de')" class="lang-btn active" data-lang="de" aria-label="Deutsch">DE</button>
+        <button onclick="changeLanguage('en')" class="lang-btn" data-lang="en" aria-label="English">EN</button>
+        <button onclick="changeLanguage('fr')" class="lang-btn" data-lang="fr" aria-label="Français">FR</button>
+      </div>
+      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" aria-label="Dunkelmodus umschalten">🌙</button>
+    </div>
+  </div>
+  <div class="accent-line" aria-hidden="true"></div>
+</header>
+
+<main id="main">
+
+  <!-- ===== HERO ===== -->
+  <section class="page-hero">
+    <h1>
+      <span data-i18n="hero_title_1">Wie soll sich</span>
+      <span id="hero-city-name" class="city" data-i18n="hero_title_city">unsere Stadt</span>
+      <span data-i18n="hero_title_2">entwickeln?</span>
+    </h1>
+    <p data-i18n="hero_desc">Leerstand vermeiden, Wohnraum schaffen, Charakter bewahren. Ihre Stimmung und Ihre Prioritäten sind unser Kompass.</p>
+  </section>
+
+  <!-- ===== EVENT + LEIH-BAR ===== -->
+  <section class="section quick-grid" aria-label="Quartiersangebote">
+    <div class="card quick-card">
+      <span class="quick-badge badge-soon" data-i18n="badge_soon">Demnächst</span>
+      <div class="quick-icon icon-date" aria-hidden="true"><small data-i18n="date_day">So</small><strong>14</strong></div>
+      <div>
+        <h3 data-i18n="event_title">Quartiersflohmarkt</h3>
+        <p data-i18n="event_loc">Marktplatz, 14:00 Uhr</p>
+        <button class="btn btn-ghost" onclick="openCalendar()">📅 <span data-i18n="btn_calendar">Kalender öffnen</span></button>
+      </div>
+    </div>
+    <div class="card quick-card">
+      <span class="quick-badge badge-avail" data-i18n="badge_avail">Verfügbar</span>
+      <div class="quick-icon icon-bike" aria-hidden="true">🚲</div>
+      <div>
+        <h3 data-i18n="rent_title">Leih-Bar: Lastenrad "E-Donkey"</h3>
+        <p data-i18n="rent_desc">Kostenlos ausleihen für 24h.</p>
+        <button class="btn btn-primary btn-small" onclick="reserveBike()" data-i18n="btn_reserve">Jetzt reservieren</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STIMMUNGSBAROMETER ===== -->
+  <section class="section">
+    <div class="card baro-card">
+      <div>
+        <h2 data-i18n="baro_title">Das Stimmungsbarometer</h2>
+        <p data-i18n="baro_desc">Wie bewerten Sie die aktuelle Entwicklung in Ihrer Nachbarschaft?</p>
+        <div class="mood-row" role="group" aria-label="Stimmung abgeben">
+          <button class="mood-btn" data-mood="0" onclick="voteSentiment(this)">
+            <span class="mood-face" aria-hidden="true">😟</span>
+            <span data-i18n="mood_bad">Besorgt</span>
+          </button>
+          <button class="mood-btn" data-mood="1" onclick="voteSentiment(this)">
+            <span class="mood-face" aria-hidden="true">😐</span>
+            <span data-i18n="mood_neutral">Neutral</span>
+          </button>
+          <button class="mood-btn" data-mood="2" onclick="voteSentiment(this)">
+            <span class="mood-face" aria-hidden="true">😊</span>
+            <span data-i18n="mood_good">Zuversichtlich</span>
+          </button>
         </div>
+        <div id="vote-msg" class="vote-msg" data-i18n="vote_thanks">Danke für Ihre Stimme!</div>
+      </div>
+      <div class="gauge-wrap">
+        <svg class="gauge-svg" viewBox="0 0 300 175" role="img" aria-label="Stimmungsbarometer: 72 Prozent positiv">
+          <defs>
+            <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#e76f51"/>
+              <stop offset="50%" stop-color="#e9c46a"/>
+              <stop offset="100%" stop-color="#2a9d8f"/>
+            </linearGradient>
+          </defs>
+          <path class="gauge-track" d="M 35 160 A 115 115 0 0 1 265 160" fill="none" stroke-width="24" stroke-linecap="round"/>
+          <path id="gauge-value" class="gauge-value" d="M 35 160 A 115 115 0 0 1 265 160" fill="none" stroke-width="24"
+                stroke-dasharray="361.3" stroke-dashoffset="361.3"/>
+          <text class="gauge-num" x="150" y="135" text-anchor="middle"><tspan id="sentiment-score">72%</tspan></text>
+          <text class="gauge-label" x="150" y="160" text-anchor="middle" id="sentiment-label" data-i18n="status_positive">Positiv</text>
+        </svg>
+        <p class="gauge-foot"><span data-i18n="based_on">Basierend auf</span> <strong id="vote-count">1.240</strong> <span data-i18n="votes">Stimmen</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PRIORITÄTEN ===== -->
+  <section class="section">
+    <h2 class="prio-title" data-i18n="prio_title">Worauf sollen wir uns fokussieren?</h2>
+    <div class="prio-grid">
+      <div class="card prio-card" tabindex="0" role="button" aria-pressed="false" onclick="togglePrio(this)" onkeydown="prioKey(event,this)">
+        <span class="check" aria-hidden="true">✓</span>
+        <div class="prio-icon" aria-hidden="true">🔨</div>
+        <h3 data-i18n="prio_1_title">Sanierung fördern</h3>
+        <p data-i18n="prio_1_desc">Altbauten erhalten statt neu bauen.</p>
+      </div>
+      <div class="card prio-card" tabindex="0" role="button" aria-pressed="false" onclick="togglePrio(this)" onkeydown="prioKey(event,this)">
+        <span class="check" aria-hidden="true">✓</span>
+        <div class="prio-icon" aria-hidden="true">🌳</div>
+        <h3 data-i18n="prio_2_title">Mehr Grünflächen</h3>
+        <p data-i18n="prio_2_desc">Versiegelte Flächen entsiegeln.</p>
+      </div>
+      <div class="card prio-card" tabindex="0" role="button" aria-pressed="false" onclick="togglePrio(this)" onkeydown="prioKey(event,this)">
+        <span class="check" aria-hidden="true">✓</span>
+        <div class="prio-icon" aria-hidden="true">🎓</div>
+        <h3 data-i18n="prio_3_title">Junges Wohnen</h3>
+        <p data-i18n="prio_3_desc">Bezahlbarer Raum für Familien.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MÄNGELMELDER ===== -->
+  <section class="section">
+    <div class="card report-card">
+      <div class="section-head">
+        <span class="icon" aria-hidden="true">📸</span>
+        <div>
+          <h2 data-i18n="report_title">Mängelmelder</h2>
+          <p data-i18n="report_desc">Schlagloch entdeckt? Laterne defekt? Direkt an den Bauhof melden.</p>
+        </div>
+      </div>
+      <div class="report-grid">
+        <form id="report-form" onsubmit="submitReport(event)">
+          <div class="progress-wrap" aria-hidden="true">
+            <div class="progress-meta">
+              <span data-i18n="progress_label">Fortschritt</span>
+              <span id="report-progress-num">0%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" id="report-progress"></div></div>
+          </div>
+          <div class="field-row">
+            <div>
+              <label for="report-cat" data-i18n="lbl_category">Kategorie</label>
+              <select id="report-cat" onchange="updateReportProgress()">
+                <option value="" data-i18n="opt_choose">Bitte wählen…</option>
+                <option data-i18n="opt_street">Straßenschäden</option>
+                <option data-i18n="opt_light">Beleuchtung defekt</option>
+                <option data-i18n="opt_trash">Müll / Sauberkeit</option>
+                <option data-i18n="opt_green">Grünflächenpflege</option>
+                <option data-i18n="opt_other">Sonstiges</option>
+              </select>
+            </div>
+            <div>
+              <label for="report-loc" data-i18n="lbl_loc">Standort</label>
+              <input id="report-loc" class="input" type="text" placeholder="Straße oder Beschreibung" data-i18n="ph_location" oninput="updateReportProgress()">
+            </div>
+          </div>
+          <div class="field">
+            <label for="report-desc" data-i18n="lbl_desc">Beschreibung</label>
+            <textarea id="report-desc" rows="3" placeholder="Details..." data-i18n="ph_details" oninput="updateReportProgress()"></textarea>
+          </div>
+          <button type="submit" class="btn btn-teal" data-i18n="btn_submit_report">Meldung absenden</button>
+        </form>
+        <aside class="last-report">
+          <h4 data-i18n="last_report">Ihre letzte Meldung:</h4>
+          <div class="last-row">
+            <span class="last-check" aria-hidden="true">✔</span>
+            <div>
+              <strong>Laterne Hauptstraße 4</strong>
+              <div class="status-done" data-i18n="status_done">Erledigt (Repariert)</div>
+              <div class="last-date" data-i18n="report_date">Gemeldet am 10.04. • Behoben am 12.04.</div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BAU-ALARM + HANDWERKER ===== -->
+  <section class="section duo-grid">
+    <div class="card alarm-card">
+      <h3 data-i18n="alarm_title">Bau-Alarm: Nichts verpassen! 🏗️</h3>
+      <p data-i18n="alarm_desc">Nachricht erhalten, wenn im Umkreis von 200m Bauprojekte starten oder Pläne geändert werden.</p>
+      <form class="alarm-input-row" onsubmit="activateAlarm(event)">
+        <input type="email" id="alarm-email" placeholder="E-Mail Adresse" data-i18n="ph_email" required aria-label="E-Mail Adresse">
+        <button class="btn btn-teal btn-small" type="submit" data-i18n="btn_activate">Aktivieren</button>
+      </form>
     </div>
 
-  <nav class="bg-white shadow-sm sticky top-0 z-50 border-b border-slate-200">
-        <div class="px-10 py-5 flex justify-between items-center w-full">
-            
-            <div class="flex-1 flex justify-start">
-                <a href="index.html" class="text-sm font-bold text-slate-800 uppercase hover:text-orange-600 transition-colors" data-i18n="nav_back">&larr; ZURÜCK</a>
-            </div>
-            
-            <div class="flex flex-col items-center flex-shrink-0 cursor-pointer group" onclick="window.location.href='index.html'">
-                <span class="font-extrabold text-2xl text-slate-900 tracking-wider uppercase group-hover:text-orange-600 transition-colors" data-i18n="nav_title">BAUKOMPASS</span>
-                <span id="header-location" class="text-[10px] text-slate-500 font-semibold uppercase tracking-widest" data-i18n="nav_subtitle">Region wählen...</span>
-            </div>
-            
-            <div class="flex-1 flex justify-end items-center gap-6">
-                <div class="hidden md:block text-xs font-bold bg-emerald-100 text-emerald-800 px-4 py-1.5 rounded-full uppercase tracking-wide" data-i18n="nav_phase">
-                    Phase: Bürger-Dialog
-                </div>
-                
-                <div class="lang-switch">
-                    <button onclick="changeLanguage('de')" class="lang-btn active" data-lang="de">DE</button>
-                    <button onclick="changeLanguage('en')" class="lang-btn" data-lang="en">EN</button>
-                    <button onclick="changeLanguage('fr')" class="lang-btn" data-lang="fr">FR</button>
-                </div>
-            </div>
+    <div class="card craft-card">
+      <div class="craft-head">
+        <h3 data-i18n="craft_title">🛠️ Handwerker in der Nähe</h3>
+        <span class="radius-tag" data-i18n="radius">Radius: 10km</span>
+      </div>
+      <div class="craft-search">
+        <input class="input" type="text" placeholder="PLZ..." data-i18n="ph_plz" aria-label="PLZ suchen">
+        <span aria-hidden="true">🔍</span>
+      </div>
+      <div class="craft-item">
+        <div class="craft-left">
+          <span class="craft-avatar av-em" aria-hidden="true">EM</span>
+          <div>
+            <strong>Elektro Müller GmbH</strong>
+            <div class="craft-tags"><span>Photovoltaik</span><span>Smart Home</span></div>
+          </div>
+        </div>
+        <button class="call-btn" onclick="callCraftsman('Elektro Müller GmbH')" aria-label="Elektro Müller GmbH anrufen">📞</button>
+      </div>
+      <div class="craft-item">
+        <div class="craft-left">
+          <span class="craft-avatar av-ds" aria-hidden="true">DS</span>
+          <div>
+            <strong>Dachdeckerei Schmidt</strong>
+            <div class="craft-tags"><span data-i18n="tag_insulation">Dämmung</span><span data-i18n="tag_renovation">Sanierung</span></div>
+          </div>
+        </div>
+        <button class="call-btn" onclick="callCraftsman('Dachdeckerei Schmidt')" aria-label="Dachdeckerei Schmidt anrufen">📞</button>
+      </div>
+    </div>
+  </section>
 
-        </div>
-        <div class="h-[2px] w-full bg-slate-100 relative">
-            <div class="absolute left-0 top-0 h-full w-32 bg-orange-500 ml-10"></div>
-        </div>
+  <!-- ===== LEERSTAND CTA ===== -->
+  <section class="section">
+    <div class="card empty-cta">
+      <h3 data-i18n="empty_title">Leerstand melden?</h3>
+      <p data-i18n="empty_desc">Kennen Sie ein weiteres leerstehendes Haus, das Potenzial hat? Helfen Sie uns.</p>
+      <a href="seite-eigentuemer.html" class="btn btn-teal" data-nav data-i18n="btn_empty_report">Zum Leerstandsmelder →</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p data-i18n="footer_copy">© 2025 Stadtentwicklung &amp; Bürgerdialog</p>
+    <nav class="footer-links" aria-label="Rechtliches">
+      <a href="#" data-i18n="link_imprint">Impressum</a>
+      <a href="#" data-i18n="link_privacy">Datenschutz</a>
+      <a href="#" data-i18n="link_contact">Kontakt</a>
     </nav>
+  </div>
+</footer>
 
-    <main class="flex-grow max-w-5xl mx-auto px-4 py-10 w-full space-y-16">
-        
-        <section class="text-center max-w-3xl mx-auto mt-6 mb-10">
-            <h1 class="text-3xl md:text-5xl font-extrabold text-slate-800 mb-6 leading-tight">
-                <span data-i18n="hero_title_1">Wie soll sich</span> 
-                <span id="hero-city-name" class="text-slate-900 border-b-4 border-orange-400/50 px-1" data-i18n="hero_title_city">unsere Stadt</span> 
-                <span data-i18n="hero_title_2">entwickeln?</span>
-            </h1>
-            <p class="text-lg text-slate-500 leading-relaxed" data-i18n="hero_desc">Leerstand vermeiden, Wohnraum schaffen, Charakter bewahren. Ihre Stimmung und Ihre Prioritäten sind unser Kompass.</p>
-        </section>
+<div class="toast-region" id="toast-region" role="status" aria-live="polite"></div>
+<button class="to-top" id="to-top" aria-label="Nach oben scrollen" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-        <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow border border-slate-100 relative overflow-hidden">
-                <div class="absolute top-0 right-0 bg-slate-200 text-slate-600 text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider" data-i18n="badge_soon">Demnächst</div>
-                <div class="flex items-start gap-5">
-                    <div class="bg-orange-50 text-orange-600 w-14 h-14 flex flex-col items-center justify-center rounded-lg font-bold border border-orange-100">
-                        <span class="text-xs uppercase" data-i18n="date_day">So</span>
-                        <span class="text-xl leading-none">14</span>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-slate-800 text-lg" data-i18n="event_title">Quartiersflohmarkt</h3>
-                        <p class="text-slate-500 text-sm mb-3" data-i18n="event_loc">Marktplatz, 14:00 Uhr</p>
-                        <button class="text-orange-600 text-sm font-bold hover:text-orange-700 flex items-center">
-                            <span class="mr-1">📅</span> <span data-i18n="btn_calendar">Kalender öffnen</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow border border-slate-100 relative overflow-hidden">
-                <div class="absolute top-0 right-0 bg-emerald-100 text-emerald-700 text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider" data-i18n="badge_avail">Verfügbar</div>
-                <div class="flex items-start gap-5">
-                    <div class="bg-emerald-50 text-emerald-600 w-14 h-14 flex items-center justify-center rounded-lg text-2xl border border-emerald-100">🚲</div>
-                    <div>
-                        <h3 class="font-bold text-slate-800 text-lg" data-i18n="rent_title">Leih-Bar: Lastenrad "E-Donkey"</h3>
-                        <p class="text-slate-500 text-sm mb-3" data-i18n="rent_desc">Kostenlos ausleihen für 24h.</p>
-                        <button onclick="alert('Reservierungs-Modul öffnet sich...')" class="bg-slate-800 text-white px-4 py-1.5 rounded text-xs font-semibold hover:bg-slate-700 transition-colors" data-i18n="btn_reserve">Jetzt reservieren</button>
-                    </div>
-                </div>
-            </div>
-        </section>
+<script>
+/* ============ TRANSLATIONS (identische Inhalte, ergänzt um neue UI-Strings) ============ */
+const translations = {
+  "de": {
+    "modal_title":"Willkommen im Quartier!","modal_desc":"Damit wir Sie mit Ihrer Nachbarschaft verbinden können, benötigen wir kurz Ihre Region.","lbl_country":"Land","lbl_zip":"Postleitzahl","modal_error":"Diese PLZ liegt leider außerhalb unseres Pilotgebiets.","btn_enter":"Zum Quartier",
+    "nav_back":"← Zurück","nav_subtitle":"Region wählen...","nav_phase":"Phase: Bürger-Dialog",
+    "hero_title_1":"Wie soll sich","hero_title_city":"unsere Stadt","hero_title_2":"entwickeln?",
+    "hero_desc":"Leerstand vermeiden, Wohnraum schaffen, Charakter bewahren. Ihre Stimmung und Ihre Prioritäten sind unser Kompass.",
+    "badge_soon":"Demnächst","badge_avail":"Verfügbar","date_day":"So",
+    "event_title":"Quartiersflohmarkt","event_loc":"Marktplatz, 14:00 Uhr","btn_calendar":"Kalender öffnen",
+    "rent_title":"Leih-Bar: Lastenrad \"E-Donkey\"","rent_desc":"Kostenlos ausleihen für 24h.","btn_reserve":"Jetzt reservieren",
+    "baro_title":"Das Stimmungsbarometer","baro_desc":"Wie bewerten Sie die aktuelle Entwicklung in Ihrer Nachbarschaft?",
+    "mood_bad":"Besorgt","mood_neutral":"Neutral","mood_good":"Zuversichtlich","vote_thanks":"Danke für Ihre Stimme!",
+    "status_positive":"Positiv","based_on":"Basierend auf","votes":"Stimmen",
+    "prio_title":"Worauf sollen wir uns fokussieren?",
+    "prio_1_title":"Sanierung fördern","prio_1_desc":"Altbauten erhalten statt neu bauen.",
+    "prio_2_title":"Mehr Grünflächen","prio_2_desc":"Versiegelte Flächen entsiegeln.",
+    "prio_3_title":"Junges Wohnen","prio_3_desc":"Bezahlbarer Raum für Familien.",
+    "report_title":"Mängelmelder","report_desc":"Schlagloch entdeckt? Laterne defekt? Direkt an den Bauhof melden.",
+    "lbl_category":"Kategorie","opt_choose":"Bitte wählen…","opt_street":"Straßenschäden","opt_light":"Beleuchtung defekt","opt_trash":"Müll / Sauberkeit","opt_green":"Grünflächenpflege","opt_other":"Sonstiges",
+    "lbl_loc":"Standort","lbl_desc":"Beschreibung","btn_submit_report":"Meldung absenden",
+    "last_report":"Ihre letzte Meldung:","status_done":"Erledigt (Repariert)","report_date":"Gemeldet am 10.04. • Behoben am 12.04.",
+    "alarm_title":"Bau-Alarm: Nichts verpassen! 🏗️","alarm_desc":"Nachricht erhalten, wenn im Umkreis von 200m Bauprojekte starten oder Pläne geändert werden.","btn_activate":"Aktivieren",
+    "craft_title":"🛠️ Handwerker in der Nähe","radius":"Radius: 10km","tag_insulation":"Dämmung","tag_renovation":"Sanierung",
+    "empty_title":"Leerstand melden?","empty_desc":"Kennen Sie ein weiteres leerstehendes Haus, das Potenzial hat? Helfen Sie uns.","btn_empty_report":"Zum Leerstandsmelder →",
+    "link_imprint":"Impressum","link_privacy":"Datenschutz","link_contact":"Kontakt",
+    "footer_copy":"© 2025 Stadtentwicklung & Bürgerdialog",
+    "progress_label":"Fortschritt","ph_location":"Straße oder Beschreibung","ph_details":"Details...","ph_email":"E-Mail Adresse","ph_plz":"PLZ...",
+    "toast_report_ok":"Meldung erfolgreich gesendet ✓","toast_alarm_ok":"Bau-Alarm aktiviert ✓ (Radius 200m)","toast_reserve_ok":"E-Donkey für 24h reserviert ✓","toast_calendar":"Kalender-Eintrag erstellt: Quartiersflohmarkt, So 14, 14:00 Uhr","toast_call":"Verbindung wird hergestellt zu","toast_fill":"Bitte Kategorie, Standort und Beschreibung ausfüllen.",
+    "theme_dark":"Dunkelmodus aktiviert","theme_light":"Hellmodus aktiviert"
+  },
+  "en": {
+    "modal_title":"Welcome to the Neighborhood!","modal_desc":"To connect you with your neighborhood, we briefly need your region.","lbl_country":"Country","lbl_zip":"Zip Code","modal_error":"This zip code is unfortunately outside our pilot area.","btn_enter":"Go to Neighborhood",
+    "nav_back":"← Back","nav_subtitle":"Select region...","nav_phase":"Phase: Citizen Dialogue",
+    "hero_title_1":"How should","hero_title_city":"our city","hero_title_2":"develop?",
+    "hero_desc":"Avoid vacancies, create living space, preserve character. Your mood and priorities are our compass.",
+    "badge_soon":"Coming Soon","badge_avail":"Available","date_day":"Sun",
+    "event_title":"Neighborhood Flea Market","event_loc":"Market Square, 2:00 PM","btn_calendar":"Open Calendar",
+    "rent_title":"Rental Bar: Cargo Bike \"E-Donkey\"","rent_desc":"Borrow for free for 24h.","btn_reserve":"Reserve Now",
+    "baro_title":"Community Sentiment","baro_desc":"How do you rate the current development in your neighborhood?",
+    "mood_bad":"Worried","mood_neutral":"Neutral","mood_good":"Confident","vote_thanks":"Thanks for your vote!",
+    "status_positive":"Positive","based_on":"Based on","votes":"votes",
+    "prio_title":"What should we focus on?",
+    "prio_1_title":"Promote Renovation","prio_1_desc":"Preserve old buildings instead of building new ones.",
+    "prio_2_title":"More Green Spaces","prio_2_desc":"Unseal sealed surfaces.",
+    "prio_3_title":"Young Living","prio_3_desc":"Affordable space for families.",
+    "report_title":"Defect Reporter","report_desc":"Spotted a pothole? Broken street light? Report directly to the depot.",
+    "lbl_category":"Category","opt_choose":"Please choose…","opt_street":"Road Damage","opt_light":"Defective Lighting","opt_trash":"Trash / Cleanliness","opt_green":"Green Maintenance","opt_other":"Other",
+    "lbl_loc":"Location","lbl_desc":"Description","btn_submit_report":"Submit Report",
+    "last_report":"Your last report:","status_done":"Done (Repaired)","report_date":"Reported on Apr 10 • Fixed on Apr 12",
+    "alarm_title":"Construction Alarm: Don't miss out! 🏗️","alarm_desc":"Get notified when construction projects start or plans change within a 200m radius.","btn_activate":"Activate",
+    "craft_title":"🛠️ Craftsmen nearby","radius":"Radius: 10km","tag_insulation":"Insulation","tag_renovation":"Renovation",
+    "empty_title":"Report Vacancy?","empty_desc":"Do you know another vacant house with potential? Help us.","btn_empty_report":"Go to Vacancy Reporter →",
+    "link_imprint":"Imprint","link_privacy":"Privacy","link_contact":"Contact",
+    "footer_copy":"© 2025 Urban Development & Citizen Dialogue",
+    "progress_label":"Progress","ph_location":"Street or description","ph_details":"Details...","ph_email":"Email address","ph_plz":"Zip...",
+    "toast_report_ok":"Report sent successfully ✓","toast_alarm_ok":"Construction alarm activated ✓ (200m radius)","toast_reserve_ok":"E-Donkey reserved for 24h ✓","toast_calendar":"Calendar entry created: Neighborhood Flea Market, Sun 14, 2:00 PM","toast_call":"Connecting to","toast_fill":"Please fill in category, location and description.",
+    "theme_dark":"Dark mode enabled","theme_light":"Light mode enabled"
+  },
+  "fr": {
+    "modal_title":"Bienvenue dans le quartier !","modal_desc":"Pour vous connecter à votre voisinage, nous avons besoin de votre région.","lbl_country":"Pays","lbl_zip":"Code Postal","modal_error":"Ce code postal est malheureusement hors de notre zone pilote.","btn_enter":"Accéder au quartier",
+    "nav_back":"← Retour","nav_subtitle":"Choisir la région...","nav_phase":"Phase : Dialogue Citoyen",
+    "hero_title_1":"Comment","hero_title_city":"notre ville","hero_title_2":"doit-elle évoluer ?",
+    "hero_desc":"Éviter les vacances, créer des logements, préserver le caractère. Votre humeur et vos priorités sont notre boussole.",
+    "badge_soon":"Bientôt","badge_avail":"Disponible","date_day":"Dim",
+    "event_title":"Brocante de quartier","event_loc":"Place du Marché, 14h00","btn_calendar":"Ouvrir le calendrier",
+    "rent_title":"Bar à prêt : Vélo cargo \"E-Donkey\"","rent_desc":"Emprunter gratuitement pour 24h.","btn_reserve":"Réserver maintenant",
+    "baro_title":"Baromètre d'ambiance","baro_desc":"Comment évaluez-vous le développement actuel de votre quartier ?",
+    "mood_bad":"Inquiet","mood_neutral":"Neutre","mood_good":"Confiant","vote_thanks":"Merci pour votre vote !",
+    "status_positive":"Positif","based_on":"Basé sur","votes":"votes",
+    "prio_title":"Sur quoi devons-nous nous concentrer ?",
+    "prio_1_title":"Promouvoir la rénovation","prio_1_desc":"Préserver l'ancien au lieu de construire du neuf.",
+    "prio_2_title":"Plus d'espaces verts","prio_2_desc":"Désimperméabiliser les surfaces.",
+    "prio_3_title":"Logement jeune","prio_3_desc":"Espace abordable pour les familles.",
+    "report_title":"Signalement de défauts","report_desc":"Nid de poule ? Lampadaire cassé ? Signalez-le directement.",
+    "lbl_category":"Catégorie","opt_choose":"Veuillez choisir…","opt_street":"Dégâts routiers","opt_light":"Éclairage défectueux","opt_trash":"Déchets / Propreté","opt_green":"Entretien espaces verts","opt_other":"Autre",
+    "lbl_loc":"Emplacement","lbl_desc":"Description","btn_submit_report":"Envoyer le rapport",
+    "last_report":"Votre dernier rapport :","status_done":"Terminé (Réparé)","report_date":"Signalé le 10 avr. • Réparé le 12 avr.",
+    "alarm_title":"Alarme chantier : Ne manquez rien ! 🏗️","alarm_desc":"Recevez une notification lorsque des projets de construction commencent dans un rayon de 200m.","btn_activate":"Activer",
+    "craft_title":"🛠️ Artisans à proximité","radius":"Rayon : 10km","tag_insulation":"Isolation","tag_renovation":"Rénovation",
+    "empty_title":"Signaler une vacance ?","empty_desc":"Connaissez-vous une autre maison vide avec du potentiel ? Aidez-nous.","btn_empty_report":"Vers le signalement →",
+    "link_imprint":"Mentions légales","link_privacy":"Confidentialité","link_contact":"Contact",
+    "footer_copy":"© 2025 Développement urbain & Dialogue citoyen",
+    "progress_label":"Progression","ph_location":"Rue ou description","ph_details":"Détails...","ph_email":"Adresse e-mail","ph_plz":"CP...",
+    "toast_report_ok":"Rapport envoyé avec succès ✓","toast_alarm_ok":"Alarme chantier activée ✓ (rayon 200m)","toast_reserve_ok":"E-Donkey réservé pour 24h ✓","toast_calendar":"Entrée de calendrier créée : Brocante de quartier, Dim 14, 14h00","toast_call":"Connexion en cours vers","toast_fill":"Veuillez remplir catégorie, emplacement et description.",
+    "theme_dark":"Mode sombre activé","theme_light":"Mode clair activé"
+  }
+};
+let currentLang = 'de';
 
-        <section class="bg-white rounded-2xl p-6 md:p-10 shadow-sm border border-slate-100">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-                <div>
-                    <h2 class="text-2xl font-bold text-slate-800 mb-2" data-i18n="baro_title">Das Stimmungsbarometer</h2>
-                    <p class="text-slate-500 mb-8" data-i18n="baro_desc">Wie bewerten Sie die aktuelle Entwicklung in Ihrer Nachbarschaft?</p>
-                    <div class="flex justify-between gap-4 mb-8">
-                        <button onclick="voteSentiment(0)" class="barometer-btn flex flex-col items-center gap-2 w-1/3 group">
-                            <div class="w-16 h-16 rounded-2xl bg-red-50 group-hover:bg-red-100 flex items-center justify-center text-3xl border border-red-100 text-red-500">😟</div>
-                            <span class="text-xs font-bold text-slate-400 group-hover:text-red-500 uppercase tracking-wide transition-colors" data-i18n="mood_bad">Besorgt</span>
-                        </button>
-                        <button onclick="voteSentiment(1)" class="barometer-btn flex flex-col items-center gap-2 w-1/3 group">
-                            <div class="w-16 h-16 rounded-2xl bg-yellow-50 group-hover:bg-yellow-100 flex items-center justify-center text-3xl border border-yellow-100 text-yellow-500">😐</div>
-                            <span class="text-xs font-bold text-slate-400 group-hover:text-yellow-500 uppercase tracking-wide transition-colors" data-i18n="mood_neutral">Neutral</span>
-                        </button>
-                        <button onclick="voteSentiment(2)" class="barometer-btn flex flex-col items-center gap-2 w-1/3 group">
-                            <div class="w-16 h-16 rounded-2xl bg-emerald-50 group-hover:bg-emerald-100 flex items-center justify-center text-3xl border border-emerald-100 text-emerald-500">😊</div>
-                            <span class="text-xs font-bold text-slate-400 group-hover:text-emerald-600 uppercase tracking-wide transition-colors" data-i18n="mood_good">Zuversichtlich</span>
-                        </button>
-                    </div>
-                    <div id="vote-msg" class="text-center text-sm font-medium text-orange-600 opacity-0 transition-opacity" data-i18n="vote_thanks">Danke für Ihre Stimme!</div>
-                </div>
-                <div class="relative">
-                    <div class="gauge-container">
-                        <canvas id="sentimentChart"></canvas>
-                        <div class="absolute top-[60%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
-                            <div id="sentiment-score" class="text-4xl font-extrabold text-slate-800">72%</div>
-                            <div class="text-xs text-slate-400 uppercase tracking-wider font-bold" id="sentiment-label" data-i18n="status_positive">Positiv</div>
-                        </div>
-                    </div>
-                    <p class="text-center text-xs text-slate-400 mt-[-20px]"><span data-i18n="based_on">Basierend auf</span> <span id="vote-count" class="font-mono font-bold">1.240</span> <span data-i18n="votes">Stimmen</span></p>
-                </div>
-            </div>
-        </section>
+function changeLanguage(lang){
+  currentLang = lang;
+  localStorage.setItem('baukompass_lang', lang);
+  document.documentElement.lang = lang;
+  document.querySelectorAll('.lang-btn').forEach(btn=>btn.classList.toggle('active', btn.dataset.lang===lang));
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.dataset.i18n;
+    if(translations[lang] && translations[lang][key]){
+      if((el.tagName==='INPUT'||el.tagName==='TEXTAREA') && el.hasAttribute('placeholder')){ el.placeholder = translations[lang][key]; }
+      else { el.innerHTML = translations[lang][key]; }
+    }
+  });
+  // Stadtnamen beibehalten
+  const savedCity = localStorage.getItem('baukompass_city');
+  if(savedCity){
+    document.getElementById('header-location').innerText = savedCity;
+    document.getElementById('hero-city-name').innerText = savedCity;
+  }
+}
+function t(key){ return (translations[currentLang]&&translations[currentLang][key]) || key; }
 
-        <section>
-            <h2 class="text-2xl font-bold text-slate-800 mb-8 text-center" data-i18n="prio_title">Worauf sollen wir uns fokussieren?</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div onclick="togglePrio(this)" class="prio-card bg-white p-8 rounded-xl shadow-sm flex flex-col items-center text-center group">
-                    <div class="w-14 h-14 bg-slate-50 text-slate-600 group-hover:text-orange-600 group-hover:bg-orange-50 transition-colors rounded-full flex items-center justify-center mb-5 text-2xl">🔨</div>
-                    <h3 class="font-bold text-slate-800 mb-2" data-i18n="prio_1_title">Sanierung fördern</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed" data-i18n="prio_1_desc">Altbauten erhalten statt neu bauen.</p>
-                </div>
-                <div onclick="togglePrio(this)" class="prio-card bg-white p-8 rounded-xl shadow-sm flex flex-col items-center text-center group">
-                    <div class="w-14 h-14 bg-slate-50 text-slate-600 group-hover:text-emerald-600 group-hover:bg-emerald-50 transition-colors rounded-full flex items-center justify-center mb-5 text-2xl">🌳</div>
-                    <h3 class="font-bold text-slate-800 mb-2" data-i18n="prio_2_title">Mehr Grünflächen</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed" data-i18n="prio_2_desc">Versiegelte Flächen entsiegeln.</p>
-                </div>
-                <div onclick="togglePrio(this)" class="prio-card bg-white p-8 rounded-xl shadow-sm flex flex-col items-center text-center group">
-                    <div class="w-14 h-14 bg-slate-50 text-slate-600 group-hover:text-indigo-600 group-hover:bg-indigo-50 transition-colors rounded-full flex items-center justify-center mb-5 text-2xl">🎓</div>
-                    <h3 class="font-bold text-slate-800 mb-2" data-i18n="prio_3_title">Junges Wohnen</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed" data-i18n="prio_3_desc">Bezahlbarer Raum für Familien.</p>
-                </div>
-            </div>
-        </section>
+/* ============ THEME ============ */
+function applyTheme(theme){
+  document.documentElement.setAttribute('data-theme', theme);
+  const btn = document.getElementById('theme-toggle');
+  if(btn) btn.textContent = theme==='dark' ? '☀️' : '🌙';
+  localStorage.setItem('baukompass_theme', theme);
+}
+function toggleTheme(){
+  const next = document.documentElement.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+  applyTheme(next);
+  showToast(next==='dark' ? t('theme_dark') : t('theme_light'));
+}
 
-        <section class="bg-white rounded-2xl p-8 md:p-10 shadow-sm border border-slate-100">
-            <div class="flex items-center gap-4 mb-8 border-b border-slate-100 pb-6">
-                <span class="text-3xl bg-orange-50 w-12 h-12 flex items-center justify-center rounded-lg">📸</span>
-                <div>
-                    <h2 class="text-2xl font-bold text-slate-800" data-i18n="report_title">Mängelmelder</h2>
-                    <p class="text-sm text-slate-500 mt-1" data-i18n="report_desc">Schlagloch entdeckt? Laterne defekt? Direkt an den Bauhof melden.</p>
-                </div>
-            </div>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                <div class="lg:col-span-2 space-y-5">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1.5" data-i18n="lbl_category">Kategorie</label>
-                            <select class="w-full p-3.5 rounded-lg bg-slate-50 border border-slate-200 focus:border-orange-500 focus:ring-0 outline-none text-slate-700">
-                                <option data-i18n="opt_street">Straßenschäden</option>
-                                <option data-i18n="opt_light">Beleuchtung defekt</option>
-                                <option data-i18n="opt_trash">Müll / Sauberkeit</option>
-                                <option data-i18n="opt_green">Grünflächenpflege</option>
-                                <option data-i18n="opt_other">Sonstiges</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1.5" data-i18n="lbl_loc">Standort</label>
-                            <input type="text" placeholder="Straße oder Beschreibung" class="w-full p-3.5 rounded-lg bg-slate-50 border border-slate-200 focus:border-orange-500 outline-none text-slate-700">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1.5" data-i18n="lbl_desc">Beschreibung</label>
-                        <textarea rows="3" placeholder="Details..." class="w-full p-3.5 rounded-lg bg-slate-50 border border-slate-200 focus:border-orange-500 outline-none text-slate-700"></textarea>
-                    </div>
-                    <button class="bg-orange-600 text-white font-bold py-3.5 px-8 rounded-lg w-full md:w-auto hover:bg-orange-700 transition-colors shadow-lg shadow-orange-100" data-i18n="btn_submit_report">Meldung absenden</button>
-                </div>
-                <div class="bg-[#f8fafc] rounded-xl p-6 border border-slate-100">
-                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wide mb-4 border-b border-slate-200 pb-2" data-i18n="last_report">Ihre letzte Meldung:</h4>
-                    <div class="flex items-start gap-3">
-                        <div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5 text-xs">✔</div>
-                        <div>
-                            <div class="font-bold text-slate-800 text-sm">Laterne Hauptstraße 4</div>
-                            <div class="text-xs text-emerald-600 font-semibold mb-1" data-i18n="status_done">Erledigt (Repariert)</div>
-                            <div class="text-xs text-slate-400" data-i18n="report_date">Gemeldet am 10.04. • Behoben am 12.04.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+/* ============ TOASTS ============ */
+function showToast(msg, icon='✓'){
+  const region = document.getElementById('toast-region');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerHTML = '<span aria-hidden="true">'+icon+'</span><span>'+msg+'</span>';
+  region.appendChild(toast);
+  setTimeout(()=>{ toast.classList.add('out'); setTimeout(()=>toast.remove(),320); }, 3400);
+}
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <section class="bg-slate-100/50 rounded-2xl p-8 border border-slate-200">
-                <div class="flex items-start justify-between mb-4">
-                    <div>
-                        <h3 class="text-xl font-bold text-slate-800" data-i18n="alarm_title">Bau-Alarm: Nichts verpassen!</h3>
-                        <p class="text-sm text-slate-500 mt-2" data-i18n="alarm_desc">Nachricht erhalten, wenn im Umkreis von 200m Bauprojekte starten oder Pläne geändert werden.</p>
-                    </div>
-                    <span class="text-3xl opacity-80">🏗️</span>
-                </div>
-                <div class="bg-white p-2 rounded-xl shadow-sm border border-slate-200 flex items-center gap-2 mt-4">
-                    <input type="email" placeholder="E-Mail Adresse" class="flex-grow p-2 outline-none text-sm text-slate-600 bg-transparent">
-                    <button class="text-xs font-bold bg-slate-800 text-white px-4 py-2.5 rounded-lg hover:bg-orange-600 transition-colors" data-i18n="btn_activate">Aktivieren</button>
-                </div>
-            </section>
+/* ============ REGION / PILOTGEBIET ============ */
+const plzDatabase = {
+  "DE": { "52062":"Aachen","52064":"Aachen","52066":"Aachen","52068":"Aachen","52070":"Aachen","52072":"Aachen","52074":"Aachen","52076":"Aachen","52078":"Aachen","52080":"Aachen","52477":"Alsdorf","52499":"Baesweiler","52249":"Eschweiler","52134":"Herzogenrath","52156":"Monschau","52159":"Roetgen","52152":"Simmerath","52222":"Stolberg","52146":"Würselen" },
+  "BE": { "4720":"Kelmis","4850":"Plombières","4730":"Raeren" },
+  "NL": { "6291":"Vaals" }
+};
+function handleLocationSubmit(event){
+  event.preventDefault();
+  const country = document.getElementById('country-select').value;
+  const plz = document.getElementById('plz-input').value.trim();
+  const foundCity = plzDatabase[country] ? plzDatabase[country][plz] : null;
+  if(foundCity){
+    localStorage.setItem('baukompass_city', foundCity);
+    setCity(foundCity);
+    document.getElementById('location-modal').classList.add('hidden');
+    document.body.classList.remove('modal-open');
+  } else {
+    document.getElementById('location-error').classList.add('show');
+  }
+}
+function setCity(city){
+  document.getElementById('header-location').innerText = city;
+  document.getElementById('hero-city-name').innerText = city;
+}
 
-            <section class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-xl font-bold text-slate-800" data-i18n="craft_title">🛠️ Handwerker in der Nähe</h3>
-                    <span class="text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-1 rounded border border-slate-200" data-i18n="radius">Radius: 10km</span>
-                </div>
-                <div class="relative mb-5">
-                    <input type="text" placeholder="PLZ..." class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 pl-3 pr-10 text-sm focus:border-slate-400 outline-none text-slate-700">
-                    <span class="absolute right-3 top-2.5 text-slate-400 text-sm">🔍</span>
-                </div>
-                <div class="space-y-3">
-                    <div class="flex items-center justify-between p-3 border border-slate-100 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer group">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-amber-600 font-bold text-xs border border-amber-100">EM</div>
-                            <div>
-                                <div class="font-bold text-slate-800 text-sm">Elektro Müller GmbH</div>
-                                <div class="flex gap-1 mt-1"><span class="text-[10px] bg-slate-100 text-slate-500 px-1.5 rounded">Photovoltaik</span> <span class="text-[10px] bg-slate-100 text-slate-500 px-1.5 rounded">Smart Home</span></div>
-                            </div>
-                        </div>
-                        <button class="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">📞</button>
-                    </div>
-                    <div class="flex items-center justify-between p-3 border border-slate-100 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer group">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-600 font-bold text-xs border border-red-100">DS</div>
-                            <div>
-                                <div class="font-bold text-slate-800 text-sm">Dachdeckerei Schmidt</div>
-                                <div class="flex gap-1 mt-1"><span class="text-[10px] bg-slate-100 text-slate-500 px-1.5 rounded" data-i18n="tag_insulation">Dämmung</span> <span class="text-[10px] bg-slate-100 text-slate-500 px-1.5 rounded" data-i18n="tag_renovation">Sanierung</span></div>
-                            </div>
-                        </div>
-                        <button class="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">📞</button>
-                    </div>
-                </div>
-            </section>
-        </div>
+/* ============ BAROMETER ============ */
+function animateGauge(percent){
+  const total = 361.3; // arc length
+  const el = document.getElementById('gauge-value');
+  requestAnimationFrame(()=>{ el.style.strokeDashoffset = total - (total * percent / 100); });
+}
+function voteSentiment(btn){
+  document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('voted'));
+  btn.classList.add('voted');
+  const msg = document.getElementById('vote-msg');
+  msg.style.opacity = '1';
+  setTimeout(()=>{ msg.style.opacity='0'; btn.classList.remove('voted'); }, 2200);
+}
 
-        <section class="bg-slate-800 rounded-2xl p-10 text-white text-center shadow-lg relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-32 h-32 bg-white/5 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
-            
-            <h3 class="text-2xl font-bold mb-3 relative z-10" data-i18n="empty_title">Leerstand melden?</h3>
-            <p class="text-slate-300 text-sm mb-6 max-w-lg mx-auto relative z-10" data-i18n="empty_desc">Kennen Sie ein weiteres leerstehendes Haus, das Potenzial hat? Helfen Sie uns.</p>
-            <button class="bg-orange-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-orange-500 transition-colors relative z-10 shadow-lg" data-i18n="btn_empty_report">Zum Leerstandsmelder →</button>
-        </section>
-    </main>
+/* ============ PRIORITÄTEN ============ */
+function togglePrio(el){
+  const selected = el.classList.toggle('selected');
+  el.setAttribute('aria-pressed', selected);
+}
+function prioKey(e, el){
+  if(e.key==='Enter' || e.key===' '){ e.preventDefault(); togglePrio(el); }
+}
 
-    <footer class="bg-white border-t border-slate-200 text-slate-400 py-10 mt-auto">
-        <div class="max-w-5xl mx-auto px-4 text-center">
-            <p class="mb-4 text-sm font-medium">&copy; 2024 Stadtentwicklung & Bürgerdialog</p>
-            <div class="flex justify-center gap-6 text-xs uppercase tracking-wider font-semibold">
-                <a href="#" class="hover:text-orange-600 transition-colors" data-i18n="link_imprint">Impressum</a>
-                <a href="#" class="hover:text-orange-600 transition-colors" data-i18n="link_privacy">Datenschutz</a>
-                <a href="#" class="hover:text-orange-600 transition-colors" data-i18n="link_contact">Kontakt</a>
-            </div>
-        </div>
-    </footer>
+/* ============ MÄNGELMELDER ============ */
+function updateReportProgress(){
+  const fields = [
+    document.getElementById('report-cat').value.trim(),
+    document.getElementById('report-loc').value.trim(),
+    document.getElementById('report-desc').value.trim()
+  ];
+  const done = fields.filter(Boolean).length;
+  const pct = Math.round(done / fields.length * 100);
+  document.getElementById('report-progress').style.width = pct + '%';
+  document.getElementById('report-progress-num').textContent = pct + '%';
+}
+function submitReport(event){
+  event.preventDefault();
+  const filled = document.getElementById('report-cat').value.trim() &&
+                 document.getElementById('report-loc').value.trim() &&
+                 document.getElementById('report-desc').value.trim();
+  if(!filled){ showToast(t('toast_fill'), '⚠️'); return; }
+  showToast(t('toast_report_ok'));
+  event.target.reset();
+  updateReportProgress();
+}
 
-    <script>
-        const translations = {
-            "de": {
-                "modal_title": "Willkommen im Quartier!", "modal_desc": "Damit wir Sie mit Ihrer Nachbarschaft verbinden können, benötigen wir kurz Ihre Region.", "lbl_country": "Land", "lbl_zip": "Postleitzahl", "modal_error": "Diese PLZ liegt leider außerhalb unseres Pilotgebiets.", "btn_enter": "Zum Quartier", "nav_title": "BAUKOMPASS", "nav_subtitle": "Region wählen...", "nav_phase": "Phase: Bürger-Dialog", "hero_title_1": "Wie soll sich", "hero_title_city": "unsere Stadt", "hero_title_2": "entwickeln?", "hero_desc": "Leerstand vermeiden, Wohnraum schaffen, Charakter bewahren. Ihre Stimmung und Ihre Prioritäten sind unser Kompass.", "badge_soon": "Demnächst", "badge_avail": "Verfügbar", "date_day": "So", "event_title": "Quartiersflohmarkt", "event_loc": "Marktplatz, 14:00 Uhr", "btn_calendar": "Kalender öffnen", "rent_title": "Leih-Bar: Lastenrad \"E-Donkey\"", "rent_desc": "Kostenlos ausleihen für 24h.", "btn_reserve": "Jetzt reservieren", "baro_title": "Das Stimmungsbarometer", "baro_desc": "Wie bewerten Sie die aktuelle Entwicklung in Ihrer Nachbarschaft?", "mood_bad": "Besorgt", "mood_neutral": "Neutral", "mood_good": "Zuversichtlich", "vote_thanks": "Danke für Ihre Stimme!", "status_positive": "Positiv", "based_on": "Basierend auf", "votes": "Stimmen", "prio_title": "Worauf sollen wir uns fokussieren?", "prio_1_title": "Sanierung fördern", "prio_1_desc": "Altbauten erhalten statt neu bauen.", "prio_2_title": "Mehr Grünflächen", "prio_2_desc": "Versiegelte Flächen entsiegeln.", "prio_3_title": "Junges Wohnen", "prio_3_desc": "Bezahlbarer Raum für Familien.", "report_title": "Mängelmelder", "report_desc": "Schlagloch entdeckt? Laterne defekt? Direkt an den Bauhof melden.", "lbl_category": "Kategorie", "opt_street": "Straßenschäden", "opt_light": "Beleuchtung defekt", "opt_trash": "Müll / Sauberkeit", "opt_green": "Grünflächenpflege", "opt_other": "Sonstiges", "lbl_loc": "Standort", "lbl_desc": "Beschreibung", "btn_submit_report": "Meldung absenden", "last_report": "Ihre letzte Meldung:", "status_done": "Erledigt (Repariert)", "report_date": "Gemeldet am 10.04. • Behoben am 12.04.", "alarm_title": "Bau-Alarm: Nichts verpassen!", "alarm_desc": "Nachricht erhalten, wenn im Umkreis von 200m Bauprojekte starten oder Pläne geändert werden.", "btn_activate": "Aktivieren", "craft_title": "🛠️ Handwerker in der Nähe", "radius": "Radius: 10km", "tag_insulation": "Dämmung", "tag_renovation": "Sanierung", "empty_title": "Leerstand melden?", "empty_desc": "Kennen Sie ein weiteres leerstehendes Haus, das Potenzial hat? Helfen Sie uns.", "btn_empty_report": "Zum Leerstandsmelder →", "link_imprint": "Impressum", "link_privacy": "Datenschutz", "link_contact": "Kontakt"
-            },
-            "en": {
-                "modal_title": "Welcome to the Neighborhood!", "modal_desc": "To connect you with your neighborhood, we briefly need your region.", "lbl_country": "Country", "lbl_zip": "Zip Code", "modal_error": "This zip code is unfortunately outside our pilot area.", "btn_enter": "Go to Neighborhood", "nav_title": "BAUKOMPASS", "nav_subtitle": "Select region...", "nav_phase": "Phase: Citizen Dialogue", "hero_title_1": "How should", "hero_title_city": "our city", "hero_title_2": "develop?", "hero_desc": "Avoid vacancies, create living space, preserve character. Your mood and priorities are our compass.", "badge_soon": "Coming Soon", "badge_avail": "Available", "date_day": "Sun", "event_title": "Neighborhood Flea Market", "event_loc": "Market Square, 2:00 PM", "btn_calendar": "Open Calendar", "rent_title": "Rental Bar: Cargo Bike \"E-Donkey\"", "rent_desc": "Borrow for free for 24h.", "btn_reserve": "Reserve Now", "baro_title": "Community Sentiment", "baro_desc": "How do you rate the current development in your neighborhood?", "mood_bad": "Worried", "mood_neutral": "Neutral", "mood_good": "Confident", "vote_thanks": "Thanks for your vote!", "status_positive": "Positive", "based_on": "Based on", "votes": "votes", "prio_title": "What should we focus on?", "prio_1_title": "Promote Renovation", "prio_1_desc": "Preserve old buildings instead of building new ones.", "prio_2_title": "More Green Spaces", "prio_2_desc": "Unseal sealed surfaces.", "prio_3_title": "Young Living", "prio_3_desc": "Affordable space for families.", "report_title": "Defect Reporter", "report_desc": "Spotted a pothole? Broken street light? Report directly to the depot.", "lbl_category": "Category", "opt_street": "Road Damage", "opt_light": "Defective Lighting", "opt_trash": "Trash / Cleanliness", "opt_green": "Green Maintenance", "opt_other": "Other", "lbl_loc": "Location", "lbl_desc": "Description", "btn_submit_report": "Submit Report", "last_report": "Your last report:", "status_done": "Done (Repaired)", "report_date": "Reported on Apr 10 • Fixed on Apr 12", "alarm_title": "Construction Alarm: Don't miss out!", "alarm_desc": "Get notified when construction projects start or plans change within a 200m radius.", "btn_activate": "Activate", "craft_title": "🛠️ Craftsmen nearby", "radius": "Radius: 10km", "tag_insulation": "Insulation", "tag_renovation": "Renovation", "empty_title": "Report Vacancy?", "empty_desc": "Do you know another vacant house with potential? Help us.", "btn_empty_report": "Go to Vacancy Reporter →", "link_imprint": "Imprint", "link_privacy": "Privacy", "link_contact": "Contact"
-            },
-            "fr": {
-                "modal_title": "Bienvenue dans le quartier !", "modal_desc": "Pour vous connecter à votre voisinage, nous avons besoin de votre région.", "lbl_country": "Pays", "lbl_zip": "Code Postal", "modal_error": "Ce code postal est malheureusement hors de notre zone pilote.", "btn_enter": "Accéder au quartier", "nav_title": "BAUKOMPASS", "nav_subtitle": "Choisir la région...", "nav_phase": "Phase : Dialogue Citoyen", "hero_title_1": "Comment", "hero_title_city": "notre ville", "hero_title_2": "doit-elle évoluer ?", "hero_desc": "Éviter les vacances, créer des logements, préserver le caractère. Votre humeur et vos priorités sont notre boussole.", "badge_soon": "Bientôt", "badge_avail": "Disponible", "date_day": "Dim", "event_title": "Brocante de quartier", "event_loc": "Place du Marché, 14h00", "btn_calendar": "Ouvrir le calendrier", "rent_title": "Bar à prêt : Vélo cargo \"E-Donkey\"", "rent_desc": "Emprunter gratuitement pour 24h.", "btn_reserve": "Réserver maintenant", "baro_title": "Baromètre d'ambiance", "baro_desc": "Comment évaluez-vous le développement actuel de votre quartier ?", "mood_bad": "Inquiet", "mood_neutral": "Neutre", "mood_good": "Confiant", "vote_thanks": "Merci pour votre vote !", "status_positive": "Positif", "based_on": "Basé sur", "votes": "votes", "prio_title": "Sur quoi devons-nous nous concentrer ?", "prio_1_title": "Promouvoir la rénovation", "prio_1_desc": "Préserver l'ancien au lieu de construire du neuf.", "prio_2_title": "Plus d'espaces verts", "prio_2_desc": "Désimperméabiliser les surfaces.", "prio_3_title": "Logement jeune", "prio_3_desc": "Espace abordable pour les familles.", "report_title": "Signalement de défauts", "report_desc": "Nid de poule ? Lampadaire cassé ? Signalez-le directement.", "lbl_category": "Catégorie", "opt_street": "Dégâts routiers", "opt_light": "Éclairage défectueux", "opt_trash": "Déchets / Propreté", "opt_green": "Entretien espaces verts", "opt_other": "Autre", "lbl_loc": "Emplacement", "lbl_desc": "Description", "btn_submit_report": "Envoyer le rapport", "last_report": "Votre dernier rapport :", "status_done": "Terminé (Réparé)", "report_date": "Signalé le 10 avr. • Réparé le 12 avr.", "alarm_title": "Alarme chantier : Ne manquez rien !", "alarm_desc": "Recevez une notification lorsque des projets de construction commencent dans un rayon de 200m.", "btn_activate": "Activer", "craft_title": "🛠️ Artisans à proximité", "radius": "Rayon : 10km", "tag_insulation": "Isolation", "tag_renovation": "Rénovation", "empty_title": "Signaler une vacance ?", "empty_desc": "Connaissez-vous une autre maison vide avec du potentiel ? Aidez-nous.", "btn_empty_report": "Vers le signalement →", "link_imprint": "Mentions légales", "link_privacy": "Confidentialité", "link_contact": "Contact"
-            }
-        };
+/* ============ AKTIONEN ============ */
+function activateAlarm(event){
+  event.preventDefault();
+  showToast(t('toast_alarm_ok'));
+  document.getElementById('alarm-email').value = '';
+}
+function reserveBike(){ showToast(t('toast_reserve_ok')); }
+function openCalendar(){ showToast(t('toast_calendar'), '📅'); }
+function callCraftsman(name){ showToast(t('toast_call') + ' ' + name + '…', '📞'); }
 
-        function changeLanguage(lang) {
-            localStorage.setItem('baukompass_lang', lang);
-            
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                if(btn.dataset.lang === lang) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
+/* ============ HEADER / SCROLL / TRANSITIONS ============ */
+window.addEventListener('scroll', ()=>{
+  document.getElementById('site-header').classList.toggle('scrolled', window.scrollY > 8);
+  document.getElementById('to-top').classList.toggle('show', window.scrollY > 480);
+}, {passive:true});
+document.querySelectorAll('a[data-nav]').forEach(a=>{
+  a.addEventListener('click', e=>{
+    e.preventDefault();
+    const href = a.getAttribute('href');
+    document.body.classList.add('leaving');
+    setTimeout(()=>{ window.location.href = href; }, 230);
+  });
+});
 
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.dataset.i18n;
-                if(translations[lang] && translations[lang][key]) {
-                    if(el.tagName === 'INPUT' && el.hasAttribute('placeholder')) {
-                        el.placeholder = translations[lang][key];
-                    } else {
-                        el.innerText = translations[lang][key];
-                    }
-                }
-            });
+/* ============ INIT ============ */
+window.addEventListener('load', ()=>{
+  applyTheme(localStorage.getItem('baukompass_theme') || 'light');
+  changeLanguage(localStorage.getItem('baukompass_lang') || 'de');
+  animateGauge(72);
 
-            // Stadtnamen beibehalten
-            const savedCity = localStorage.getItem('baukompass_city');
-            if(savedCity) {
-                const headerLoc = document.getElementById('header-location');
-                const heroCity = document.getElementById('hero-city-name');
-                if(headerLoc) headerLoc.innerText = savedCity;
-                if(heroCity) heroCity.innerText = savedCity;
-            }
-        }
-
-        const plzDatabase = {
-            "DE": { "52062": "Aachen", "52064": "Aachen", "52066": "Aachen", "52068": "Aachen", "52070": "Aachen", "52072": "Aachen", "52074": "Aachen", "52076": "Aachen", "52078": "Aachen", "52080": "Aachen", "52477": "Alsdorf", "52499": "Baesweiler", "52249": "Eschweiler", "52134": "Herzogenrath", "52156": "Monschau", "52159": "Roetgen", "52152": "Simmerath", "52222": "Stolberg", "52146": "Würselen" },
-            "BE": { "4720": "Kelmis", "4850": "Plombières", "4730": "Raeren" },
-            "NL": { "6291": "Vaals" }
-        };
-
-        function handleLocationSubmit(event) {
-            event.preventDefault();
-            const country = document.getElementById('country-select').value;
-            const plz = document.getElementById('plz-input').value.trim();
-            const foundCity = plzDatabase[country] ? plzDatabase[country][plz] : null;
-
-            if (foundCity) {
-                localStorage.setItem('baukompass_city', foundCity);
-                document.getElementById('header-location').innerText = foundCity;
-                document.getElementById('hero-city-name').innerText = foundCity;
-                document.getElementById('location-modal').classList.add('hidden');
-                document.getElementById('main-body').classList.remove('overflow-hidden');
-            } else {
-                document.getElementById('location-error').classList.remove('hidden');
-            }
-        }
-
-        function resetLocation() {
-            localStorage.removeItem('baukompass_city');
-            location.reload();
-        }
-
-        let chartInstance = null;
-        function initChart() {
-            const canvas = document.getElementById('sentimentChart');
-            if(!canvas) return;
-            const ctx = canvas.getContext('2d');
-            const gradient = ctx.createLinearGradient(0, 0, 400, 0);
-            gradient.addColorStop(0, '#ef4444'); 
-            gradient.addColorStop(0.5, '#eab308'); 
-            gradient.addColorStop(1, '#10b981');
-
-            chartInstance = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    datasets: [{
-                        data: [72, 28], 
-                        backgroundColor: [gradient, '#f1f5f9'], 
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    rotation: -90, 
-                    circumference: 180, 
-                    cutout: '75%',
-                    aspectRatio: 2, /* Fixt das Verrutschen des Halbkreises */
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
-                    layout: { padding: 0 }
-                }
-            });
-        }
-
-        /* Aktiviert das Klicken beim Barometer */
-        function voteSentiment(type) {
-            const msg = document.getElementById('vote-msg');
-            if(msg) {
-                msg.style.opacity = '1';
-                setTimeout(() => { msg.style.opacity = '0'; }, 2000);
-            }
-        }
-
-        /* Aktiviert die Kacheln "Worauf sollen wir uns fokussieren" */
-        function togglePrio(element) { 
-            element.classList.toggle('selected'); 
-        }
-
-        /* Initiiert alles beim Laden der Seite */
-        window.addEventListener('load', () => {
-            initChart();
-            const savedLang = localStorage.getItem('baukompass_lang') || 'de';
-            changeLanguage(savedLang);
-            
-            const savedCity = localStorage.getItem('baukompass_city');
-            if (savedCity) {
-                const headerLoc = document.getElementById('header-location');
-                const heroCity = document.getElementById('hero-city-name');
-                if(headerLoc) headerLoc.innerText = savedCity;
-                if(heroCity) heroCity.innerText = savedCity;
-                document.getElementById('location-modal').classList.add('hidden');
-                document.getElementById('main-body').classList.remove('overflow-hidden');
-            }
-        });
-    </script>
+  const savedCity = localStorage.getItem('baukompass_city');
+  if(savedCity){
+    setCity(savedCity);
+    document.getElementById('location-modal').classList.add('hidden');
+  } else {
+    document.body.classList.add('modal-open');
+  }
+});
+</script>
 </body>
 </html>
-
-
 
 
 
