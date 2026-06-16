@@ -1,694 +1,855 @@
-<!-- Chosen Palette: "Bureaucratic Harmony" -->
-
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Immobilien-Aktivierungs-Tool</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #334155; }
-        
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 350px;
-            max-height: 400px;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="BAUKOMPASS Immobilien-Aktivierungs-Tool – Kommunales Dashboard für Leerstands-Monitoring, MORO-Zielerreichung und das 4-Stufen-Eskalationsmodell.">
+<title>Immobilien-Tool – BAUKOMPASS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ============ DESIGN TOKENS (identisch zu index.html / gemeinden.html) ============ */
+:root{
+  --navy:#1a2e4a; --navy-deep:#12233c; --navy-soft:#23446b;
+  --teal:#2a9d8f; --teal-dark:#1f7a70; --teal-soft:rgba(42,157,143,.12);
+  --bg:#f4f7fa; --surface:#ffffff; --surface-2:#eaf0f5;
+  --text:#1c2733; --text-2:#56687a; --border:#dce5ed;
+  --amber:#e9c46a; --red:#e76f51;
+  --shadow-sm:0 1px 3px rgba(18,35,60,.08);
+  --shadow-md:0 6px 24px rgba(18,35,60,.10);
+  --radius:14px;
+  --header-h:68px;
+}
+[data-theme="dark"]{
+  --navy:#27496f; --navy-deep:#0c1626; --navy-soft:#33598a;
+  --teal:#3cb8a9; --teal-dark:#2a9d8f; --teal-soft:rgba(60,184,169,.14);
+  --bg:#0e1726; --surface:#16243a; --surface-2:#1d2f4b;
+  --text:#e9eff6; --text-2:#9db0c4; --border:#28405f;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.4);
+  --shadow-md:0 8px 28px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+body{
+  margin:0;font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  animation:pageFade .45s ease both;
+  transition:background-color .3s ease,color .3s ease;
+  display:flex;flex-direction:column;min-height:100vh;
+}
+@keyframes pageFade{from{opacity:0}to{opacity:1}}
+body.leaving{opacity:0;transition:opacity .25s ease}
+a{color:var(--teal-dark)}
+:focus-visible{outline:3px solid var(--teal);outline-offset:2px;border-radius:4px}
 
-        .phase-card { transition: all 0.3s ease; border-left: 4px solid transparent; }
-        .phase-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-        .phase-card.active { border-left-color: #3b82f6; background-color: #ffffff; }
+/* ============ HEADER ============ */
+.site-header{
+  position:sticky;top:0;z-index:90;height:var(--header-h);
+  background:color-mix(in srgb,var(--surface) 88%,transparent);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  transition:box-shadow .25s ease,background-color .3s ease;
+}
+.site-header.scrolled{box-shadow:var(--shadow-md)}
+.header-inner{max-width:1180px;margin:0 auto;height:100%;padding:0 20px;display:flex;align-items:center;gap:18px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);font-weight:900;letter-spacing:.14em;font-size:1.05rem;text-transform:uppercase}
+.brand svg{flex-shrink:0}
+.back-link{
+  margin-left:auto;display:inline-flex;align-items:center;gap:8px;text-decoration:none;
+  color:var(--text-2);font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+  padding:8px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface-2);
+  transition:color .2s,background-color .2s;
+}
+.back-link:hover{color:var(--teal-dark);background:var(--teal-soft)}
+.header-tools{display:flex;align-items:center;gap:8px}
+.lang-switch{display:flex;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:3px;gap:2px}
+.lang-btn{
+  border:0;background:none;color:var(--text-2);font:inherit;font-size:.72rem;font-weight:800;
+  padding:5px 9px;border-radius:6px;cursor:pointer;transition:all .2s;letter-spacing:.04em;
+}
+.lang-btn:hover{color:var(--text)}
+.lang-btn.active{background:var(--navy);color:#fff;box-shadow:var(--shadow-sm)}
+[data-theme="dark"] .lang-btn.active{background:var(--teal)}
+.theme-toggle{
+  width:38px;height:38px;border-radius:9px;border:1px solid var(--border);
+  background:var(--surface-2);cursor:pointer;display:grid;place-items:center;
+  font-size:1rem;transition:transform .2s,background-color .2s;color:var(--text);
+}
+.theme-toggle:hover{transform:rotate(15deg)}
+.accent-line{height:3px;background:linear-gradient(90deg,var(--navy) 0%,var(--teal) 55%,var(--amber) 100%)}
 
-        .model-btn { transition: all 0.2s; }
-        .model-btn.active { background-color: #0ea5e9; color: white; border-color: #0ea5e9; }
+/* ============ PAGE HEAD ============ */
+.page-head{max-width:1180px;margin:0 auto;width:100%;padding:42px 20px 8px;position:relative}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;font-size:.72rem;font-weight:800;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--teal-dark);
+  background:var(--teal-soft);border:1px solid color-mix(in srgb,var(--teal) 35%,transparent);
+  padding:6px 14px;border-radius:99px;margin-bottom:16px;
+}
+.page-head h1{font-size:clamp(1.7rem,4vw,2.4rem);font-weight:900;letter-spacing:-.02em;line-height:1.15;margin:0 0 10px}
+.page-head h1 .accent{color:var(--teal-dark)}
+[data-theme="dark"] .page-head h1 .accent{color:var(--teal)}
+.page-head p{max-width:680px;color:var(--text-2);margin:0;font-size:1rem}
 
-        .escalation-step { transition: all 0.3s; opacity: 0.5; }
-        .escalation-step.active { opacity: 1; transform: scale(1.02); }
+/* ============ LAYOUT ============ */
+.dash{max-width:1180px;margin:0 auto;width:100%;padding:26px 20px 70px;display:grid;gap:22px}
+.panel{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:24px;box-shadow:var(--shadow-sm);
+}
+.panel-title{margin:0 0 4px;font-size:1.05rem;font-weight:900;letter-spacing:-.01em;display:flex;align-items:center;gap:9px}
+.panel-sub{margin:0 0 18px;font-size:.86rem;color:var(--text-2)}
 
-        .funnel-step {
-            clip-path: polygon(0% 0%, 100% 0%, 95% 100%, 5% 100%);
-            transition: all 0.5s ease;
-        }
-        
-        /* Language Switcher inside Tool (optional fallback if iframe communication fails) */
-        .tool-lang-switch { position: absolute; top: 10px; right: 10px; opacity: 0.5; z-index: 100; }
-        .tool-lang-switch:hover { opacity: 1; }
-    </style>
+/* ============ FILTER ============ */
+.filters{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end}
+.filter-group{display:flex;flex-direction:column;gap:6px;flex:1 1 220px}
+.filter-group label{font-size:.74rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--text-2)}
+.filter-group select{
+  font:inherit;font-size:.92rem;color:var(--text);background:var(--surface-2);
+  border:1px solid var(--border);border-radius:10px;padding:11px 13px;cursor:pointer;transition:border-color .2s;
+}
+.filter-group select:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-soft)}
+.filter-reset{
+  border:1px solid var(--border);background:var(--surface-2);color:var(--text-2);font:inherit;
+  font-size:.78rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+  padding:12px 18px;border-radius:10px;cursor:pointer;transition:all .2s;
+}
+.filter-reset:hover{color:var(--teal-dark);background:var(--teal-soft)}
+.filter-hint{flex-basis:100%;margin:0;font-size:.78rem;color:var(--text-2)}
+.filter-hint strong{color:var(--teal-dark)}
+[data-theme="dark"] .filter-hint strong{color:var(--teal)}
+
+/* ============ KPI-KARTEN ============ */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.kpi-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:22px 20px;box-shadow:var(--shadow-sm);position:relative;overflow:hidden;
+  transition:transform .25s ease,box-shadow .25s ease;
+}
+.kpi-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+.kpi-card::after{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--kpi-accent,var(--teal))}
+.kpi-icon{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;font-size:1.2rem;background:color-mix(in srgb,var(--kpi-accent,var(--teal)) 14%,var(--surface));border:1px solid color-mix(in srgb,var(--kpi-accent,var(--teal)) 32%,transparent);margin-bottom:14px}
+.kpi-value{font-size:2rem;font-weight:900;letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums}
+.kpi-label{font-size:.8rem;font-weight:700;color:var(--text-2);margin-top:3px}
+.kpi-trend{display:inline-flex;align-items:center;gap:5px;margin-top:10px;font-size:.72rem;font-weight:800;letter-spacing:.04em;padding:3px 10px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border);color:var(--text-2)}
+.kpi-trend.up{color:var(--teal-dark);background:var(--teal-soft);border-color:color-mix(in srgb,var(--teal) 35%,transparent)}
+[data-theme="dark"] .kpi-trend.up{color:var(--teal)}
+.kpi-trend.warn{color:#a96b00;background:rgba(233,196,106,.16);border-color:color-mix(in srgb,var(--amber) 55%,transparent)}
+[data-theme="dark"] .kpi-trend.warn{color:var(--amber)}
+
+/* ============ CHARTS ============ */
+.charts{display:grid;grid-template-columns:1.4fr 1fr;gap:22px}
+.bar-row{display:grid;grid-template-columns:130px 1fr 56px;align-items:center;gap:12px;padding:7px 0}
+.bar-row .bar-label{font-size:.83rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{height:12px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border);overflow:hidden}
+.bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--teal-dark),var(--teal));transform-origin:left;animation:growBar .8s ease both}
+.bar-fill.high{background:linear-gradient(90deg,#c25a40,var(--red))}
+.bar-fill.mid{background:linear-gradient(90deg,#c79a3d,var(--amber))}
+@keyframes growBar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.bar-row .bar-val{font-size:.83rem;font-weight:800;text-align:right;font-variant-numeric:tabular-nums}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:16px;padding-top:14px;border-top:1px solid var(--border)}
+.legend span{display:inline-flex;align-items:center;gap:7px;font-size:.74rem;font-weight:700;color:var(--text-2)}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.dot.t{background:var(--teal)}.dot.a{background:var(--amber)}.dot.r{background:var(--red)}
+
+/* Ringdiagramm (reines CSS, conic-gradient) */
+.donut-wrap{display:flex;flex-direction:column;align-items:center;gap:18px}
+.donut{
+  --p:0; width:190px;height:190px;border-radius:50%;display:grid;place-items:center;position:relative;
+  background:conic-gradient(var(--teal) calc(var(--p)*1%), var(--surface-2) 0);
+  transition:background .6s ease;
+}
+.donut::before{content:"";position:absolute;inset:16px;border-radius:50%;background:var(--surface);box-shadow:inset 0 1px 3px rgba(18,35,60,.06)}
+.donut-center{position:relative;text-align:center}
+.donut-center .pct{font-size:2rem;font-weight:900;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.donut-center .lbl{font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text-2)}
+.goal-list{width:100%;display:grid;gap:9px}
+.goal-item{display:grid;grid-template-columns:1fr auto;gap:10px;font-size:.82rem}
+.goal-item .g-label{font-weight:700;color:var(--text-2)}
+.goal-item .g-val{font-weight:800;font-variant-numeric:tabular-nums}
+.goal-mini{grid-column:1/-1;height:7px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border);overflow:hidden}
+.goal-mini i{display:block;height:100%;border-radius:99px;background:var(--teal);animation:growBar .8s ease both}
+
+/* ============ TRACKER-TABELLE ============ */
+.tracker-head{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px}
+.sort-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sort-group span{font-size:.74rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--text-2)}
+.sort-btn{
+  border:1px solid var(--border);background:var(--surface-2);color:var(--text-2);font:inherit;
+  font-size:.76rem;font-weight:800;letter-spacing:.04em;padding:8px 14px;border-radius:99px;cursor:pointer;transition:all .2s;
+}
+.sort-btn:hover{color:var(--teal-dark)}
+.sort-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+[data-theme="dark"] .sort-btn.active{background:var(--teal);color:#06121f;border-color:var(--teal)}
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:11px}
+table{width:100%;border-collapse:collapse;font-size:.86rem;min-width:760px}
+thead th{
+  text-align:left;font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--text-2);background:var(--surface-2);padding:12px 14px;border-bottom:1px solid var(--border);white-space:nowrap;
+}
+tbody td{padding:13px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+tbody tr{transition:background-color .15s;animation:rowIn .3s ease both}
+@keyframes rowIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+tbody tr:hover{background:var(--teal-soft)}
+tbody tr:last-child td{border-bottom:0}
+td .obj{font-weight:800}
+td .obj-sub{display:block;font-size:.76rem;color:var(--text-2);font-weight:500}
+.chip{display:inline-block;font-size:.7rem;font-weight:800;letter-spacing:.05em;padding:4px 11px;border-radius:99px;white-space:nowrap;border:1px solid transparent}
+.chip.type{background:var(--surface-2);border-color:var(--border);color:var(--text-2)}
+.stufe{display:inline-flex;align-items:center;gap:7px;font-weight:800;font-size:.78rem;white-space:nowrap}
+.stufe i{width:11px;height:11px;border-radius:50%;display:inline-block;flex-shrink:0}
+.stufe-0 i{background:#8aa3b8}.stufe-1 i{background:var(--teal)}.stufe-2 i{background:var(--amber)}.stufe-3 i{background:var(--red)}
+.urgency{display:inline-flex;gap:3px}
+.urgency i{width:7px;height:14px;border-radius:3px;background:var(--surface-2);border:1px solid var(--border)}
+.urgency[data-u="1"] i:nth-child(-n+1){background:var(--teal);border-color:var(--teal)}
+.urgency[data-u="2"] i:nth-child(-n+2){background:var(--amber);border-color:var(--amber)}
+.urgency[data-u="3"] i:nth-child(-n+3){background:var(--red);border-color:var(--red)}
+.src-badge{font-size:.68rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:99px;white-space:nowrap}
+.src-bew{background:var(--teal-soft);color:var(--teal-dark);border:1px solid color-mix(in srgb,var(--teal) 35%,transparent)}
+[data-theme="dark"] .src-bew{color:var(--teal)}
+.src-eig{background:rgba(35,68,107,.1);color:var(--navy-soft);border:1px solid rgba(35,68,107,.3)}
+[data-theme="dark"] .src-eig{background:rgba(95,140,199,.14);color:#8fb3e2;border-color:rgba(143,179,226,.35)}
+.empty-state{padding:40px 20px;text-align:center;color:var(--text-2)}
+.empty-state .big{font-size:2rem;display:block;margin-bottom:8px}
+.tracker-count{font-size:.8rem;color:var(--text-2);font-weight:600}
+.tracker-count strong{color:var(--text)}
+
+/* Stufen-Legende */
+.stufen-legend{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}
+.stufen-legend .stage{
+  border:1px solid var(--border);border-radius:11px;padding:12px 14px;background:var(--surface-2);
+  font-size:.76rem;color:var(--text-2);
+}
+.stufen-legend .stage b{display:flex;align-items:center;gap:7px;color:var(--text);font-size:.8rem;margin-bottom:3px}
+
+/* ============ FOOTER / TOAST / TO-TOP ============ */
+.site-footer{background:var(--navy-deep);color:#c4d0de;padding:42px 20px;margin-top:auto}
+.footer-inner{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between}
+.footer-inner p{margin:0;font-size:.85rem}
+.footer-links{display:flex;gap:22px}
+.footer-links a{color:#c4d0de;text-decoration:none;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;transition:color .2s}
+.footer-links a:hover{color:var(--teal)}
+.toast-region{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:400;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast{
+  background:var(--navy-deep);color:#fff;padding:13px 22px;border-radius:11px;
+  font-size:.9rem;font-weight:600;box-shadow:var(--shadow-md);display:flex;gap:10px;align-items:center;
+  animation:toastIn .3s ease both;border-left:4px solid var(--teal);max-width:min(92vw,440px);
+}
+.toast.out{animation:toastOut .3s ease both}
+@keyframes toastIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes toastOut{to{opacity:0;transform:translateY(14px)}}
+.to-top{
+  position:fixed;right:22px;bottom:22px;z-index:150;width:46px;height:46px;border-radius:50%;
+  background:var(--navy);color:#fff;border:0;cursor:pointer;font-size:1.15rem;box-shadow:var(--shadow-md);
+  opacity:0;visibility:hidden;transform:translateY(12px);transition:all .3s ease;
+}
+.to-top.show{opacity:1;visibility:visible;transform:translateY(0)}
+.to-top:hover{background:var(--teal-dark)}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:1020px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .charts{grid-template-columns:1fr}
+  .stufen-legend{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:640px){
+  .kpi-grid{grid-template-columns:1fr}
+  .stufen-legend{grid-template-columns:1fr}
+  .bar-row{grid-template-columns:96px 1fr 48px}
+  .back-link span{display:none}
+}
+@media (max-width:520px){
+  .lang-btn{padding:5px 7px}
+  .brand span{display:none}
+}
+@media print{
+  .site-header,.site-footer,.to-top,.toast-region,.filters,.sort-group{display:none}
+  body{background:#fff;color:#000}
+  .panel,.kpi-card{box-shadow:none}
+}
+</style>
 </head>
-<body class="flex flex-col min-h-screen">
+<body>
 
-    <!-- Header -->
-    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center relative">
-            <div class="flex items-center gap-3">
-                <span class="text-2xl">🏙️</span>
-                <div>
-                    <h1 class="text-xl font-bold text-slate-800" data-i18n="tool_title">Immobilien-Aktivierung</h1>
-                    <p class="text-xs text-slate-500 uppercase tracking-wide" data-i18n="tool_subtitle">Prozess-Management-Dashboard</p>
-                </div>
-            </div>
-            <div class="hidden md:block">
-                <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-sm font-medium" data-i18n="tool_goal">Ziel: Gemeinwohl & Aktivierung</span>
-            </div>
+<a class="brand" href="#main" style="position:absolute;left:-9999px" data-i18n="skip_link">Zum Inhalt springen</a>
+
+<header class="site-header" id="site-header">
+  <div class="header-inner">
+    <a href="../index.html" class="brand" data-nav aria-label="BAUKOMPASS – Startseite">
+      <svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+        <circle cx="15" cy="15" r="13.5" stroke="var(--teal)" stroke-width="2.4"/>
+        <path d="M15 4.5 L18 15 L15 25.5 L12 15 Z" fill="var(--navy)"/>
+        <path d="M15 4.5 L18 15 H12 Z" fill="var(--teal)"/>
+        <circle cx="15" cy="15" r="2" fill="var(--surface)"/>
+      </svg>
+      <span>BAUKOMPASS</span>
+    </a>
+
+    <a href="../gemeinden.html#tool" class="back-link" data-nav>
+      <span aria-hidden="true">←</span> <span data-i18n="back_link">Zurück zu Gemeinden</span>
+    </a>
+
+    <div class="header-tools">
+      <div class="lang-switch" role="group" aria-label="Sprache wählen">
+        <button onclick="changeLanguage('de')" class="lang-btn active" data-lang="de" aria-label="Deutsch">DE</button>
+        <button onclick="changeLanguage('en')" class="lang-btn" data-lang="en" aria-label="English">EN</button>
+        <button onclick="changeLanguage('fr')" class="lang-btn" data-lang="fr" aria-label="Français">FR</button>
+      </div>
+      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" aria-label="Dunkelmodus umschalten">🌙</button>
+    </div>
+  </div>
+  <div class="accent-line" aria-hidden="true"></div>
+</header>
+
+<main id="main">
+
+  <div class="page-head">
+    <span class="hero-eyebrow" data-i18n="head_eyebrow">Kommunales Dashboard · Mock-Daten</span>
+    <h1><span data-i18n="head_title_a">Immobilien-</span><span class="accent" data-i18n="head_title_b">Aktivierungs-Tool</span></h1>
+    <p data-i18n="head_desc">Leerstands-Monitoring, MORO-Zielerreichung und Aktivierungs-Tracker für die 13 Kommunen der Grenzregion Aachen / Ostbelgien.</p>
+  </div>
+
+  <div class="dash">
+
+    <!-- ============ FILTER ============ -->
+    <section class="panel" aria-labelledby="filter-title">
+      <h2 class="panel-title" id="filter-title"><span aria-hidden="true">🎛️</span> <span data-i18n="filter_title">Filter</span></h2>
+      <p class="panel-sub" data-i18n="filter_sub">Alle Kennzahlen, Diagramme und der Tracker reagieren live auf Ihre Auswahl.</p>
+      <div class="filters">
+        <div class="filter-group">
+          <label for="f-kommune" data-i18n="filter_muni">Kommune (Fokus-Region)</label>
+          <select id="f-kommune" onchange="onFilterChange()"></select>
         </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
-
-        <!-- Intro Section -->
-        <section class="mb-8 text-center max-w-3xl mx-auto">
-            <h2 class="text-3xl font-bold text-slate-800 mb-4" data-i18n="intro_head">Der Weg zur Wiederbelebung</h2>
-            <p class="text-slate-600 leading-relaxed" data-i18n="intro_text">
-                Dieses interaktive Tool visualisiert den Prozess der Stadt zur Aktivierung leerstehender Immobilien.
-                Von der ersten datenbasierten Analyse bis hin zur Entscheidung zwischen Kooperation ("Soft Power") 
-                und hoheitlichem Eingriff ("Hard Power"). Nutzen Sie die Navigation unten, um die einzelnen Phasen zu erkunden.
-            </p>
-        </section>
-
-        <!-- Navigation Tabs -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-2 mb-8 bg-slate-100 p-2 rounded-xl">
-            <button onclick="switchTab('phaseA')" id="tab-phaseA" class="nav-tab px-4 py-3 rounded-lg text-sm font-semibold transition-colors bg-white shadow text-blue-600" data-i18n="tab_a">A. Analyse & Vorlauf</button>
-            <button onclick="switchTab('phaseB')" id="tab-phaseB" class="nav-tab px-4 py-3 rounded-lg text-sm font-semibold text-slate-500 hover:bg-slate-200 transition-colors" data-i18n="tab_b">B. Kontakt & Weiche</button>
-            <button onclick="switchTab('phaseC')" id="tab-phaseC" class="nav-tab px-4 py-3 rounded-lg text-sm font-semibold text-slate-500 hover:bg-slate-200 transition-colors" data-i18n="tab_c">C. Kooperation (Soft)</button>
-            <button onclick="switchTab('phaseD')" id="tab-phaseD" class="nav-tab px-4 py-3 rounded-lg text-sm font-semibold text-slate-500 hover:bg-slate-200 transition-colors" data-i18n="tab_d">D. Konfrontation (Hard)</button>
+        <div class="filter-group">
+          <label for="f-typ" data-i18n="filter_type">Projekttyp</label>
+          <select id="f-typ" onchange="onFilterChange()">
+            <option value="all" data-i18n-opt="opt_all">Alle Typen</option>
+            <option value="leerstand" data-i18n-opt="opt_leerstand">Leerstand</option>
+            <option value="sanierung" data-i18n-opt="opt_sanierung">Sanierung</option>
+            <option value="zwischennutzung" data-i18n-opt="opt_zwischen">Zwischennutzung</option>
+            <option value="baulücke" data-i18n-opt="opt_bauluecke">Baulücke</option>
+          </select>
         </div>
+        <button class="filter-reset" onclick="resetFilters()" data-i18n="filter_reset">Zurücksetzen</button>
+        <p class="filter-hint" id="focus-hint"></p>
+      </div>
+    </section>
 
-        <!-- CONTENT AREA -->
-        
-        <!-- PHASE A: ANALYSE -->
-        <div id="phaseA" class="tab-content block animate-fade-in">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                <div>
-                    <h3 class="text-2xl font-bold text-slate-800 mb-2" data-i18n="a_title">A. Vorlauf & Analyse: Das Objekt finden</h3>
-                    <p class="text-slate-600 mb-6" data-i18n="a_desc">
-                        Bevor ein Kontakt stattfindet, nutzt die Stadt Daten (Strom, Wasser, Kataster), um Leerstand zu identifizieren. 
-                        Nicht jedes Objekt lohnt den Aufwand – hier findet die erste Filterung statt.
-                    </p>
-                    
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                        <h4 class="font-semibold text-slate-800 mb-4" data-i18n="a_filter_title">Der Daten-Filter</h4>
-                        <div class="space-y-4">
-                            <!-- Visual Funnel -->
-                            <div class="flex flex-col items-center">
-                                <div class="w-full bg-slate-200 p-3 text-center text-slate-600 rounded-t-lg" data-i18n="funnel_1">Gesamter Immobilienbestand</div>
-                                <div class="w-[90%] bg-blue-100 p-3 text-center text-blue-800 mt-1 funnel-step" data-i18n="funnel_2">Phase 1: Datenerhebung (Strom/Wasser)</div>
-                                <div class="w-[80%] bg-blue-200 p-3 text-center text-blue-900 mt-1 funnel-step" data-i18n="funnel_3">Verdachtsfälle Leerstand</div>
-                                <div id="final-funnel" class="w-[60%] bg-slate-300 p-3 text-center text-slate-500 mt-1 rounded-b-lg transition-colors cursor-pointer hover:bg-emerald-100" onclick="simulateAnalysis()" data-i18n="funnel_click">
-                                    Klicken zur Analyse
-                                </div>
-                            </div>
-                            
-                            <div id="analysis-result" class="hidden mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
-                                <p class="font-bold text-emerald-800 flex items-center">
-                                    <span class="text-xl mr-2">✅</span> <span data-i18n="pot_high">Potenzial: HOCH</span>
-                                </p>
-                                <p class="text-sm text-emerald-700 mt-1" data-i18n="pot_msg">Das Objekt qualifiziert sich für die aktive Ansprache. Weiter zu Phase B.</p>
-                                <button onclick="switchTab('phaseB')" class="mt-3 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 transition text-sm" data-i18n="btn_contact">Zur Kontaktaufnahme →</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <!-- ============ KPI-KARTEN ============ -->
+    <section aria-label="Kennzahlen">
+      <div class="kpi-grid">
+        <article class="kpi-card" style="--kpi-accent:var(--teal)">
+          <span class="kpi-icon" aria-hidden="true">🏚️</span>
+          <div class="kpi-value" id="kpi-leerstand">0</div>
+          <div class="kpi-label" data-i18n="kpi1">Registrierte Leerstände</div>
+          <span class="kpi-trend warn" id="kpi-leerstand-trend">▲ +6 <span data-i18n="kpi_q">im Quartal</span></span>
+        </article>
+        <article class="kpi-card" style="--kpi-accent:var(--navy-soft)">
+          <span class="kpi-icon" aria-hidden="true">🛠️</span>
+          <div class="kpi-value" id="kpi-sanierung">0</div>
+          <div class="kpi-label" data-i18n="kpi2">Aktive Sanierungsanträge</div>
+          <span class="kpi-trend up" id="kpi-sanierung-trend">▲ +12 <span data-i18n="kpi_q">im Quartal</span></span>
+        </article>
+        <article class="kpi-card" style="--kpi-accent:var(--amber)">
+          <span class="kpi-icon" aria-hidden="true">☀️</span>
+          <div class="kpi-value" id="kpi-solar">0 ha</div>
+          <div class="kpi-label" data-i18n="kpi3">Solarpotenzial-Flächen</div>
+          <span class="kpi-trend up" id="kpi-solar-trend">▲ +3,4 ha <span data-i18n="kpi_q">im Quartal</span></span>
+        </article>
+        <article class="kpi-card" style="--kpi-accent:#57a05c">
+          <span class="kpi-icon" aria-hidden="true">🗳️</span>
+          <div class="kpi-value" id="kpi-beteiligung">0 %</div>
+          <div class="kpi-label" data-i18n="kpi4">Beteiligungsquote</div>
+          <span class="kpi-trend up" id="kpi-beteiligung-trend">▲ +2,1 % <span data-i18n="kpi_q">im Quartal</span></span>
+        </article>
+      </div>
+    </section>
 
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h4 class="font-semibold text-slate-800 mb-4 text-center" data-i18n="chart_title_a">Leerstandskataster Statistik (Beispiel)</h4>
-                    <p class="text-sm text-slate-500 mb-4 text-center" data-i18n="chart_sub_a">Verteilung der analysierten Objekte nach Potenzial</p>
-                    <div class="chart-container">
-                        <canvas id="analysisChart"></canvas>
-                    </div>
-                    <div class="mt-4 text-xs text-slate-400 text-center" data-i18n="chart_note">Datenbasis: Illustrative Verteilung</div>
-                </div>
+    <!-- ============ CHARTS ============ -->
+    <section class="charts" aria-label="Visualisierungen">
+      <div class="panel">
+        <h2 class="panel-title"><span aria-hidden="true">📊</span> <span data-i18n="chart_bars_title">Leerstandsquote je Kommune</span></h2>
+        <p class="panel-sub" data-i18n="chart_bars_sub">Anteil gemeldeter Leerstände am Gebäudebestand (Mock-Daten, in %).</p>
+        <div id="bar-chart" role="img" aria-label="Balkendiagramm der Leerstandsquoten je Kommune"></div>
+        <div class="legend">
+          <span><i class="dot t"></i> <span data-i18n="legend_low">unter 3 % – unkritisch</span></span>
+          <span><i class="dot a"></i> <span data-i18n="legend_mid">3–5 % – beobachten</span></span>
+          <span><i class="dot r"></i> <span data-i18n="legend_high">über 5 % – Handlungsbedarf</span></span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2 class="panel-title"><span aria-hidden="true">🎯</span> <span data-i18n="chart_donut_title">MORO-Zielerreichung</span></h2>
+        <p class="panel-sub" data-i18n="chart_donut_sub">Fortschritt „Mehr Wohnraum schaffen“ – gewichteter Gesamtwert.</p>
+        <div class="donut-wrap">
+          <div class="donut" id="donut" role="img" aria-label="Ringdiagramm der MORO-Zielerreichung">
+            <div class="donut-center">
+              <span class="pct" id="donut-pct">0 %</span>
+              <span class="lbl" data-i18n="donut_lbl">Zielerreichung</span>
             </div>
+          </div>
+          <div class="goal-list" id="goal-list"></div>
         </div>
+      </div>
+    </section>
 
-        <!-- PHASE B: KONTAKT -->
-        <div id="phaseB" class="tab-content hidden animate-fade-in">
-            <div class="max-w-4xl mx-auto">
-                <h3 class="text-2xl font-bold text-slate-800 mb-2" data-i18n="b_title">B. Die Weichenstellung</h3>
-                <p class="text-slate-600 mb-8" data-i18n="b_desc">
-                    Der Eigentümer erhält Infomaterial und ein Beratungsangebot. Seine Reaktion bestimmt den weiteren Verlauf vollkommen.
-                    Dies ist der kritischste Punkt im Prozess.
-                </p>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
-                    <!-- Connector Line for Desktop -->
-                    <div class="hidden md:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full border-4 border-slate-200 z-10 flex items-center justify-center font-bold text-slate-400">
-                        ?
-                    </div>
-
-                    <!-- Cooperative Path Choice -->
-                    <div onclick="choosePath('soft')" class="cursor-pointer group hover:ring-2 hover:ring-blue-400 bg-white p-8 rounded-2xl border border-slate-200 shadow-sm transition-all text-center">
-                        <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl group-hover:scale-110 transition-transform">
-                            🤝
-                        </div>
-                        <h4 class="text-xl font-bold text-slate-800 mb-2" data-i18n="choice_coop">Kooperationswille</h4>
-                        <p class="text-slate-500 text-sm" data-i18n="choice_coop_desc">Der Eigentümer reagiert, zeigt Interesse oder nimmt das Beratungsangebot an.</p>
-                        <div class="mt-6 inline-block text-blue-600 font-semibold group-hover:underline" data-i18n="link_path_c">Weg C: Soft Power wählen →</div>
-                    </div>
-
-                    <!-- Confrontational Path Choice -->
-                    <div onclick="choosePath('hard')" class="cursor-pointer group hover:ring-2 hover:ring-red-400 bg-white p-8 rounded-2xl border border-slate-200 shadow-sm transition-all text-center">
-                        <div class="w-16 h-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl group-hover:scale-110 transition-transform">
-                            ⛔
-                        </div>
-                        <h4 class="text-xl font-bold text-slate-800 mb-2" data-i18n="choice_block">Blockade / Keine Reaktion</h4>
-                        <p class="text-slate-500 text-sm" data-i18n="choice_block_desc">Der Eigentümer ignoriert Kontaktversuche oder lehnt jegliche Gespräche ab.</p>
-                        <div class="mt-6 inline-block text-red-600 font-semibold group-hover:underline" data-i18n="link_path_d">Weg D: Hard Power wählen →</div>
-                    </div>
-                </div>
-
-                <div id="path-message" class="mt-8 p-4 rounded-lg bg-slate-100 text-center text-slate-600 italic hidden" data-i18n="msg_select">
-                    Wählen Sie eine Option oben, um fortzufahren.
-                </div>
-            </div>
+    <!-- ============ TRACKER ============ -->
+    <section class="panel" aria-labelledby="tracker-title">
+      <div class="tracker-head">
+        <div>
+          <h2 class="panel-title" id="tracker-title"><span aria-hidden="true">📍</span> <span data-i18n="tracker_title">Leerstands- &amp; Aktivierungs-Tracker</span></h2>
+          <p class="panel-sub" style="margin-bottom:0" data-i18n="tracker_sub">Gemeldete Objekte aus den Bewohner:innen- und Eigentümer:innen-Formularen.</p>
         </div>
-
-        <!-- PHASE C: KOOPERATIV -->
-        <div id="phaseC" class="tab-content hidden animate-fade-in">
-            <h3 class="text-2xl font-bold text-blue-600 mb-2" data-i18n="c_title">C. Der kooperative Weg (Soft Power)</h3>
-            <p class="text-slate-600 mb-6" data-i18n="c_desc">
-                Das Ziel ist die Aktivierung durch Unterstützung. Die Stadt bietet Verträge, Finanzierungshilfen und Vernetzung.
-                Kernstück ist der "Angebots-Pool" mit 5 Modellen für verschiedene Eigentümer-Situationen.
-            </p>
-
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <!-- Left: Model Selector -->
-                <div class="lg:col-span-5 space-y-3">
-                    <h4 class="font-semibold text-slate-700 mb-2" data-i18n="pool_title">Angebots-Pool (Wählen Sie ein Modell)</h4>
-                    
-                    <!-- Models 0-4 are populated dynamically via JS to handle translation better, or we keep static structure and update text. Static structure is robust. -->
-                    <button onclick="showModel(0)" class="model-btn w-full text-left p-4 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center gap-3 active">
-                        <span class="text-xl">💰</span>
-                        <div>
-                            <div class="font-bold" data-i18n="m0_title">Verkauf / Pacht</div>
-                            <div class="text-xs opacity-70" data-i18n="m0_sub">Für Eigentümer ohne Zeit</div>
-                        </div>
-                    </button>
-
-                    <button onclick="showModel(1)" class="model-btn w-full text-left p-4 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center gap-3">
-                        <span class="text-xl">👵</span>
-                        <div>
-                            <div class="font-bold" data-i18n="m1_title">Verrentung (Viager)</div>
-                            <div class="text-xs opacity-70" data-i18n="m1_sub">Für Senioren</div>
-                        </div>
-                    </button>
-
-                    <button onclick="showModel(2)" class="model-btn w-full text-left p-4 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center gap-3">
-                        <span class="text-xl">🛠️</span>
-                        <div>
-                            <div class="font-bold" data-i18n="m2_title">Mitwirkung</div>
-                            <div class="text-xs opacity-70" data-i18n="m2_sub">Für Gestalter</div>
-                        </div>
-                    </button>
-
-                    <button onclick="showModel(3)" class="model-btn w-full text-left p-4 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center gap-3">
-                        <span class="text-xl">🎭</span>
-                        <div>
-                            <div class="font-bold" data-i18n="m3_title">Zwischennutzung</div>
-                            <div class="text-xs opacity-70" data-i18n="m3_sub">Kurzfristiger Leerstand</div>
-                        </div>
-                    </button>
-
-                    <button onclick="showModel(4)" class="model-btn w-full text-left p-4 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center gap-3">
-                        <span class="text-xl">🏘️</span>
-                        <div>
-                            <div class="font-bold" data-i18n="m4_title">Genossenschaft</div>
-                            <div class="text-xs opacity-70" data-i18n="m4_sub">Gegen Spekulation</div>
-                        </div>
-                    </button>
-                </div>
-
-                <!-- Right: Details & Visuals -->
-                <div class="lg:col-span-7 space-y-6">
-                    <!-- Dynamic Detail Card -->
-                    <div class="bg-blue-50 p-6 rounded-xl border border-blue-100 min-h-[180px]">
-                        <div id="model-detail-content">
-                            <!-- Populated by JS -->
-                        </div>
-                    </div>
-
-                    <!-- Radar Chart -->
-                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                        <h4 class="font-semibold text-slate-700 mb-2 text-center" data-i18n="radar_title">Modell-Eigenschaften im Vergleich</h4>
-                        <div class="chart-container">
-                            <canvas id="modelsChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Risk Check Section -->
-            <div class="mt-8 p-4 bg-amber-50 rounded-lg border border-amber-200">
-                <h4 class="font-bold text-amber-800 mb-2" data-i18n="risk_title">⚠️ Schritt 3: Risiko-Check</h4>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-amber-900">
-                    <div class="flex items-start gap-2">
-                        <span>📉</span> <span data-i18n="risk_1">Gefahr: Finanzieller Verlust bei Verkauf unter Wert.</span>
-                    </div>
-                    <div class="flex items-start gap-2">
-                        <span>⏳</span> <span data-i18n="risk_2">Gefahr: Lange Kapitalbindung bei Bürgerprojekten.</span>
-                    </div>
-                    <div class="flex items-start gap-2">
-                        <span>🛑</span> <span data-i18n="risk_3">Gefahr: Blockade durch Überforderung ehrenamtlicher Gruppen.</span>
-                    </div>
-                </div>
-            </div>
+        <div class="sort-group" role="group" aria-label="Sortierung">
+          <span data-i18n="sort_label">Sortieren:</span>
+          <button class="sort-btn active" id="sort-urgency" onclick="setSort('urgency')" data-i18n="sort_urgency">Dringlichkeit</button>
+          <button class="sort-btn" id="sort-stufe" onclick="setSort('stufe')" data-i18n="sort_stufe">Eskalationsstufe</button>
         </div>
+      </div>
 
-        <!-- PHASE D: KONFRONTATIV -->
-        <div id="phaseD" class="tab-content hidden animate-fade-in">
-            <h3 class="text-2xl font-bold text-red-600 mb-2" data-i18n="d_title">D. Der konfrontative Weg (Hard Power)</h3>
-            <p class="text-slate-600 mb-6" data-i18n="d_desc">
-                Wenn Dialog scheitert, greifen hoheitliche Instrumente. Zuerst erfolgt eine strenge Prüfung der Verhältnismäßigkeit.
-                Nur wenn diese gegeben ist, wird die Eskalationsleiter betreten.
-            </p>
+      <p class="tracker-count" id="tracker-count" aria-live="polite"></p>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Pre-Check Logic -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h4 class="font-bold text-slate-800 mb-4 border-b pb-2" data-i18n="check_title">1. Vorprüfung & Verhältnismäßigkeit</h4>
-                    <p class="text-sm text-slate-500 mb-4" data-i18n="check_desc">Bevor eskaliert wird, muss rechtlich (Zweckentfremdung?) und finanziell (Sanierungskosten?) geprüft werden.</p>
-                    
-                    <div class="bg-slate-50 p-4 rounded-lg mb-4">
-                        <label class="flex items-center justify-between cursor-pointer mb-2">
-                            <span class="font-semibold text-slate-700" data-i18n="check_q1">Zweckentfremdung nachweisbar?</span>
-                            <input type="checkbox" id="check-legal" class="w-5 h-5 accent-red-600" onchange="checkProportionality()">
-                        </label>
-                        <label class="flex items-center justify-between cursor-pointer">
-                            <span class="font-semibold text-slate-700" data-i18n="check_q2">Sanierung wirtschaftlich zumutbar?</span>
-                            <input type="checkbox" id="check-financial" class="w-5 h-5 accent-red-600" onchange="checkProportionality()">
-                        </label>
-                    </div>
-
-                    <div id="prop-result" class="p-3 rounded font-bold text-center bg-slate-200 text-slate-500 transition-colors" data-i18n="check_res_wait">
-                        Prüfung läuft...
-                    </div>
-                    
-                    <div id="back-to-coop" class="hidden mt-4 text-center">
-                        <p class="text-sm text-slate-600 mb-2" data-i18n="check_fail">Eingriff rechtlich zu heikel.</p>
-                        <button onclick="switchTab('phaseC')" class="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 text-sm font-semibold" data-i18n="btn_back">
-                            ↩ Zurück zum Verhandlungsangebot
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Escalation Ladder -->
-                <div id="escalation-container" class="bg-red-50 p-6 rounded-xl border border-red-100 opacity-50 pointer-events-none transition-opacity">
-                    <h4 class="font-bold text-red-800 mb-4" data-i18n="esc_title">2. Phase 3: Die Eskalationsleiter</h4>
-                    <p class="text-xs text-red-600 mb-4" data-i18n="esc_hint">Klicken Sie auf eine Stufe, um die Maßnahme zu aktivieren.</p>
-
-                    <div class="space-y-3 relative">
-                        <!-- Line -->
-                        <div class="absolute left-6 top-4 bottom-4 w-1 bg-red-200 z-0"></div>
-
-                        <!-- Steps -->
-                        <div onclick="setEscalation(1)" class="escalation-step relative z-10 flex items-center bg-white p-3 rounded shadow-sm cursor-pointer border-l-4 border-red-300 hover:border-red-500">
-                            <div class="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center font-bold mr-3">1</div>
-                            <div>
-                                <div class="font-bold text-slate-800" data-i18n="step_1">Steuerdruck</div>
-                                <div class="text-xs text-slate-500" data-i18n="step_1_d">Grundsteuer C für baureife Grundstücke</div>
-                            </div>
-                        </div>
-
-                        <div onclick="setEscalation(2)" class="escalation-step relative z-10 flex items-center bg-white p-3 rounded shadow-sm cursor-pointer border-l-4 border-red-400 hover:border-red-600">
-                            <div class="w-8 h-8 rounded-full bg-red-200 text-red-700 flex items-center justify-center font-bold mr-3">2</div>
-                            <div>
-                                <div class="font-bold text-slate-800" data-i18n="step_2">Sanktion</div>
-                                <div class="text-xs text-slate-500" data-i18n="step_2_d">Geldbußen und Baugebot</div>
-                            </div>
-                        </div>
-
-                        <div onclick="setEscalation(3)" class="escalation-step relative z-10 flex items-center bg-white p-3 rounded shadow-sm cursor-pointer border-l-4 border-red-500 hover:border-red-700">
-                            <div class="w-8 h-8 rounded-full bg-red-300 text-red-800 flex items-center justify-center font-bold mr-3">3</div>
-                            <div>
-                                <div class="font-bold text-slate-800" data-i18n="step_3">Eingriff</div>
-                                <div class="text-xs text-slate-500" data-i18n="step_3_d">Enteignung auf Zeit / Treuhänder</div>
-                            </div>
-                        </div>
-
-                        <div onclick="setEscalation(4)" class="escalation-step relative z-10 flex items-center bg-white p-3 rounded shadow-sm cursor-pointer border-l-4 border-red-600 hover:border-red-900">
-                            <div class="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center font-bold mr-3">4</div>
-                            <div>
-                                <div class="font-bold text-slate-800" data-i18n="step_4">Ultima Ratio</div>
-                                <div class="text-xs text-slate-500" data-i18n="step_4_d">Endgültige Enteignung</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="escalation-outcome" class="mt-4 p-3 bg-white rounded border border-red-200 text-center hidden">
-                        <!-- Dynamic text -->
-                    </div>
-                </div>
-            </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col" data-i18n="th_obj">Objekt</th>
+              <th scope="col" data-i18n="th_muni">Kommune</th>
+              <th scope="col" data-i18n="th_type">Typ</th>
+              <th scope="col" data-i18n="th_src">Quelle</th>
+              <th scope="col" data-i18n="th_urgency">Dringlichkeit</th>
+              <th scope="col" data-i18n="th_stufe">Stufe</th>
+            </tr>
+          </thead>
+          <tbody id="tracker-body"></tbody>
+        </table>
+        <div class="empty-state" id="empty-state" hidden>
+          <span class="big" aria-hidden="true">🔍</span>
+          <span data-i18n="empty_msg">Keine Objekte für diese Filterkombination. Passen Sie die Auswahl an oder setzen Sie die Filter zurück.</span>
         </div>
+      </div>
 
-    </main>
+      <div class="stufen-legend" aria-label="Legende Eskalationsmodell">
+        <div class="stage"><b><span class="stufe stufe-0"><i></i></span> <span data-i18n="st0_t">Stufe 0 · Erfassung</span></b><span data-i18n="st0_d">Meldung eingegangen, Datenprüfung (Strom/Wasser/Kataster) läuft.</span></div>
+        <div class="stage"><b><span class="stufe stufe-1"><i></i></span> <span data-i18n="st1_t">Stufe 1 · Ansprache</span></b><span data-i18n="st1_d">Eigentümer:in kontaktiert, Beratungsangebot unterbreitet.</span></div>
+        <div class="stage"><b><span class="stufe stufe-2"><i></i></span> <span data-i18n="st2_t">Stufe 2 · Kooperation</span></b><span data-i18n="st2_d">Soft Power: Verkauf, Verrentung, Zwischennutzung oder Genossenschaft.</span></div>
+        <div class="stage"><b><span class="stufe stufe-3"><i></i></span> <span data-i18n="st3_t">Stufe 3 · Eskalation</span></b><span data-i18n="st3_d">Hard Power: Steuerdruck, Baugebot bis hin zu hoheitlichem Eingriff.</span></div>
+      </div>
+    </section>
 
-    <footer class="bg-slate-800 text-slate-300 py-6 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <p class="font-semibold" data-i18n="footer_goal">Ziel: Aktivierung der Eigentumspotenziale und Sicherung der Gemeinwohlziele.</p>
-            <p class="text-xs text-slate-500 mt-2" data-i18n="footer_ref">Basierend auf dem Prozessdiagramm: Immobilienaktivierung</p>
-        </div>
-    </footer>
+  </div>
+</main>
 
-    <!-- JavaScript Logic -->
-    <script>
-        // --- TRANSLATIONS ---
-        const translations = {
-            "de": {
-                "tool_title": "Immobilien-Aktivierung", "tool_subtitle": "Prozess-Management-Dashboard", "tool_goal": "Ziel: Gemeinwohl & Aktivierung",
-                "intro_head": "Der Weg zur Wiederbelebung", "intro_text": "Dieses interaktive Tool visualisiert den Prozess der Stadt zur Aktivierung leerstehender Immobilien. Von der ersten datenbasierten Analyse bis hin zur Entscheidung zwischen Kooperation ('Soft Power') und hoheitlichem Eingriff ('Hard Power').",
-                "tab_a": "A. Analyse & Vorlauf", "tab_b": "B. Kontakt & Weiche", "tab_c": "C. Kooperation (Soft)", "tab_d": "D. Konfrontation (Hard)",
-                "a_title": "A. Vorlauf & Analyse: Das Objekt finden", "a_desc": "Bevor ein Kontakt stattfindet, nutzt die Stadt Daten (Strom, Wasser, Kataster), um Leerstand zu identifizieren. Nicht jedes Objekt lohnt den Aufwand – hier findet die erste Filterung statt.", "a_filter_title": "Der Daten-Filter", "funnel_1": "Gesamter Immobilienbestand", "funnel_2": "Phase 1: Datenerhebung (Strom/Wasser)", "funnel_3": "Verdachtsfälle Leerstand", "funnel_click": "Klicken zur Analyse", "pot_high": "Potenzial: HOCH", "pot_msg": "Das Objekt qualifiziert sich für die aktive Ansprache. Weiter zu Phase B.", "btn_contact": "Zur Kontaktaufnahme →", "chart_title_a": "Leerstandskataster Statistik (Beispiel)", "chart_sub_a": "Verteilung der analysierten Objekte nach Potenzial", "chart_note": "Datenbasis: Illustrative Verteilung",
-                "b_title": "B. Die Weichenstellung", "b_desc": "Der Eigentümer erhält Infomaterial und ein Beratungsangebot. Seine Reaktion bestimmt den weiteren Verlauf vollkommen. Dies ist der kritischste Punkt im Prozess.", "choice_coop": "Kooperationswille", "choice_coop_desc": "Der Eigentümer reagiert, zeigt Interesse oder nimmt das Beratungsangebot an.", "link_path_c": "Weg C: Soft Power wählen →", "choice_block": "Blockade / Keine Reaktion", "choice_block_desc": "Der Eigentümer ignoriert Kontaktversuche oder lehnt jegliche Gespräche ab.", "link_path_d": "Weg D: Hard Power wählen →", "msg_select": "Wählen Sie eine Option oben, um fortzufahren.",
-                "c_title": "C. Der kooperative Weg (Soft Power)", "c_desc": "Das Ziel ist die Aktivierung durch Unterstützung. Die Stadt bietet Verträge, Finanzierungshilfen und Vernetzung. Kernstück ist der 'Angebots-Pool' mit 5 Modellen für verschiedene Eigentümer-Situationen.", "pool_title": "Angebots-Pool (Wählen Sie ein Modell)", "m0_title": "Verkauf / Pacht", "m0_sub": "Für Eigentümer ohne Zeit", "m1_title": "Verrentung (Viager)", "m1_sub": "Für Senioren", "m2_title": "Mitwirkung", "m2_sub": "Für Gestalter", "m3_title": "Zwischennutzung", "m3_sub": "Kurzfristiger Leerstand", "m4_title": "Genossenschaft", "m4_sub": "Gegen Spekulation", "radar_title": "Modell-Eigenschaften im Vergleich", "risk_title": "⚠️ Schritt 3: Risiko-Check", "risk_1": "Gefahr: Finanzieller Verlust bei Verkauf unter Wert.", "risk_2": "Gefahr: Lange Kapitalbindung bei Bürgerprojekten.", "risk_3": "Gefahr: Blockade durch Überforderung ehrenamtlicher Gruppen.",
-                "d_title": "D. Der konfrontative Weg (Hard Power)", "d_desc": "Wenn Dialog scheitert, greifen hoheitliche Instrumente. Zuerst erfolgt eine strenge Prüfung der Verhältnismäßigkeit. Nur wenn diese gegeben ist, wird die Eskalationsleiter betreten.", "check_title": "1. Vorprüfung & Verhältnismäßigkeit", "check_desc": "Bevor eskaliert wird, muss rechtlich (Zweckentfremdung?) und finanziell (Sanierungskosten?) geprüft werden.", "check_q1": "Zweckentfremdung nachweisbar?", "check_q2": "Sanierung wirtschaftlich zumutbar?", "check_res_wait": "Prüfung läuft...", "check_fail": "Eingriff rechtlich zu heikel.", "btn_back": "↩ Zurück zum Verhandlungsangebot", "esc_title": "2. Phase 3: Die Eskalationsleiter", "esc_hint": "Klicken Sie auf eine Stufe, um die Maßnahme zu aktivieren.", "step_1": "Steuerdruck", "step_1_d": "Grundsteuer C für baureife Grundstücke", "step_2": "Sanktion", "step_2_d": "Geldbußen und Baugebot", "step_3": "Eingriff", "step_3_d": "Enteignung auf Zeit / Treuhänder", "step_4": "Ultima Ratio", "step_4_d": "Endgültige Enteignung",
-                "footer_goal": "Ziel: Aktivierung der Eigentumspotenziale und Sicherung der Gemeinwohlziele.", "footer_ref": "Basierend auf dem Prozessdiagramm: Immobilienaktivierung",
-                "outcome_low": "<strong>Reaktion wahrscheinlich:</strong> Eigentümer gibt nach. <br><span class='text-blue-600 cursor-pointer underline' onclick='switchTab(\"phaseC\")'>Wechsel in den kooperativen Pfad (C)</span>",
-                "outcome_high": "<strong>Szenario 2 (Scheitern):</strong> Rechtsstreit, Blockade, dauerhafter Missstand. <br>Enteignung ist langwierig und teuer.",
-                "outcome_mid": "<strong>Druck erhöht:</strong> Eigentümer unter Zugzwang. Einlenken möglich.",
-                "res_ok": "⚠️ Verhältnismäßigkeit JA: Eskalation zulässig", "res_no": "Verhältnismäßigkeit NEIN: Eingriff nicht zulässig"
-            },
-            "en": {
-                "tool_title": "Real Estate Activation", "tool_subtitle": "Process Management Dashboard", "tool_goal": "Goal: Public Welfare & Activation",
-                "intro_head": "The Path to Revitalization", "intro_text": "This interactive tool visualizes the city's process for activating vacant properties. From initial data-based analysis to the decision between cooperation ('Soft Power') and sovereign intervention ('Hard Power').",
-                "tab_a": "A. Analysis & Prelim", "tab_b": "B. Contact & Switch", "tab_c": "C. Cooperation (Soft)", "tab_d": "D. Confrontation (Hard)",
-                "a_title": "A. Prelim & Analysis: Finding the Object", "a_desc": "Before contact occurs, the city uses data (electricity, water, cadaster) to identify vacancies. Not every object is worth the effort – this is the first filter.", "a_filter_title": "The Data Filter", "funnel_1": "Total Real Estate Stock", "funnel_2": "Phase 1: Data Collection (Util/Water)", "funnel_3": "Suspected Vacancies", "funnel_click": "Click to Analyze", "pot_high": "Potential: HIGH", "pot_msg": "The object qualifies for active approach. Proceed to Phase B.", "btn_contact": "Go to Contact →", "chart_title_a": "Vacancy Statistics (Example)", "chart_sub_a": "Distribution of analyzed objects by potential", "chart_note": "Data basis: Illustrative distribution",
-                "b_title": "B. The Switch", "b_desc": "The owner receives information and a consulting offer. Their reaction completely determines the further course. This is the most critical point in the process.", "choice_coop": "Willingness to Cooperate", "choice_coop_desc": "The owner reacts, shows interest, or accepts the consulting offer.", "link_path_c": "Choose Path C: Soft Power →", "choice_block": "Blockade / No Reaction", "choice_block_desc": "The owner ignores contact attempts or refuses any talks.", "link_path_d": "Choose Path D: Hard Power →", "msg_select": "Select an option above to proceed.",
-                "c_title": "C. The Cooperative Way (Soft Power)", "c_desc": "The goal is activation through support. The city offers contracts, financing aid, and networking. The core is the 'Offer Pool' with 5 models for different owner situations.", "pool_title": "Offer Pool (Select a Model)", "m0_title": "Sale / Lease", "m0_sub": "For owners without time", "m1_title": "Life Annuity (Viager)", "m1_sub": "For seniors", "m2_title": "Participation", "m2_sub": "For creators", "m3_title": "Interim Use", "m3_sub": "Short-term vacancy", "m4_title": "Cooperative", "m4_sub": "Against speculation", "radar_title": "Model Characteristics Comparison", "risk_title": "⚠️ Step 3: Risk Check", "risk_1": "Danger: Financial loss if sold below value.", "risk_2": "Danger: Long capital commitment for citizen projects.", "risk_3": "Danger: Blockade due to excessive demands on volunteer groups.",
-                "d_title": "D. The Confrontational Way (Hard Power)", "d_desc": "If dialogue fails, sovereign instruments apply. First, a strict proportionality check is carried out. Only if this is given, the escalation ladder is entered.", "check_title": "1. Pre-Check & Proportionality", "check_desc": "Before escalating, legal (misappropriation?) and financial (renovation costs?) aspects must be checked.", "check_q1": "Misappropriation provable?", "check_q2": "Renovation economically reasonable?", "check_res_wait": "Checking...", "check_fail": "Intervention legally too risky.", "btn_back": "↩ Back to Negotiation Offer", "esc_title": "2. Phase 3: The Escalation Ladder", "esc_hint": "Click on a step to activate the measure.", "step_1": "Tax Pressure", "step_1_d": "Land Tax C for buildable plots", "step_2": "Sanction", "step_2_d": "Fines and building orders", "step_3": "Intervention", "step_3_d": "Temporary expropriation / Trustee", "step_4": "Ultima Ratio", "step_4_d": "Final Expropriation",
-                "footer_goal": "Goal: Activation of property potentials and securing public welfare goals.", "footer_ref": "Based on the process diagram: Real Estate Activation",
-                "outcome_low": "<strong>Reaction probable:</strong> Owner gives in. <br><span class='text-blue-600 cursor-pointer underline' onclick='switchTab(\"phaseC\")'>Switch to Cooperative Path (C)</span>",
-                "outcome_high": "<strong>Scenario 2 (Failure):</strong> Legal dispute, blockade, permanent grievance. <br>Expropriation is tedious and expensive.",
-                "outcome_mid": "<strong>Pressure increased:</strong> Owner under pressure. Giving in possible.",
-                "res_ok": "⚠️ Proportionality YES: Escalation permissible", "res_no": "Proportionality NO: Intervention not permissible"
-            },
-            "fr": {
-                "tool_title": "Activation Immobilière", "tool_subtitle": "Tableau de Bord de Gestion", "tool_goal": "Objectif : Bien commun & Activation",
-                "intro_head": "Le chemin vers la revitalisation", "intro_text": "Cet outil interactif visualise le processus de la ville pour activer les biens vacants. De l'analyse initiale des données à la décision entre coopération ('Soft Power') et intervention souveraine ('Hard Power').",
-                "tab_a": "A. Analyse & Prélim", "tab_b": "B. Contact & Aiguillage", "tab_c": "C. Coopération (Soft)", "tab_d": "D. Confrontation (Hard)",
-                "a_title": "A. Prélim & Analyse : Trouver l'objet", "a_desc": "Avant tout contact, la ville utilise des données (électricité, eau, cadastre) pour identifier la vacance. Chaque objet ne vaut pas l'effort – c'est le premier filtre.", "a_filter_title": "Le Filtre de Données", "funnel_1": "Parc immobilier total", "funnel_2": "Phase 1 : Collecte de données (Élec/Eau)", "funnel_3": "Cas suspects de vacance", "funnel_click": "Cliquez pour analyser", "pot_high": "Potentiel : ÉLEVÉ", "pot_msg": "L'objet se qualifie pour une approche active. Continuer vers Phase B.", "btn_contact": "Vers la prise de contact →", "chart_title_a": "Statistiques Vacance (Exemple)", "chart_sub_a": "Répartition des objets analysés par potentiel", "chart_note": "Base de données : Répartition illustrative",
-                "b_title": "B. L'Aiguillage", "b_desc": "Le propriétaire reçoit des infos et une offre de conseil. Sa réaction détermine la suite. C'est le point le plus critique du processus.", "choice_coop": "Volonté de coopérer", "choice_coop_desc": "Le propriétaire réagit, montre de l'intérêt ou accepte l'offre.", "link_path_c": "Choisir Voie C : Soft Power →", "choice_block": "Blocage / Pas de réaction", "choice_block_desc": "Le propriétaire ignore les tentatives ou refuse tout dialogue.", "link_path_d": "Choisir Voie D : Hard Power →", "msg_select": "Choisissez une option ci-dessus pour continuer.",
-                "c_title": "C. La voie coopérative (Soft Power)", "c_desc": "L'objectif est l'activation par le soutien. La ville offre contrats, aides financières et mise en réseau. Le cœur est le 'Pool d'Offres' avec 5 modèles.", "pool_title": "Pool d'Offres (Choisir un modèle)", "m0_title": "Vente / Bail", "m0_sub": "Pour propriétaires sans temps", "m1_title": "Viager", "m1_sub": "Pour seniors", "m2_title": "Participation", "m2_sub": "Pour créateurs", "m3_title": "Usage intermédiaire", "m3_sub": "Vacance courte durée", "m4_title": "Coopérative", "m4_sub": "Contre la spéculation", "radar_title": "Comparaison des caractéristiques", "risk_title": "⚠️ Étape 3 : Vérification des risques", "risk_1": "Danger : Perte financière si vente sous valeur.", "risk_2": "Danger : Longue immobilisation du capital.", "risk_3": "Danger : Blocage par surcharge des bénévoles.",
-                "d_title": "D. La voie conflictuelle (Hard Power)", "d_desc": "Si le dialogue échoue, les instruments souverains s'appliquent. D'abord un contrôle strict de proportionnalité. Seulement si ok, l'échelle d'escalade est entamée.", "check_title": "1. Pré-contrôle & Proportionnalité", "check_desc": "Avant d'escalader, les aspects juridiques (détournement ?) et financiers (coût rénovation ?) sont vérifiés.", "check_q1": "Détournement prouvable ?", "check_q2": "Rénovation économiquement raisonnable ?", "check_res_wait": "Vérification...", "check_fail": "Intervention juridiquement trop risquée.", "btn_back": "↩ Retour à l'offre de négociation", "esc_title": "2. Phase 3 : L'échelle d'escalade", "esc_hint": "Cliquez sur une étape pour activer la mesure.", "step_1": "Pression fiscale", "step_1_d": "Taxe foncière C pour terrains constructibles", "step_2": "Sanction", "step_2_d": "Amendes et ordre de construire", "step_3": "Intervention", "step_3_d": "Expropriation temporaire / Fiduciaire", "step_4": "Ultima Ratio", "step_4_d": "Expropriation finale",
-                "footer_goal": "Objectif : Activation des potentiels immobiliers et garantie du bien commun.", "footer_ref": "Basé sur le diagramme de processus : Activation Immobilière",
-                "outcome_low": "<strong>Réaction probable :</strong> Le propriétaire cède. <br><span class='text-blue-600 cursor-pointer underline' onclick='switchTab(\"phaseC\")'>Passer à la voie coopérative (C)</span>",
-                "outcome_high": "<strong>Scénario 2 (Échec) :</strong> Litige, blocage, grief permanent. <br>L'expropriation est longue et coûteuse.",
-                "outcome_mid": "<strong>Pression augmentée :</strong> Propriétaire sous pression. Cession possible.",
-                "res_ok": "⚠️ Proportionnalité OUI : Escalade admissible", "res_no": "Proportionnalité NON : Intervention non admissible"
-            }
-        };
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p data-i18n="footer_copy">© 2025 BAUKOMPASS · Stadtentwicklung &amp; Bürgerdialog</p>
+    <nav class="footer-links" aria-label="Rechtliches">
+      <a href="#" data-i18n="link_imprint">Impressum</a>
+      <a href="#" data-i18n="link_privacy">Datenschutz</a>
+      <a href="#" data-i18n="link_contact">Kontakt</a>
+    </nav>
+  </div>
+</footer>
 
-        // --- GLOBAL LANG STATE ---
-        let currentLang = 'de';
+<div class="toast-region" id="toast-region" role="status" aria-live="polite"></div>
+<button class="to-top" id="to-top" aria-label="Nach oben scrollen" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-        function updateTexts(lang) {
-            currentLang = lang;
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.dataset.i18n;
-                if(translations[lang][key]) {
-                    el.innerHTML = translations[lang][key]; // innerHTML allows <br> and <strong>
-                }
-            });
-            // Re-render chart to update tooltips if needed (not implemented here for simplicity)
-        }
+<script>
+/* ============ MOCK-DATEN ============ */
+const MUNICIPALITIES = ["Stadt Aachen","Stolberg","Simmerath","Eschweiler","Monschau","Raeren","Kelmis","Lontzen","Alsdorf","Herzogenrath","Würselen","Roetgen","Baesweiler"];
 
-        // Listen for messages from parent
-        window.addEventListener('message', function(e) {
-            if(e.data && e.data.type === 'changeLanguage') {
-                updateTexts(e.data.lang);
-            }
-        });
+/* Leerstandsquoten je Kommune in % (Mock) */
+const VACANCY_RATES = {
+  "Stadt Aachen":2.1,"Stolberg":5.8,"Simmerath":3.9,"Eschweiler":4.6,"Monschau":3.2,
+  "Raeren":2.7,"Kelmis":6.2,"Lontzen":2.4,"Alsdorf":5.1,"Herzogenrath":4.2,
+  "Würselen":3.5,"Roetgen":1.8,"Baesweiler":4.8
+};
 
-        // Check LocalStorage on init (if run standalone)
-        window.addEventListener('load', () => {
-            const savedLang = localStorage.getItem('baukompass_lang');
-            if(savedLang) updateTexts(savedLang);
-            initAnalysisChart();
-            sendHeight(); // Resize iframe
-        });
+/* Kommunale Basiskennzahlen (Mock) */
+const MUNI_STATS = {
+  "Stadt Aachen": {leerstand:84, sanierung:41, solar:22.4, beteiligung:71},
+  "Stolberg":     {leerstand:39, sanierung:14, solar:9.1,  beteiligung:58},
+  "Simmerath":    {leerstand:12, sanierung:6,  solar:6.8,  beteiligung:64},
+  "Eschweiler":   {leerstand:31, sanierung:12, solar:8.7,  beteiligung:55},
+  "Monschau":     {leerstand:14, sanierung:5,  solar:4.2,  beteiligung:67},
+  "Raeren":       {leerstand:11, sanierung:4,  solar:3.6,  beteiligung:62},
+  "Kelmis":       {leerstand:18, sanierung:5,  solar:2.9,  beteiligung:49},
+  "Lontzen":      {leerstand:7,  sanierung:3,  solar:2.2,  beteiligung:60},
+  "Alsdorf":      {leerstand:27, sanierung:9,  solar:6.1,  beteiligung:52},
+  "Herzogenrath": {leerstand:22, sanierung:8,  solar:5.4,  beteiligung:57},
+  "Würselen":     {leerstand:17, sanierung:7,  solar:4.8,  beteiligung:61},
+  "Roetgen":      {leerstand:5,  sanierung:2,  solar:2.4,  beteiligung:69},
+  "Baesweiler":   {leerstand:19, sanierung:6,  solar:4.0,  beteiligung:54}
+};
 
-        // --- DATA & STATE ---
-        const models = [
-            {
-                // Titles and descs are now handled via i18n keys in the showModel function to support dynamic language switching
-                id: 0,
-                icon: "💰",
-                stats: [90, 20, 10, 10] 
-            },
-            {
-                id: 1,
-                icon: "👵",
-                stats: [60, 80, 50, 40]
-            },
-            {
-                id: 2,
-                icon: "🛠️",
-                stats: [40, 40, 80, 60]
-            },
-            {
-                id: 3,
-                icon: "🎭",
-                stats: [100, 70, 60, 90]
-            },
-            {
-                id: 4,
-                icon: "🏘️",
-                stats: [30, 50, 90, 50]
-            }
-        ];
+/* MORO-Teilziele (Mock, in %) */
+const MORO_GOALS = [
+  {key:"goal_inner",  label:"Innenentwicklung vor Außen", value:62},
+  {key:"goal_activ",  label:"Eigentümeraktivierung",      value:48},
+  {key:"goal_coop",   label:"Interkomm. Kooperation",     value:74},
+  {key:"goal_mobil",  label:"Mobilität & Infrastruktur",  value:57}
+];
 
-        let analysisChartInstance = null;
-        let modelsChartInstance = null;
+/* Gemeldete Objekte (Mock aus Bewohner:innen-/Eigentümer:innen-Formularen)
+   stufe: 0–3 (Eskalationsmodell) · urgency: 1 niedrig, 2 mittel, 3 hoch · src: bewohner|eigentuemer */
+const PROPERTIES = [
+  {obj:"Jakobstraße 112",       sub:"Wohn-/Geschäftshaus, seit 2021 leer", muni:"Stadt Aachen", type:"leerstand",       urgency:3, stufe:2, src:"bewohner"},
+  {obj:"Adalbertsteinweg 48",   sub:"Mehrfamilienhaus, teilsaniert",       muni:"Stadt Aachen", type:"sanierung",       urgency:2, stufe:1, src:"eigentuemer"},
+  {obj:"Templergraben 9",       sub:"Ladenlokal im EG",                    muni:"Stadt Aachen", type:"zwischennutzung", urgency:1, stufe:2, src:"eigentuemer"},
+  {obj:"Burgstraße 5",          sub:"Einzeldenkmal, Dachschaden",          muni:"Stolberg",     type:"leerstand",       urgency:3, stufe:3, src:"bewohner"},
+  {obj:"Rathausstraße 22",      sub:"Altbau, Erbengemeinschaft",           muni:"Stolberg",     type:"leerstand",       urgency:3, stufe:1, src:"bewohner"},
+  {obj:"Steinwegpassage 3",     sub:"Gewerbefläche, 240 m²",               muni:"Stolberg",     type:"zwischennutzung", urgency:2, stufe:2, src:"eigentuemer"},
+  {obj:"Hauptstraße 41",        sub:"Hofstelle mit Nebengebäuden",         muni:"Simmerath",    type:"sanierung",       urgency:1, stufe:1, src:"eigentuemer"},
+  {obj:"Dürener Straße 88",     sub:"Zeilenbau, 6 WE leer",                muni:"Eschweiler",   type:"leerstand",       urgency:2, stufe:2, src:"bewohner"},
+  {obj:"Grabenstraße 14",       sub:"Baulücke nach Abriss",                muni:"Eschweiler",   type:"baulücke",        urgency:2, stufe:0, src:"bewohner"},
+  {obj:"Laufenstraße 30",       sub:"Fachwerkhaus, Altstadt",              muni:"Monschau",     type:"sanierung",       urgency:1, stufe:2, src:"eigentuemer"},
+  {obj:"Hauptstraße 102",       sub:"Eckgrundstück, unbebaut",             muni:"Raeren",       type:"baulücke",        urgency:1, stufe:0, src:"eigentuemer"},
+  {obj:"Kirchstraße 8",         sub:"Reihenhaus, seit 2019 leer",          muni:"Kelmis",       type:"leerstand",       urgency:3, stufe:1, src:"bewohner"},
+  {obj:"Lütticher Straße 55",   sub:"Wohnhaus, Eigentümer unbekannt",      muni:"Kelmis",       type:"leerstand",       urgency:3, stufe:0, src:"bewohner"},
+  {obj:"Bahnhofstraße 17",      sub:"Bahnhofsnahes Grundstück",            muni:"Lontzen",      type:"baulücke",        urgency:1, stufe:1, src:"eigentuemer"},
+  {obj:"Hubertusstraße 60",     sub:"Zechensiedlung, 4 WE",                muni:"Alsdorf",      type:"sanierung",       urgency:2, stufe:1, src:"eigentuemer"},
+  {obj:"Otto-Wels-Straße 2",    sub:"Garagenhof, untergenutzt",            muni:"Alsdorf",      type:"zwischennutzung", urgency:1, stufe:0, src:"bewohner"},
+  {obj:"Kleikstraße 33",        sub:"Doppelhaushälfte, leer",              muni:"Herzogenrath", type:"leerstand",       urgency:2, stufe:1, src:"bewohner"},
+  {obj:"Morlaixplatz 7",        sub:"Ladenlokal am Platz",                 muni:"Würselen",     type:"zwischennutzung", urgency:2, stufe:2, src:"eigentuemer"},
+  {obj:"Kaiserstraße 90",       sub:"Wohnhaus, Sanierungsstau",            muni:"Würselen",     type:"sanierung",       urgency:2, stufe:0, src:"eigentuemer"},
+  {obj:"Bundesstraße 12",       sub:"Ortsmitte, ehem. Gasthof",            muni:"Roetgen",      type:"leerstand",       urgency:2, stufe:2, src:"bewohner"},
+  {obj:"Mariastraße 19",        sub:"Zechenhaus, Erbfall",                 muni:"Baesweiler",   type:"leerstand",       urgency:3, stufe:1, src:"bewohner"},
+  {obj:"Carlstraße 4",          sub:"Innenhof-Potenzial",                  muni:"Baesweiler",   type:"baulücke",        urgency:1, stufe:0, src:"eigentuemer"}
+];
 
-        // --- NAVIGATION ---
-        function switchTab(tabId) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.nav-tab').forEach(el => {
-                el.classList.remove('bg-white', 'shadow', 'text-blue-600');
-                el.classList.add('text-slate-500');
-            });
+/* ============ ÜBERSETZUNGEN ============ */
+const translations = {
+  "de": {
+    "skip_link":"Zum Inhalt springen",
+    "back_link":"Zurück zu Gemeinden",
+    "head_eyebrow":"Kommunales Dashboard · Mock-Daten",
+    "head_title_a":"Immobilien-","head_title_b":"Aktivierungs-Tool",
+    "head_desc":"Leerstands-Monitoring, MORO-Zielerreichung und Aktivierungs-Tracker für die 13 Kommunen der Grenzregion Aachen / Ostbelgien.",
+    "filter_title":"Filter","filter_sub":"Alle Kennzahlen, Diagramme und der Tracker reagieren live auf Ihre Auswahl.",
+    "filter_muni":"Kommune (Fokus-Region)","filter_type":"Projekttyp","filter_reset":"Zurücksetzen",
+    "opt_all_muni":"Alle 13 Kommunen","opt_all":"Alle Typen","opt_leerstand":"Leerstand","opt_sanierung":"Sanierung","opt_zwischen":"Zwischennutzung","opt_bauluecke":"Baulücke",
+    "focus_saved":"Fokus-Region <strong>{m}</strong> gespeichert – sie bleibt seitenübergreifend erhalten.",
+    "focus_none":"Tipp: Eine gewählte Kommune wird als Fokus-Region gespeichert und auf allen Seiten übernommen.",
+    "kpi1":"Registrierte Leerstände","kpi2":"Aktive Sanierungsanträge","kpi3":"Solarpotenzial-Flächen","kpi4":"Beteiligungsquote","kpi_q":"im Quartal",
+    "chart_bars_title":"Leerstandsquote je Kommune","chart_bars_sub":"Anteil gemeldeter Leerstände am Gebäudebestand (Mock-Daten, in %).",
+    "legend_low":"unter 3 % – unkritisch","legend_mid":"3–5 % – beobachten","legend_high":"über 5 % – Handlungsbedarf",
+    "chart_donut_title":"MORO-Zielerreichung","chart_donut_sub":"Fortschritt „Mehr Wohnraum schaffen“ – gewichteter Gesamtwert.","donut_lbl":"Zielerreichung",
+    "goal_inner":"Innenentwicklung vor Außen","goal_activ":"Eigentümeraktivierung","goal_coop":"Interkomm. Kooperation","goal_mobil":"Mobilität & Infrastruktur",
+    "tracker_title":"Leerstands- &amp; Aktivierungs-Tracker","tracker_sub":"Gemeldete Objekte aus den Bewohner:innen- und Eigentümer:innen-Formularen.",
+    "sort_label":"Sortieren:","sort_urgency":"Dringlichkeit","sort_stufe":"Eskalationsstufe",
+    "th_obj":"Objekt","th_muni":"Kommune","th_type":"Typ","th_src":"Quelle","th_urgency":"Dringlichkeit","th_stufe":"Stufe",
+    "type_leerstand":"Leerstand","type_sanierung":"Sanierung","type_zwischennutzung":"Zwischennutzung","type_baulücke":"Baulücke",
+    "src_bewohner":"Bewohner:in","src_eigentuemer":"Eigentümer:in",
+    "stufe_word":"Stufe",
+    "count_msg":"<strong>{n}</strong> von {total} Objekten angezeigt",
+    "empty_msg":"Keine Objekte für diese Filterkombination. Passen Sie die Auswahl an oder setzen Sie die Filter zurück.",
+    "st0_t":"Stufe 0 · Erfassung","st0_d":"Meldung eingegangen, Datenprüfung (Strom/Wasser/Kataster) läuft.",
+    "st1_t":"Stufe 1 · Ansprache","st1_d":"Eigentümer:in kontaktiert, Beratungsangebot unterbreitet.",
+    "st2_t":"Stufe 2 · Kooperation","st2_d":"Soft Power: Verkauf, Verrentung, Zwischennutzung oder Genossenschaft.",
+    "st3_t":"Stufe 3 · Eskalation","st3_d":"Hard Power: Steuerdruck, Baugebot bis hin zu hoheitlichem Eingriff.",
+    "toast_filter_reset":"Filter zurückgesetzt",
+    "footer_copy":"© 2025 BAUKOMPASS · Stadtentwicklung & Bürgerdialog",
+    "link_imprint":"Impressum","link_privacy":"Datenschutz","link_contact":"Kontakt",
+    "theme_dark":"Dunkelmodus aktiviert","theme_light":"Hellmodus aktiviert"
+  },
+  "en": {
+    "skip_link":"Skip to content",
+    "back_link":"Back to municipalities",
+    "head_eyebrow":"Municipal dashboard · Mock data",
+    "head_title_a":"Property ","head_title_b":"activation tool",
+    "head_desc":"Vacancy monitoring, MORO target achievement and activation tracker for the 13 municipalities of the Aachen / East Belgium border region.",
+    "filter_title":"Filters","filter_sub":"All KPIs, charts and the tracker respond live to your selection.",
+    "filter_muni":"Municipality (focus region)","filter_type":"Project type","filter_reset":"Reset",
+    "opt_all_muni":"All 13 municipalities","opt_all":"All types","opt_leerstand":"Vacancy","opt_sanierung":"Renovation","opt_zwischen":"Interim use","opt_bauluecke":"Gap site",
+    "focus_saved":"Focus region <strong>{m}</strong> saved – it persists across all pages.",
+    "focus_none":"Tip: A selected municipality is saved as focus region and applied across all pages.",
+    "kpi1":"Registered vacancies","kpi2":"Active renovation applications","kpi3":"Solar potential areas","kpi4":"Participation rate","kpi_q":"this quarter",
+    "chart_bars_title":"Vacancy rate per municipality","chart_bars_sub":"Share of reported vacancies in the building stock (mock data, in %).",
+    "legend_low":"below 3% – uncritical","legend_mid":"3–5% – monitor","legend_high":"above 5% – action needed",
+    "chart_donut_title":"MORO target achievement","chart_donut_sub":"Progress of “Creating more housing” – weighted overall value.","donut_lbl":"Target achievement",
+    "goal_inner":"Inner before outer development","goal_activ":"Owner activation","goal_coop":"Inter-municipal cooperation","goal_mobil":"Mobility & infrastructure",
+    "tracker_title":"Vacancy &amp; activation tracker","tracker_sub":"Reported properties from the resident and owner forms.",
+    "sort_label":"Sort by:","sort_urgency":"Urgency","sort_stufe":"Escalation level",
+    "th_obj":"Property","th_muni":"Municipality","th_type":"Type","th_src":"Source","th_urgency":"Urgency","th_stufe":"Level",
+    "type_leerstand":"Vacancy","type_sanierung":"Renovation","type_zwischennutzung":"Interim use","type_baulücke":"Gap site",
+    "src_bewohner":"Resident","src_eigentuemer":"Owner",
+    "stufe_word":"Level",
+    "count_msg":"<strong>{n}</strong> of {total} properties shown",
+    "empty_msg":"No properties for this filter combination. Adjust your selection or reset the filters.",
+    "st0_t":"Level 0 · Registration","st0_d":"Report received, data check (electricity/water/cadastre) in progress.",
+    "st1_t":"Level 1 · Contact","st1_d":"Owner contacted, advisory offer submitted.",
+    "st2_t":"Level 2 · Cooperation","st2_d":"Soft power: sale, annuity, interim use or cooperative.",
+    "st3_t":"Level 3 · Escalation","st3_d":"Hard power: tax pressure, building order up to sovereign intervention.",
+    "toast_filter_reset":"Filters reset",
+    "footer_copy":"© 2025 BAUKOMPASS · Urban Development & Citizen Dialogue",
+    "link_imprint":"Imprint","link_privacy":"Privacy","link_contact":"Contact",
+    "theme_dark":"Dark mode enabled","theme_light":"Light mode enabled"
+  },
+  "fr": {
+    "skip_link":"Aller au contenu",
+    "back_link":"Retour aux communes",
+    "head_eyebrow":"Tableau de bord communal · Données fictives",
+    "head_title_a":"Outil d'","head_title_b":"activation immobilière",
+    "head_desc":"Suivi des logements vacants, atteinte des objectifs MORO et suivi de l'activation pour les 13 communes de la région frontalière Aix-la-Chapelle / Belgique de l'Est.",
+    "filter_title":"Filtres","filter_sub":"Tous les indicateurs, graphiques et le suivi réagissent en direct à votre sélection.",
+    "filter_muni":"Commune (région focus)","filter_type":"Type de projet","filter_reset":"Réinitialiser",
+    "opt_all_muni":"Les 13 communes","opt_all":"Tous les types","opt_leerstand":"Vacance","opt_sanierung":"Rénovation","opt_zwischen":"Usage temporaire","opt_bauluecke":"Dent creuse",
+    "focus_saved":"Région focus <strong>{m}</strong> enregistrée – elle est conservée sur toutes les pages.",
+    "focus_none":"Astuce : une commune sélectionnée est enregistrée comme région focus et appliquée sur toutes les pages.",
+    "kpi1":"Logements vacants enregistrés","kpi2":"Demandes de rénovation actives","kpi3":"Surfaces à potentiel solaire","kpi4":"Taux de participation","kpi_q":"ce trimestre",
+    "chart_bars_title":"Taux de vacance par commune","chart_bars_sub":"Part des logements vacants signalés dans le parc bâti (données fictives, en %).",
+    "legend_low":"moins de 3 % – non critique","legend_mid":"3–5 % – à surveiller","legend_high":"plus de 5 % – action requise",
+    "chart_donut_title":"Atteinte des objectifs MORO","chart_donut_sub":"Avancement « Créer plus de logements » – valeur globale pondérée.","donut_lbl":"Objectif atteint",
+    "goal_inner":"Densification avant extension","goal_activ":"Activation des propriétaires","goal_coop":"Coopération intercommunale","goal_mobil":"Mobilité & infrastructure",
+    "tracker_title":"Suivi vacance &amp; activation","tracker_sub":"Biens signalés via les formulaires des résidents et propriétaires.",
+    "sort_label":"Trier par :","sort_urgency":"Urgence","sort_stufe":"Niveau d'escalade",
+    "th_obj":"Bien","th_muni":"Commune","th_type":"Type","th_src":"Source","th_urgency":"Urgence","th_stufe":"Niveau",
+    "type_leerstand":"Vacance","type_sanierung":"Rénovation","type_zwischennutzung":"Usage temporaire","type_baulücke":"Dent creuse",
+    "src_bewohner":"Résident:e","src_eigentuemer":"Propriétaire",
+    "stufe_word":"Niveau",
+    "count_msg":"<strong>{n}</strong> biens affichés sur {total}",
+    "empty_msg":"Aucun bien pour cette combinaison de filtres. Ajustez votre sélection ou réinitialisez les filtres.",
+    "st0_t":"Niveau 0 · Recensement","st0_d":"Signalement reçu, vérification des données (électricité/eau/cadastre) en cours.",
+    "st1_t":"Niveau 1 · Contact","st1_d":"Propriétaire contacté, offre de conseil soumise.",
+    "st2_t":"Niveau 2 · Coopération","st2_d":"Soft power : vente, viager, usage temporaire ou coopérative.",
+    "st3_t":"Niveau 3 · Escalade","st3_d":"Hard power : pression fiscale, obligation de construire jusqu'à l'intervention souveraine.",
+    "toast_filter_reset":"Filtres réinitialisés",
+    "footer_copy":"© 2025 BAUKOMPASS · Développement urbain & Dialogue citoyen",
+    "link_imprint":"Mentions légales","link_privacy":"Confidentialité","link_contact":"Contact",
+    "theme_dark":"Mode sombre activé","theme_light":"Mode clair activé"
+  }
+};
+let currentLang = 'de';
 
-            // Show selected
-            document.getElementById(tabId).classList.remove('hidden');
-            const activeBtn = document.getElementById('tab-' + tabId);
-            activeBtn.classList.add('bg-white', 'shadow', 'text-blue-600');
-            activeBtn.classList.remove('text-slate-500');
+function changeLanguage(lang){
+  currentLang = lang;
+  localStorage.setItem('baukompass_lang', lang);
+  document.documentElement.lang = lang;
+  document.querySelectorAll('.lang-btn').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.lang === lang);
+  });
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.dataset.i18n;
+    if(translations[lang] && translations[lang][key]){
+      if(el.tagName==='INPUT' && el.hasAttribute('placeholder')){ el.placeholder = translations[lang][key]; }
+      else { el.innerHTML = translations[lang][key]; }
+    }
+  });
+  document.querySelectorAll('[data-i18n-opt]').forEach(el=>{
+    const key = el.dataset.i18nOpt;
+    if(translations[lang] && translations[lang][key]) el.textContent = translations[lang][key];
+  });
+  /* Dynamische Bereiche neu rendern */
+  buildMuniSelect();
+  renderAll();
+}
+function t(key){ return (translations[currentLang]&&translations[currentLang][key]) || key; }
 
-            // Init charts if needed
-            if (tabId === 'phaseA' && !analysisChartInstance) initAnalysisChart();
-            if (tabId === 'phaseC' && !modelsChartInstance) {
-                setTimeout(() => { // slight delay for layout
-                    initModelsChart();
-                    showModel(0);
-                }, 100);
-            }
-            sendHeight();
-        }
+/* ============ THEME ============ */
+function applyTheme(theme){
+  document.documentElement.setAttribute('data-theme', theme);
+  const btn = document.getElementById('theme-toggle');
+  if(btn) btn.textContent = theme==='dark' ? '☀️' : '🌙';
+  localStorage.setItem('baukompass_theme', theme);
+}
+function toggleTheme(){
+  const next = document.documentElement.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+  applyTheme(next);
+  showToast(next==='dark' ? t('theme_dark') : t('theme_light'));
+}
 
-        // --- PHASE A LOGIC ---
-        function initAnalysisChart() {
-            const ctx = document.getElementById('analysisChart').getContext('2d');
-            if(analysisChartInstance) analysisChartInstance.destroy();
-            analysisChartInstance = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Geringes Potenzial', 'Hohes Potenzial'], // Could also be translated
-                    datasets: [{
-                        data: [65, 35],
-                        backgroundColor: ['#cbd5e1', '#10b981'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom' } }
-                }
-            });
-        }
+/* ============ TOASTS ============ */
+function showToast(msg, icon='✓'){
+  const region = document.getElementById('toast-region');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerHTML = '<span aria-hidden="true">'+icon+'</span><span>'+msg+'</span>';
+  region.appendChild(toast);
+  setTimeout(()=>{ toast.classList.add('out'); setTimeout(()=>toast.remove(),320); }, 3200);
+}
 
-        function simulateAnalysis() {
-            const funnel = document.getElementById('final-funnel');
-            const result = document.getElementById('analysis-result');
-            
-            // Translations for dynamic JS text
-            const txt_analyzing = currentLang === 'de' ? "Analysiere..." : (currentLang === 'fr' ? "Analyse..." : "Analyzing...");
-            const txt_identified = currentLang === 'de' ? "Objekt Identifiziert!" : (currentLang === 'fr' ? "Objet Identifié !" : "Object Identified!");
+/* ============ HEADER / SCROLL / PAGE TRANSITIONS ============ */
+window.addEventListener('scroll', ()=>{
+  document.getElementById('site-header').classList.toggle('scrolled', window.scrollY > 8);
+  document.getElementById('to-top').classList.toggle('show', window.scrollY > 480);
+}, {passive:true});
 
-            funnel.innerText = txt_analyzing;
-            funnel.classList.add('animate-pulse');
-            
-            setTimeout(() => {
-                funnel.classList.remove('animate-pulse');
-                funnel.classList.add('bg-emerald-500', 'text-white');
-                funnel.innerText = txt_identified;
-                result.classList.remove('hidden');
-                sendHeight();
-            }, 800);
-        }
+document.querySelectorAll('a[data-nav]').forEach(a=>{
+  a.addEventListener('click', e=>{
+    e.preventDefault();
+    const href = a.getAttribute('href');
+    document.body.classList.add('leaving');
+    setTimeout(()=>{ window.location.href = href; }, 230);
+  });
+});
 
-        // --- PHASE B LOGIC ---
-        function choosePath(type) {
-            if (type === 'soft') {
-                switchTab('phaseC');
-            } else {
-                switchTab('phaseD');
-            }
-        }
+/* ============ FILTER-STATE ============ */
+let filterMuni = 'all';
+let filterType = 'all';
+let sortMode = 'urgency';
 
-        // --- PHASE C LOGIC ---
-        function initModelsChart() {
-            const ctx = document.getElementById('modelsChart').getContext('2d');
-            if(modelsChartInstance) modelsChartInstance.destroy();
-            modelsChartInstance = new Chart(ctx, {
-                type: 'radar',
-                data: {
-                    labels: ['Speed', 'Sicherheit', 'Kontrolle', 'Effizienz'], // Should ideally be dynamic
-                    datasets: [{
-                        label: 'Profil',
-                        data: [0,0,0,0],
-                        backgroundColor: 'rgba(14, 165, 233, 0.2)',
-                        borderColor: '#0ea5e9',
-                        pointBackgroundColor: '#0ea5e9'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        r: {
-                            angleLines: { color: '#e2e8f0' },
-                            grid: { color: '#e2e8f0' },
-                            suggestedMin: 0,
-                            suggestedMax: 100,
-                            ticks: { display: false }
-                        }
-                    },
-                    plugins: { legend: { display: false } }
-                }
-            });
-        }
+function buildMuniSelect(){
+  const sel = document.getElementById('f-kommune');
+  sel.innerHTML = '<option value="all">'+t('opt_all_muni')+'</option>' +
+    MUNICIPALITIES.map(m=>`<option value="${m}">${m}</option>`).join('');
+  sel.value = filterMuni;
+}
 
-        function showModel(index) {
-            const m = models[index];
-            const lang = currentLang; // Get current global lang
-            
-            // Update UI Cards
-            document.querySelectorAll('.model-btn').forEach((btn, i) => {
-                if(i === index) btn.classList.add('active');
-                else btn.classList.remove('active');
-            });
+function onFilterChange(){
+  filterMuni = document.getElementById('f-kommune').value;
+  filterType = document.getElementById('f-typ').value;
+  /* Fokus-Region seitenübergreifend speichern (geteilt mit gemeinden.html) */
+  if(filterMuni === 'all'){ localStorage.removeItem('baukompass_fokus_region'); }
+  else { localStorage.setItem('baukompass_fokus_region', filterMuni); }
+  renderAll();
+}
 
-            // Get translated strings
-            const t = translations[lang];
-            const title = t[`m${index}_title`];
-            const sub = t[`m${index}_sub`];
-            // Desc we keep hardcoded in Array or add to translation object (omitted for brevity, using defaults)
-            const descMap = [
-                {de: "Vollständige Abgabe der Verantwortung gegen fairen finanziellen Gegenwert.", en: "Complete handover of responsibility for fair financial value.", fr: "Transfert complet de responsabilité contre une juste valeur financière."},
-                {de: "Verkauf an die Stadt gegen eine lebenslange Rente und gesichertes Wohnrecht.", en: "Sale to the city for a life annuity and secured right of residence.", fr: "Vente à la ville contre une rente viagère et un droit d'habitation garanti."},
-                {de: "Verpachtung mit vertraglich gesichertem Mitspracherecht bei der Projektentwicklung.", en: "Lease with contractually secured say in project development.", fr: "Bail avec droit de regard contractuel sur le développement du projet."},
-                {de: "Nutzung durch Start-ups oder Kultur unter städtischer Garantie zur Überbrückung.", en: "Use by start-ups or culture under municipal guarantee for bridging.", fr: "Utilisation par des start-ups ou la culture sous garantie municipale."},
-                {de: "Verkauf an Bürger-Syndikate zur Sicherung dauerhaft bezahlbarer Mieten.", en: "Sale to citizen syndicates to secure permanently affordable rents.", fr: "Vente à des syndicats citoyens pour garantir des loyers abordables."}
-            ];
-            const desc = descMap[index][lang];
+function resetFilters(){
+  filterMuni = 'all'; filterType = 'all';
+  document.getElementById('f-kommune').value = 'all';
+  document.getElementById('f-typ').value = 'all';
+  localStorage.removeItem('baukompass_fokus_region');
+  renderAll();
+  showToast(t('toast_filter_reset'), '🎛️');
+}
 
-            // Update Content
-            const container = document.getElementById('model-detail-content');
-            container.innerHTML = `
-                <div class="flex items-start gap-4 animate-fade-in">
-                    <div class="text-4xl bg-white p-3 rounded-full shadow-sm">${m.icon}</div>
-                    <div>
-                        <h4 class="text-xl font-bold text-blue-800 mb-1">${title}</h4>
-                        <div class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mb-3 font-semibold">Zielgruppe: ${sub}</div>
-                        <p class="text-slate-700 leading-relaxed">${desc}</p>
-                    </div>
-                </div>
-            `;
+function setSort(mode){
+  sortMode = mode;
+  document.getElementById('sort-urgency').classList.toggle('active', mode==='urgency');
+  document.getElementById('sort-stufe').classList.toggle('active', mode==='stufe');
+  renderTracker();
+}
 
-            // Update Chart
-            if (modelsChartInstance) {
-                modelsChartInstance.data.datasets[0].data = m.stats;
-                modelsChartInstance.update();
-            }
-            sendHeight();
-        }
+/* ============ RENDERING ============ */
+function activeMunis(){ return filterMuni==='all' ? MUNICIPALITIES : [filterMuni]; }
 
-        // --- PHASE D LOGIC ---
-        function checkProportionality() {
-            const leg = document.getElementById('check-legal').checked;
-            const fin = document.getElementById('check-financial').checked;
-            const res = document.getElementById('prop-result');
-            const ladder = document.getElementById('escalation-container');
-            const backBtn = document.getElementById('back-to-coop');
+function filteredProperties(){
+  return PROPERTIES.filter(p=>
+    (filterMuni==='all' || p.muni===filterMuni) &&
+    (filterType==='all' || p.type===filterType)
+  );
+}
 
-            const t = translations[currentLang];
+/* Zahl animiert hochzählen */
+function animateValue(el, target, suffix='', decimals=0){
+  const dur = 600, start = performance.now();
+  const from = 0;
+  function frame(now){
+    const k = Math.min(1,(now-start)/dur);
+    const eased = 1-Math.pow(1-k,3);
+    el.textContent = (from + (target-from)*eased).toFixed(decimals).replace('.',',') + suffix;
+    if(k<1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
 
-            if (leg && fin) {
-                res.className = "p-3 rounded font-bold text-center bg-red-100 text-red-700 transition-colors";
-                res.innerHTML = t.res_ok;
-                ladder.classList.remove('opacity-50', 'pointer-events-none');
-                ladder.classList.add('opacity-100');
-                backBtn.classList.add('hidden');
-            } else {
-                res.className = "p-3 rounded font-bold text-center bg-amber-100 text-amber-700 transition-colors";
-                res.innerHTML = t.res_no;
-                ladder.classList.add('opacity-50', 'pointer-events-none');
-                backBtn.classList.remove('hidden');
-            }
-            sendHeight();
-        }
+function renderKPIs(){
+  const munis = activeMunis();
+  let leer=0, san=0, sol=0, bet=0;
+  munis.forEach(m=>{
+    const s = MUNI_STATS[m];
+    leer+=s.leerstand; san+=s.sanierung; sol+=s.solar; bet+=s.beteiligung;
+  });
+  bet = bet/munis.length;
+  animateValue(document.getElementById('kpi-leerstand'), leer);
+  animateValue(document.getElementById('kpi-sanierung'), san);
+  animateValue(document.getElementById('kpi-solar'), sol, ' ha', 1);
+  animateValue(document.getElementById('kpi-beteiligung'), bet, ' %', 1);
+}
 
-        function setEscalation(level) {
-            // Visual Update
-            document.querySelectorAll('.escalation-step').forEach((el, idx) => {
-                if (idx + 1 === level) {
-                    el.classList.add('active', 'bg-red-50', 'border-red-600');
-                } else {
-                    el.classList.remove('active', 'bg-red-50', 'border-red-600');
-                }
-            });
+function renderBars(){
+  const container = document.getElementById('bar-chart');
+  const munis = activeMunis();
+  const max = 7; /* Skalenmaximum in % */
+  container.innerHTML = munis.map((m,i)=>{
+    const v = VACANCY_RATES[m];
+    const cls = v>5 ? 'high' : (v>=3 ? 'mid' : '');
+    return `<div class="bar-row">
+      <span class="bar-label" title="${m}">${m}</span>
+      <div class="bar-track"><div class="bar-fill ${cls}" style="width:${Math.min(100,v/max*100)}%;animation-delay:${i*40}ms"></div></div>
+      <span class="bar-val">${v.toFixed(1).replace('.',',')} %</span>
+    </div>`;
+  }).join('');
+}
 
-            // Outcome Text
-            const outBox = document.getElementById('escalation-outcome');
-            outBox.classList.remove('hidden');
-            let text = "";
-            let outcomeClass = "";
-            const t = translations[currentLang];
-            
-            if (level < 3) {
-                text = t.outcome_low;
-                outcomeClass = "bg-blue-50 border-blue-200 text-blue-800";
-            } else if (level === 4) {
-                text = t.outcome_high;
-                outcomeClass = "bg-slate-800 border-slate-900 text-white";
-            } else {
-                 text = t.outcome_mid;
-                 outcomeClass = "bg-amber-50 border-amber-200 text-amber-800";
-            }
-            outBox.innerHTML = text;
-            outBox.className = `mt-4 p-3 rounded border text-center transition-all ${outcomeClass}`;
-            sendHeight();
-        }
+function renderDonut(){
+  /* Gewichteter Gesamtwert; bei Fokus-Kommune leichte Mock-Variation für Lebendigkeit */
+  let base = Math.round(MORO_GOALS.reduce((a,g)=>a+g.value,0)/MORO_GOALS.length);
+  if(filterMuni!=='all'){
+    const idx = MUNICIPALITIES.indexOf(filterMuni);
+    base = Math.max(28, Math.min(92, base + ((idx*7)%21) - 10));
+  }
+  const donut = document.getElementById('donut');
+  donut.style.setProperty('--p', base);
+  donut.setAttribute('aria-label', t('chart_donut_title')+': '+base+' %');
+  const pctEl = document.getElementById('donut-pct');
+  animateValue(pctEl, base, ' %');
 
-        // Iframe Resize Logic
-        function sendHeight() {
-            const height = document.body.scrollHeight;
-            window.parent.postMessage({ type: 'resize-iframe', height: height }, '*');
-        }
-        
-        // Observers for height changes
-        const resizeObserver = new ResizeObserver(() => sendHeight());
-        resizeObserver.observe(document.body);
+  const list = document.getElementById('goal-list');
+  list.innerHTML = MORO_GOALS.map((g,i)=>{
+    let v = g.value;
+    if(filterMuni!=='all'){
+      const idx = MUNICIPALITIES.indexOf(filterMuni);
+      v = Math.max(15, Math.min(95, v + ((idx*5+i*9)%17) - 8));
+    }
+    return `<div class="goal-item">
+      <span class="g-label">${t(g.key)}</span><span class="g-val">${v} %</span>
+      <span class="goal-mini"><i style="width:${v}%;animation-delay:${i*60}ms"></i></span>
+    </div>`;
+  }).join('');
+}
 
-    </script>
+function renderTracker(){
+  const body = document.getElementById('tracker-body');
+  const empty = document.getElementById('empty-state');
+  let rows = filteredProperties();
+
+  rows = rows.slice().sort((a,b)=>{
+    if(sortMode==='urgency'){ return b.urgency-a.urgency || b.stufe-a.stufe || a.obj.localeCompare(b.obj); }
+    return b.stufe-a.stufe || b.urgency-a.urgency || a.obj.localeCompare(b.obj);
+  });
+
+  document.getElementById('tracker-count').innerHTML =
+    t('count_msg').replace('{n}', rows.length).replace('{total}', PROPERTIES.length);
+
+  empty.hidden = rows.length>0;
+  body.innerHTML = rows.map((p,i)=>`
+    <tr style="animation-delay:${Math.min(i*30,300)}ms">
+      <td><span class="obj">${p.obj}</span><span class="obj-sub">${p.sub}</span></td>
+      <td>${p.muni}</td>
+      <td><span class="chip type">${t('type_'+p.type)}</span></td>
+      <td><span class="src-badge ${p.src==='bewohner'?'src-bew':'src-eig'}">${t('src_'+p.src)}</span></td>
+      <td><span class="urgency" data-u="${p.urgency}" role="img" aria-label="${t('th_urgency')}: ${p.urgency}/3"><i></i><i></i><i></i></span></td>
+      <td><span class="stufe stufe-${p.stufe}"><i></i>${t('stufe_word')} ${p.stufe}</span></td>
+    </tr>
+  `).join('');
+}
+
+function renderFocusHint(){
+  const hint = document.getElementById('focus-hint');
+  if(filterMuni!=='all'){ hint.innerHTML = t('focus_saved').replace('{m}', filterMuni); }
+  else { hint.innerHTML = t('focus_none'); }
+}
+
+function renderAll(){
+  renderKPIs();
+  renderBars();
+  renderDonut();
+  renderTracker();
+  renderFocusHint();
+}
+
+/* ============ INIT ============ */
+window.addEventListener('load', ()=>{
+  applyTheme(localStorage.getItem('baukompass_theme') || 'light');
+  /* Gespeicherte Fokus-Region aus gemeinden.html / vorherigen Sitzungen übernehmen */
+  const saved = localStorage.getItem('baukompass_fokus_region');
+  if(saved && MUNICIPALITIES.includes(saved)) filterMuni = saved;
+  changeLanguage(localStorage.getItem('baukompass_lang') || 'de'); /* ruft buildMuniSelect + renderAll auf */
+});
+</script>
 </body>
 </html>
