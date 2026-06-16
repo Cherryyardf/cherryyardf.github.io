@@ -68,6 +68,8 @@ h1,h2,h3,h4{line-height:1.25;letter-spacing:-.01em}
 [data-theme="dark"] .lang-btn.active{background:var(--teal)}
 .theme-toggle{width:38px;height:38px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);cursor:pointer;display:grid;place-items:center;font-size:1rem;transition:transform .2s;color:var(--text)}
 .theme-toggle:hover{transform:rotate(15deg)}
+.menu-btn{display:none;width:40px;height:38px;border:1px solid var(--border);background:var(--surface-2);border-radius:9px;cursor:pointer;font-size:1.2rem;line-height:1;color:var(--text);place-items:center;transition:background .2s}
+.menu-btn:hover{background:var(--teal-soft)}
 .accent-line{height:3px;background:linear-gradient(90deg,var(--navy) 0%,var(--teal) 55%,var(--amber) 100%)}
 
 /* ============ LAYOUT / CARDS ============ */
@@ -246,6 +248,25 @@ textarea{resize:vertical}
   .brand .brand-text small{display:none}
   .back-link{padding:8px 6px}
 }
+@media (max-width:680px){
+  .menu-btn{display:grid;margin-left:auto}
+  .header-tools{
+    position:absolute;top:100%;right:10px;left:auto;min-width:200px;margin-left:0;
+    flex-direction:column;align-items:stretch;gap:12px;
+    background:var(--surface);border:1px solid var(--border);border-radius:14px;
+    box-shadow:var(--shadow-md);padding:16px;display:none;z-index:80
+  }
+  .header-tools.open{display:flex;animation:menuIn .2s ease}
+  .header-tools .lang-switch{justify-content:stretch}
+  .header-tools .lang-btn{flex:1;text-align:center;padding:9px 0}
+  .header-tools .theme-toggle{width:100%;height:44px;border-radius:10px}
+  .phase-pill{display:flex;justify-content:center;order:-1}
+}
+@media (max-width:480px){
+  .brand{font-size:.9rem;letter-spacing:.07em}
+  .header-inner{gap:8px;padding:0 14px}
+}
+@keyframes menuIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 @media print{
   .site-header,.site-footer,.to-top,.toast-region,.modal-backdrop{display:none}
   body{background:#fff;color:#000}
@@ -293,7 +314,7 @@ textarea{resize:vertical}
       </svg>
       <span class="brand-text">BAUKOMPASS<small id="header-location" data-i18n="nav_subtitle">Region wählen...</small></span>
     </a>
-    <div class="header-tools">
+    <div class="header-tools" id="header-tools">
       <span class="phase-pill" data-i18n="nav_phase">Phase: Bürger-Dialog</span>
       <div class="lang-switch" role="group" aria-label="Sprache wählen">
         <button onclick="changeLanguage('de')" class="lang-btn active" data-lang="de" aria-label="Deutsch">DE</button>
@@ -302,6 +323,7 @@ textarea{resize:vertical}
       </div>
       <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" aria-label="Dunkelmodus umschalten">🌙</button>
     </div>
+    <button class="menu-btn" id="menu-btn" onclick="toggleMenu()" aria-label="Menü öffnen" aria-expanded="false" aria-controls="header-tools">☰</button>
   </div>
   <div class="accent-line" aria-hidden="true"></div>
 </header>
@@ -761,6 +783,35 @@ document.querySelectorAll('a[data-nav]').forEach(a=>{
   });
 });
 
+/* ============ MOBILE-MENÜ (Hamburger) ============ */
+function toggleMenu(){
+  const tools = document.getElementById('header-tools');
+  const btn = document.getElementById('menu-btn');
+  const open = tools.classList.toggle('open');
+  btn.setAttribute('aria-expanded', String(open));
+  btn.textContent = open ? '✕' : '☰';
+  btn.setAttribute('aria-label', open ? 'Menü schließen' : 'Menü öffnen');
+}
+function closeMenu(){
+  const tools = document.getElementById('header-tools');
+  if(!tools.classList.contains('open')) return;
+  const btn = document.getElementById('menu-btn');
+  tools.classList.remove('open');
+  btn.setAttribute('aria-expanded','false');
+  btn.textContent = '☰';
+  btn.setAttribute('aria-label','Menü öffnen');
+}
+/* Menü schließen bei Sprach-/Theme-Auswahl, Klick außerhalb oder Escape */
+document.querySelectorAll('#header-tools .lang-btn, #header-tools .theme-toggle').forEach(el=>{
+  el.addEventListener('click', closeMenu);
+});
+document.addEventListener('click', e=>{
+  const tools = document.getElementById('header-tools');
+  const btn = document.getElementById('menu-btn');
+  if(tools.classList.contains('open') && !tools.contains(e.target) && !btn.contains(e.target)){ closeMenu(); }
+});
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeMenu(); });
+
 /* ============ INIT ============ */
 window.addEventListener('load', ()=>{
   applyTheme(localStorage.getItem('baukompass_theme') || 'light');
@@ -778,6 +829,4 @@ window.addEventListener('load', ()=>{
 </script>
 </body>
 </html>
-
-
 
